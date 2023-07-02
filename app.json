@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GymEssential",
-    "slug": "GymEssential",
+    "slug": "gymessentials",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "18dc247b-b32a-4917-9b56-bdffec367bfc"
+      }
+    },
+    "owner": "sanning"
   }
 }
