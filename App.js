@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -14,10 +15,47 @@ const BottomTabs = createBottomTabNavigator();
 
 function FeaturesOverview() {
   return(
-    <BottomTabs.Navigator>
-      <BottomTabs.Screen name="Workouts" component={Workouts} />
-      <BottomTabs.Screen name="Personal Records" component={PersonalRecords} />
-      <BottomTabs.Screen name="Fitness Calculators" component={FitnessCalculators} />
+    <BottomTabs.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: 'gray' },
+        headerTintColor: 'white',
+        tabBarStyle: { backgroundColor: 'gray' },
+        tabBarActiveTintColor: 'white',
+      }}
+    >
+      <BottomTabs.Screen 
+        name="Workouts" 
+        component={Workouts} 
+        options={{
+          title: 'Workouts',
+          tabBarLabel: 'Workouts',
+          tabBarIcon: ({ color, size }) => (
+            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/clock.png')}/>
+          ),
+        }}
+      />
+      <BottomTabs.Screen 
+        name="PersonalRecords" 
+        component={PersonalRecords}
+        options={{
+          title: 'Personal Records',
+          tabBarLabel: 'Personal Records',
+          tabBarIcon: ({ color, size }) => (
+            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/trophy.png')}/>
+          ),
+        }}
+      />
+      <BottomTabs.Screen 
+        name="FitnessCalculators" 
+        component={FitnessCalculators}
+        options={{
+          title: 'Fitness Calculators',
+          tabBarLabel: 'Fitness Calculators',
+          tabBarIcon: ({ color, size }) => (
+            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/calculator.png')}/>
+          ),
+        }}
+      />
       </BottomTabs.Navigator>
   );
 }
