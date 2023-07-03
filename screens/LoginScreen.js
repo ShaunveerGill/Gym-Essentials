@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 function LoginScreen() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -24,7 +26,7 @@ function LoginScreen() {
         <TouchableOpacity style={styles.createAccountButton} onPress={() => {}}>
           <Text style={styles.buttonText}>Create account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.signInButton} onPress={() => {}}>
+        <TouchableOpacity style={styles.signInButton} onPress={() => {navigation.navigate('FeaturesOverview');}}>
           <Text style={styles.buttonText}>Sign in</Text>
         </TouchableOpacity>
       </View>
