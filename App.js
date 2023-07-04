@@ -9,6 +9,7 @@ import LoginScreen from "./screens/LoginScreen";
 import Workouts from './screens/Workouts';
 import PersonalRecords from './screens/PersonalRecords';
 import FitnessCalculators from './screens/FitnessCalculators';
+import signup from './screens/signup';
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -85,6 +86,7 @@ export default function App() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="FeaturesOverview" component={FeaturesOverview} />
+          <Stack.Screen name="signup" component={signup} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

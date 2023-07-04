@@ -15,7 +15,7 @@ function WelcomeScreen() {
                 fadeAnimBackground,
                 {
                     toValue: 1,
-                    duration: 3000,
+                    duration: 1000,
                     useNativeDriver: true
                 }
             ).start(() => {
@@ -23,7 +23,7 @@ function WelcomeScreen() {
                     fadeAnimLogo,
                     {
                         toValue: 1,
-                        duration: 3000,
+                        duration: 1000,
                         useNativeDriver: true
                     }
                 ).start();
@@ -31,7 +31,7 @@ function WelcomeScreen() {
 
             const timer = setTimeout(() => {
                 navigation.navigate('Login');
-            }, 7000);  // navigate after 7 seconds (3 seconds for background to fade in + 3 seconds for logo and text)
+            }, 3000);  // navigate after 7 seconds (3 seconds for background to fade in + 3 seconds for logo and text)
 
             return () => clearTimeout(timer);
         }
@@ -41,7 +41,7 @@ function WelcomeScreen() {
         <Animated.View style={{...styles.background, opacity: fadeAnimBackground}}>
             <ImageBackground
                 style={StyleSheet.absoluteFill}
-                source={require("../assets/background.jpeg")}
+                source={require("../assets/logo.png")}
                 onLoad={() => setImageLoaded(true)}
             >
                 <Animated.View style={{...styles.content, opacity: fadeAnimLogo}}>
