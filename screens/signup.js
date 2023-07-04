@@ -14,7 +14,7 @@ function SignUp() {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Registered with:', user.email);
-        navigation.navigate('signup');
+        navigation.navigate('Login');
       })
       .catch(error => alert(error.message))
   }
