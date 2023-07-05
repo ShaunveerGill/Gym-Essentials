@@ -12,6 +12,14 @@ function AboutYou() {
   const [weight, setWeight] = useState('');
   const [goal, setGoal] = useState('');
 
+  const handleGender = (selectedGender) => {
+    setGender(selectedGender);
+  };
+
+  const handleGoal= (selectedGoal) => {
+    setGoal(selectedGoal);
+  }
+
   const handleFinishButtonPress = () => {
     // Push user data to Firebase Realtime Database
     const db = getDatabase();
@@ -36,51 +44,81 @@ function AboutYou() {
           <Text style={styles.title}>About You</Text>
         </View>
         <View>
-          <Text>What is your gender to calculate your calorie?</Text>
+          <Text style={styles.questions}>What is your gender to calculate your calorie?</Text>
         </View>
+         {/*Changed code for when you want change the gender selections*/}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => setGender('Male')}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: gender === 'Male' ? '#ffffff' : '#cccccc' }]}
+            onPress={() => handleGender('Male')}
+          >
             <Text style={styles.buttonText}>Male</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => setGender('Female')}>
+
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: gender === 'Female' ? '#ffffff' : '#cccccc' }]}
+            onPress={() => handleGender('Female')}
+          >
             <Text style={styles.buttonText}>Female</Text>
           </TouchableOpacity>
+
         </View>
+
         <View>
-          <Text>What is your Age?</Text>
+          <Text style={styles.questions}>What is your age?</Text>
         </View>
         <TextInput
           style={styles.input}
           onChangeText={text => setAge(text)} 
         />
         <View>
-          <Text>What is your height?</Text>
+          <Text style={styles.questions}>What is your height?</Text>
         </View>
         <TextInput
           style={styles.input}
           onChangeText={text => setHeight(text)} 
         />
         <View>
-          <Text>What is your weight?</Text>
+          <Text style={styles.questions}>What is your weight?</Text>
         </View>
         <TextInput
           style={styles.input}
           onChangeText={text => setWeight(text)} 
         />
         <View>
-          <Text>What is your goal?</Text>
+          <Text style={styles.questions}>What is your goal?</Text>
         </View>
-        <TouchableOpacity style={styles.button} onPress={() => setGoal('Lose Weight')}>
+
+        <TouchableOpacity
+            style={[styles.buttonGoals, { backgroundColor: goal === 'Lose Weight' ? '#ffffff' : '#cccccc' }]}
+            onPress={() => handleGoal('Lose Weight')}
+          >
             <Text style={styles.buttonText}>Lose Weight</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setGoal('Gain Weight')}>
+
+        <TouchableOpacity
+            style={[styles.buttonGoals, { backgroundColor: goal === 'Gain Weight' ? '#ffffff' : '#cccccc' }]}
+            onPress={() => handleGoal('Gain Weight')}
+          >
             <Text style={styles.buttonText}>Gain Weight</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setGoal('Maintain Weight')}>
+
+        <TouchableOpacity
+            style={[styles.buttonGoals, { backgroundColor: goal === 'Maintain Weight' ? '#ffffff' : '#cccccc' }]}
+            onPress={() => handleGoal('Maintain Weight')}
+          >
             <Text style={styles.buttonText}>Maintain Weight</Text>
         </TouchableOpacity>
+
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.finishButton} onPress={handleFinishButtonPress}>
+          <TouchableOpacity style={styles.finishButton} onPress={() => {
+            navigation.navigate('FeaturesOverview');
+            console.log(gender);
+            console.log(age);
+            console.log(height);
+            console.log(weight);
+            console.log(goal);
+          }}>
             <Text style={styles.buttonText}>Finish</Text>
           </TouchableOpacity>
         </View>
@@ -92,7 +130,7 @@ function AboutYou() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "left",
     justifyContent: "center",
     padding: 20,
   },
@@ -126,6 +164,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginBottom: 10,
+    marginTop: 20,
   },
   buttonText: {
     color: 'black',
@@ -145,6 +184,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '48%',
+  },
+  buttonGoals: {
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 10,
+    marginTop: 5,
+  },
+  questions: {
+    marginBottom: 10,
   },
 });
 
