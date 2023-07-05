@@ -5,45 +5,54 @@ import { auth } from '../firebase'
 
 function LoginScreen() {
   const navigation = useNavigation();
-  
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = () => {
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log('logged in with:', user.email);
+        navigation.navigate('FeaturesOverview');
+      })
+      .catch(error => alert(error.message))
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Login</Text>
-          <Image
-            style={styles.logo}
-            source={require("../assets/logoblack.png")} 
-          />
         </View>
-        <View style={styles.inputContainer}>
-          <TextInput 
-            placeholder="Email" 
-            // value = {email}
-            // onChangeText={text => setEmail(text)}
-            style={styles.input}
-          />
-          <TextInput 
-            placeholder="Password" 
-            // value = {password}
-            // onChangeText={text => setPassword(text)}
-            style={styles.input}
-            secureTextEntry
-          />
-        </View>  
+        <TextInput 
+          style={styles.input}
+          placeholder="Email Address"
+          value={email}
+          onChangeText={text => setEmail(text)} 
+        />
+
+        <TextInput 
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={text => setPassword(text)}
+          secureTextEntry 
+        />
+        <View style={styles.buttons}>
+          <TouchableOpacity style={styles.createAccountButton} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.createAccountButton} onPress={() => {navigation.navigate('signup');}}>
-            <Text style={styles.buttonText}>Create account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.signInButton} onPress={() => {navigation.navigate('FeaturesOverview');}}>
-            <Text style={styles.buttonText}>Sign in</Text>
+            <Text style={styles.buttonText}>Create Account</Text>
           </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
-}
+  }
 
 const styles = StyleSheet.create({
   container: {
@@ -59,7 +68,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   title: {
-    fontSize: 60,
+    fontSize: 40,
     marginRight: 10,
   },
   input: {
@@ -88,19 +97,9 @@ const styles = StyleSheet.create({
     width: '100%',  
     marginBottom: 10, 
   },
-  signInButton: {
-    backgroundColor: 'white',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,  
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%', 
-  },
   buttonText: {
     color: 'black',
     fontSize: 18,
-  },
+  }
 });
-
 export default LoginScreen;
