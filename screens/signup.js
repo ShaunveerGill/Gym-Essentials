@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../firebase'
@@ -14,7 +14,7 @@ function SignUp() {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Registered with:', user.email);
-        navigation.navigate('Login');
+        navigation.navigate('AboutYou');
       })
       .catch(error => alert(error.message))
   }
@@ -60,7 +60,7 @@ function SignUp() {
       </View>
     </TouchableWithoutFeedback>
   );
-  }
+}
 
 const styles = StyleSheet.create({
   container: {
