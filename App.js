@@ -11,6 +11,7 @@ import PersonalRecords from './screens/PersonalRecords';
 import FitnessCalculators from './screens/FitnessCalculators';
 import signup from './screens/signup';
 import AboutYou from './screens/AboutYou';
+import AccountScreen from './screens/AccountScreen';
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -58,7 +59,18 @@ function FeaturesOverview() {
           ),
         }}
       />
-      </BottomTabs.Navigator>
+      <BottomTabs.Screen 
+        name="Account" 
+        component={AccountScreen}
+        options={{
+          title: 'Account',
+          tabBarLabel: 'Account',
+          tabBarIcon: ({ color, size }) => (
+            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/clock.png')}/>
+            ),
+        }}
+      />
+    </BottomTabs.Navigator>
   );
 }
 
@@ -89,6 +101,7 @@ export default function App() {
           <Stack.Screen name="FeaturesOverview" component={FeaturesOverview} />
           <Stack.Screen name="signup" component={signup} />
           <Stack.Screen name="AboutYou" component={AboutYou} />
+          <Stack.Screen name="Account" component={AccountScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
