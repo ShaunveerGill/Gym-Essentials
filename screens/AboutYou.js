@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Text, View, TouchableWithoutFeedback, TextInput, TouchableOpacity, Keyboard, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebase';
+import { getDatabase, ref, push } from 'firebase/database';
 
 function AboutYou() {
   const navigation = useNavigation();
@@ -9,6 +11,23 @@ function AboutYou() {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [goal, setGoal] = useState('');
+
+  const handleFinishButtonPress = () => {
+    // Push user data to Firebase Realtime Database
+    const db = getDatabase();
+    const userRef = ref(db, 'users');
+    const user = {
+      gender: gender,
+      age: age,
+      height: height,
+      weight: weight,
+      goal: goal
+    };
+    push(userRef, user);
+
+    // Navigate to the next screen
+    navigation.navigate('FeaturesOverview');
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -51,24 +70,17 @@ function AboutYou() {
         <View>
           <Text>What is your goal?</Text>
         </View>
-        <TouchableOpacity style={styles.button} onPress={() => setWeight('Lose Weight')}>
+        <TouchableOpacity style={styles.button} onPress={() => setGoal('Lose Weight')}>
             <Text style={styles.buttonText}>Lose Weight</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setWeight('Gain Weight')}>
+        <TouchableOpacity style={styles.button} onPress={() => setGoal('Gain Weight')}>
             <Text style={styles.buttonText}>Gain Weight</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setWeight('Maintain Weight')}>
+        <TouchableOpacity style={styles.button} onPress={() => setGoal('Maintain Weight')}>
             <Text style={styles.buttonText}>Maintain Weight</Text>
         </TouchableOpacity>
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.finishButton} onPress={() => {
-            navigation.navigate('FeaturesOverview');
-            console.log(gender);
-            console.log(age);
-            console.log(height);
-            console.log(weight);
-            console.log(goal);
-        }}>
+          <TouchableOpacity style={styles.finishButton} onPress={handleFinishButtonPress}>
             <Text style={styles.buttonText}>Finish</Text>
           </TouchableOpacity>
         </View>

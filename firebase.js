@@ -18,21 +18,6 @@ const firebaseConfig = {
   appId: "1:431646921488:web:f9098b6e5d6421aaee8b95"
 };
 
-// Initialize Firebase
-// following code is based off of the YouTube video, syntax may be outdated!!
-// let app;
-// if (firebase.apps.length === 0) {
-//   app = firebase.initializeApp(firebaseConfig);
-// } else {
-//   app = firebase.app();
-// }
-
-
-// const auth = getAuth(app);
-
-
-// export { auth };
-
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
