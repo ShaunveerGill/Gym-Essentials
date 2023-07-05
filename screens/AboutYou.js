@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, View, TouchableWithoutFeedback, TextInput, TouchableOpacity, Keyboard, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { Text, View, TouchableWithoutFeedback, TextInput, TouchableOpacity, Keyboard, StyleSheet} from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth } from '../firebase';
 import { getDatabase, ref, push } from 'firebase/database';
 
@@ -19,12 +19,15 @@ function AboutYou() {
   const handleGoal= (selectedGoal) => {
     setGoal(selectedGoal);
   }
+  const route = useRoute();
+  const { email } = route.params;
 
   const handleFinishButtonPress = () => {
     // Push user data to Firebase Realtime Database
     const db = getDatabase();
     const userRef = ref(db, 'users');
     const user = {
+      email: route.params.email,
       gender: gender,
       age: age,
       height: height,
