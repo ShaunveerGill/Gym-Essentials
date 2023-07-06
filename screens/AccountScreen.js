@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { auth } from '../firebase';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import InformationScreen from './InformationScreen';
-import SettingsScreen from './SettingsScreen';
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  Text,
+  View,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { auth } from "../firebase";
+import { getDatabase, ref, onValue } from "firebase/database";
+import InformationScreen from "./InformationScreen";
+import SettingsScreen from "./SettingsScreen";
 
 const AccountStack = createNativeStackNavigator();
 
 const AccountScreen = ({ navigation }) => {
-  const [userEmail, setUserEmail] = useState('');
-  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
   const [height, setHeight] = useState("");
@@ -22,7 +29,7 @@ const AccountScreen = ({ navigation }) => {
     if (user !== null) {
       setUserEmail(user.email);
       const db = getDatabase();
-      const userRef = ref(db, 'users/' + user.uid);
+      const userRef = ref(db, "users/" + user.uid);
       onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data !== null) {
@@ -41,8 +48,8 @@ const AccountScreen = ({ navigation }) => {
     auth
       .signOut()
       .then(() => {
-        console.log('User signed out');
-        navigation.navigate('Login');
+        console.log("User signed out");
+        navigation.navigate("Login");
       })
       .catch((error) => console.log(error));
   };
@@ -52,7 +59,8 @@ const AccountScreen = ({ navigation }) => {
       <AccountStack.Screen name="Account" options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
-            <Text style={styles.title}>Account Screen</Text>
+            <Image source={require("../assets/logo.png")} style={styles.logo} />
+            <Text style={styles.title}>Account Information</Text>
             <Text>User Name: {userName}</Text>
             <Text>Email: {userEmail}</Text>
             <Text>Gender: {gender}</Text>
@@ -77,24 +85,29 @@ const AccountScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  logo: {
+    width: 200,
+    height: 100,
+    resizeMode: "contain",
   },
 });
 
 export default AccountScreen;
-
