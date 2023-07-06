@@ -11,14 +11,12 @@ function SignUp() {
   const [email, setEmail] = useState('')
   const [Cpassword, setCPassword] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('');
 
   const userSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
   const mailSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
   const lockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
 
   
-  {/*
   const handleSignUp = () => {
 
     if (Cpassword === password){
@@ -32,50 +30,17 @@ function SignUp() {
         .catch(error => alert(error.message))
     }
     else{
-
+      console.log("error")
     }
-// >>>>>>> Stashed changes
   }
-  */}
+  
   
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      {/*CREATE ACCOUNT CONTAINER PAGE*/}
       <View style={styles.container}>
-
-        {/*CREATE ACCOUNT TITLE */}
         <View style={styles.header}>
           <Text style={styles.title}>Create Account</Text>
         </View>
-<<<<<<< Updated upstream
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          onChangeText={text => setfullName(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email Address"
-          value={email}
-          onChangeText={text => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value = {password}
-          onChangeText = {text => setPassword(text)}
-          secureTextEntry
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={Cpassword}
-          onChangeText={text => setCPassword(text)}
-          secureTextEntry
-        />
-=======
-
-        {/*FULL NAME TEXT INPUT*/}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -85,8 +50,6 @@ function SignUp() {
             <SvgXml xml={userSvg} width={20} height={20} />
           </TouchableOpacity>
         </View>
-
-        {/*EMAIL TEXT INPUT*/}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -98,37 +61,30 @@ function SignUp() {
             <SvgXml xml={mailSvg} width={20} height={20} />
           </TouchableOpacity>
         </View>
-
-        {/*PASSWORD TEXT INPUT*/}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder="Password"
+            value={password}
+            onChangeText={text => setPassword(text)}
             secureTextEntry
+
           />
           <TouchableOpacity style={styles.iconContainer}>
             <SvgXml xml={lockSvg} width={20} height={20} />
           </TouchableOpacity>
         </View>
 
-        {/*CONFIRM PASSWORD TEXT INPUT*/}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder="Confirm Password"
-            value={confirmPassword}
-            onChangeText={text => setConfirmPassword(text)}
+            value={Cpassword}
+            onChangeText={text => setCPassword(text)}
             secureTextEntry
           />
-
-          {/* We don't need an icon for confirm password but we could change later if we want
-          <TouchableOpacity style={styles.iconContainer}>
-            <SvgXml xml={userSvg} width={20} height={20} />
-          </TouchableOpacity>
-          */}
         </View>
 
->>>>>>> Stashed changes
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.createAccountButton} onPress={handleSignUp}>
             <Text style={styles.buttonText}>Create account</Text>
@@ -149,15 +105,8 @@ function SignUp() {
 const styles = {
   container: {
     flex: 1,
-<<<<<<< Updated upstream
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-
-=======
     alignItems: 'center',
     justifyContent: 'center',
->>>>>>> Stashed changes
   },
   header: {
     flexDirection: 'row',
