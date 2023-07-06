@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View, TouchableWithoutFeedback, TextInput, TouchableOpacity, Keyboard, StyleSheet} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth } from '../firebase';
-import { getDatabase, ref, push } from 'firebase/database';
+import { getDatabase, ref, push, set } from 'firebase/database';
 
 function AboutYou() {
   const navigation = useNavigation();
@@ -24,23 +24,36 @@ function AboutYou() {
   const { name } = route.params;
 
   const handleFinishButtonPress = () => {
-    // Push user data to Firebase Realtime Database
-    const db = getDatabase();
-    const userRef = ref(db, 'users');
-    const user = {
-      email: route.params.email,
-      name: route.params.name,
-      gender: gender,
-      age: age,
-      height: height,
-      weight: weight,
-      goal: goal
-    };
-    push(userRef, user);
-
-    // Navigate to the next screen
-    navigation.navigate('FeaturesOverview');
+    // Check for the current user
+    const user = auth.currentUser;
+    
+    if(user) {
+      const userData = {
+        email: route.params.email,
+        name: route.params.name,
+        gender: gender,
+        age: age,
+        height: height,
+        weight: weight,
+        goal: goal
+      };
+  
+      const db = getDatabase();
+      const userRef = ref(db, 'users/' + user.uid);
+  
+      set(userRef, userData)
+        .then(() => {
+          console.log('User data saved successfully');
+          navigation.navigate('FeaturesOverview');
+        })
+        .catch((error) => {
+          console.error('Error saving user data: ', error);
+        });
+    } else {
+      console.error('No user is signed in');
+    }
   };
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

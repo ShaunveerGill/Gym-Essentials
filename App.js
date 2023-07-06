@@ -20,9 +20,9 @@ function FeaturesOverview() {
   return(
     <BottomTabs.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: 'gray' },
+        headerStyle: { backgroundColor: '#D9D9D9' },
         headerTintColor: 'white',
-        tabBarStyle: { backgroundColor: 'gray' },
+        tabBarStyle: { backgroundColor: '#D9D9D9' },
         tabBarActiveTintColor: 'white',
       }}
     >
