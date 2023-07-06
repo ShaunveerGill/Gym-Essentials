@@ -114,14 +114,7 @@ function AboutYou() {
         </TouchableOpacity>
 
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.finishButton} onPress={() => {
-            navigation.navigate('FeaturesOverview');
-            console.log(gender);
-            console.log(age);
-            console.log(height);
-            console.log(weight);
-            console.log(goal);
-          }}>
+          <TouchableOpacity style={styles.finishButton} onPress={handleFinishButtonPress}>
             <Text style={styles.buttonText}>Finish</Text>
           </TouchableOpacity>
         </View>
