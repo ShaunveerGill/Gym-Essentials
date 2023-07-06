@@ -5,8 +5,9 @@ import { auth } from '../firebase'
 
 function SignUp() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [fullName, setfullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
     auth
@@ -14,7 +15,7 @@ function SignUp() {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Registered with:', user.email);
-        navigation.navigate('AboutYou', { email: user.email });
+        navigation.navigate('AboutYou', { email: user.email, name: fullName });
       })
       .catch(error => alert(error.message))
   }
@@ -28,6 +29,7 @@ function SignUp() {
         <TextInput 
           style={styles.input}
           placeholder="Full Name" 
+          onChangeText={text => setfullName(text)} 
         />
         <TextInput 
           style={styles.input}

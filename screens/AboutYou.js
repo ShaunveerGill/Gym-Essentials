@@ -21,6 +21,7 @@ function AboutYou() {
   }
   const route = useRoute();
   const { email } = route.params;
+  const { name } = route.params;
 
   const handleFinishButtonPress = () => {
     // Push user data to Firebase Realtime Database
@@ -28,6 +29,7 @@ function AboutYou() {
     const userRef = ref(db, 'users');
     const user = {
       email: route.params.email,
+      name: route.params.name,
       gender: gender,
       age: age,
       height: height,
