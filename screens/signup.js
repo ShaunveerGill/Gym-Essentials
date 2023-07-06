@@ -6,18 +6,26 @@ import { auth } from '../firebase'
 function SignUp() {
   const navigation = useNavigation();
   const [fullName, setfullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('')
+  const [Cpassword, setCPassword] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleSignUp = () => {
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(userCredentials => {
-        const user = userCredentials.user;
-        console.log('Registered with:', user.email);
-        navigation.navigate('AboutYou', { email: user.email, name: fullName });
-      })
-      .catch(error => alert(error.message))
+
+    if (Cpassword === password){
+      auth
+        .createUserWithEmailAndPassword(email, Cpassword)
+        .then(userCredentials => {
+            const user = userCredentials.user;
+            console.log('Registered with:', user.email);
+            navigation.navigate('AboutYou', { email: user.email, name: fullName });
+        })
+        .catch(error => alert(error.message))
+    }
+    else{
+
+    }
+// >>>>>>> Stashed changes
   }
 
   return (
@@ -26,28 +34,30 @@ function SignUp() {
         <View style={styles.header}>
           <Text style={styles.title}>Create Account</Text>
         </View>
-        <TextInput 
+        <TextInput
           style={styles.input}
-          placeholder="Full Name" 
-          onChangeText={text => setfullName(text)} 
+          placeholder="Full Name"
+          onChangeText={text => setfullName(text)}
         />
-        <TextInput 
+        <TextInput
           style={styles.input}
           placeholder="Email Address"
           value={email}
-          onChangeText={text => setEmail(text)} 
+          onChangeText={text => setEmail(text)}
         />
-        <TextInput 
+        <TextInput
           style={styles.input}
           placeholder="Password"
+          value = {password}
+          onChangeText = {text => setPassword(text)}
           secureTextEntry
         />
-        <TextInput 
+        <TextInput
           style={styles.input}
           placeholder="Confirm Password"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry 
+          value={Cpassword}
+          onChangeText={text => setCPassword(text)}
+          secureTextEntry
         />
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.createAccountButton} onPress={handleSignUp}>
@@ -70,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    
+
   },
   header: {
     flexDirection: 'row',
@@ -101,11 +111,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 25,  
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',  
-    marginBottom: 10, 
+    width: '100%',
+    marginBottom: 10,
   },
   buttonText: {
     color: 'black',
