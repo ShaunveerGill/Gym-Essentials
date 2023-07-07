@@ -61,13 +61,27 @@ const AccountScreen = ({ navigation }) => {
           <View style={styles.container}>
             <Image source={require("../assets/logo.png")} style={styles.logo} />
             <Text style={styles.title}>Account Information</Text>
-            <Text>User Name: {userName}</Text>
-            <Text>Email: {userEmail}</Text>
-            <Text>Gender: {gender}</Text>
-            <Text>Age: {age}</Text>
-            <Text>Height: {height}</Text>
-            <Text>Weight: {weight}</Text>
-            <Text>Goal: {goal}</Text>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>User Name: {userName}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Gender: {gender}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Age: {age}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Height: {height}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Weight: {weight}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Goal: {goal}</Text>
+            </View>
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={handleLogout}>
                 <Text style={styles.buttonText}>Log Out</Text>
@@ -107,6 +121,21 @@ const styles = StyleSheet.create({
     width: 200,
     height: 100,
     resizeMode: "contain",
+  },
+  infoBoxes: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  infoboxtext: {
+    fontSize: 18,
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 
