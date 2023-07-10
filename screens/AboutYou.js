@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, TouchableWithoutFeedback, TextInput, TouchableOpacity, Keyboard, StyleSheet} from 'react-native';
+import { Text, View, TouchableWithoutFeedback, TextInput, TouchableOpacity, Keyboard, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth } from '../firebase';
 import { getDatabase, ref, push, set } from 'firebase/database';
@@ -11,6 +11,7 @@ function AboutYou() {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [goal, setGoal] = useState('');
+  const [activityLevel, setActivityLevel] = useState('');
 
   const handleGender = (selectedGender) => {
     setGender(selectedGender);
@@ -19,6 +20,11 @@ function AboutYou() {
   const handleGoal= (selectedGoal) => {
     setGoal(selectedGoal);
   }
+
+  const handleActivityLevel = (selectedActivityLevel) => {
+    setActivityLevel(selectedActivityLevel);
+  }
+
   const route = useRoute();
   const { email } = route.params;
   const { name } = route.params;
@@ -35,7 +41,8 @@ function AboutYou() {
         age: age,
         height: height,
         weight: weight,
-        goal: goal
+        goal: goal,
+        activityLevel: activityLevel
       };
   
       const db = getDatabase();
@@ -56,6 +63,7 @@ function AboutYou() {
 
 
   return (
+    <ScrollView style={{ flex: 1 }}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.header}>
@@ -126,15 +134,52 @@ function AboutYou() {
             onPress={() => handleGoal('Maintain Weight')}
           >
             <Text style={styles.buttonText}>Maintain Weight</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>        
+          <View>
+            <Text style={styles.questions}>What is your activity level?</Text>
+          </View>
 
-        <View style={styles.buttons}>
-          <TouchableOpacity style={styles.finishButton} onPress={handleFinishButtonPress}>
-            <Text style={styles.buttonText}>Finish</Text>
+          <TouchableOpacity
+              style={[styles.buttonGoals, { backgroundColor: goal === 'Sedentary' ? '#ffffff' : '#cccccc' }]}
+              onPress={() => handleActivityLevel('Sedentary')}
+            >
+              <Text style={styles.buttonText}>Sedentary</Text>
           </TouchableOpacity>
-        </View>
+
+          <TouchableOpacity
+              style={[styles.buttonGoals, { backgroundColor: goal === 'Lightly active ' ? '#ffffff' : '#cccccc' }]}
+              onPress={() => handleActivityLevel('Lightly active ')}
+            >
+              <Text style={styles.buttonText}>Lightly active </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+              style={[styles.buttonGoals, { backgroundColor: goal === 'Moderately active' ? '#ffffff' : '#cccccc' }]}
+              onPress={() => handleActivityLevel('Moderately active')}
+            >
+              <Text style={styles.buttonText}>Moderately active</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={[styles.buttonGoals, { backgroundColor: goal === 'Very active ' ? '#ffffff' : '#cccccc' }]}
+              onPress={() => handleActivityLevel('Very active ')}
+            >
+              <Text style={styles.buttonText}>Very active </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={[styles.buttonGoals, { backgroundColor: goal === 'Extra active' ? '#ffffff' : '#cccccc' }]}
+              onPress={() => handleActivityLevel('Extra active')}
+            >
+              <Text style={styles.buttonText}>Extra active</Text>
+          </TouchableOpacity>
+          <View style={styles.buttons}>
+            <TouchableOpacity style={styles.finishButton} onPress={handleFinishButtonPress}>
+              <Text style={styles.buttonText}>Finish</Text>
+            </TouchableOpacity>
+          </View>
+        
       </View>
     </TouchableWithoutFeedback>
+    </ScrollView>
   );
 }
 
