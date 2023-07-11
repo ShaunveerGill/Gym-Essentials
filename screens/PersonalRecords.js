@@ -16,8 +16,13 @@ const DUMMY_RECORDS = [
 ];
 
 function RecordItem({ exercise, record, date }) {
+  function recordPressHandler(){}
+  
   return (
-    <Pressable>
+    <Pressable 
+      onPress={recordPressHandler} 
+      style={({pressed}) => pressed && styles.pressed}
+    >
       <View style={styles.recordItem}>
         <View>
           <Text style={[styles.textBase, styles.exercise]}>
@@ -56,6 +61,10 @@ function fixDate(date) {
 export default PersonalRecords;
 
 const styles = StyleSheet.create({
+  pressed: {
+    opacity: 0.75
+  },
+
   container: {
     flex: 1,
     paddingHorizontal: 24,
