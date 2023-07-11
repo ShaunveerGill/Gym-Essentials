@@ -1,27 +1,15 @@
 import { Text, StyleSheet, View, Image } from "react-native";
-// import UserContext from "../context/context";
-// import { useContext } from "react";
-
-// CALORIES:
-// TDEE = BMR * ACTIVITY_LEVEL
-
-// weight loss calories = TDEE - 750
-// maintenance calories= TDEE
-// weight gain calories = TDEE + 375
-
-// PROTEIN:
-// weight (muscle) gain = (weight/2.2) * (1.9g)
-// weight (fat) loss = (weight/2.2) * (2.25g)
-// maintenance = (weight/2.2) * (1.7g)
+import { UserContext } from "../UserContext";
+import { useContext } from "react";
 
 const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
 
 function FitnessCalculator() {
-  const userData = useContext(DataContext);
-  const { weight, height, age, gender, goal, activityLevel } = userData;
+  const { Cgender } = useContext(UserContext); 
   const [caloricIntake, setCaloricIntake] = useState(0);
   const [proteinIntake, setProteinIntake] = useState(0);
+
 
   const calculate = () => {
     let BMR = gender === 'Male'
@@ -49,8 +37,8 @@ function FitnessCalculator() {
   };
 
 function FitnessCalculators() {
-  // const { item } = useContext(UserContext);
-  // console.log(item);
+  const { Cgender } = useContext(UserContext); 
+  console.log(Cgender);  
   return (
     <View style={styles.container}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />

@@ -36,7 +36,7 @@ function AboutYou() {
 
   const route = useRoute();
   const { email } = route.params;
-  const { name } = route.params;
+  const { fullName } = route.params;
 
   const handleFinishButtonPress = () => {
     // Check for the current user
@@ -45,7 +45,7 @@ function AboutYou() {
     if (user) {
       const userData = {
         email: route.params.email,
-        name: route.params.name,
+        name: route.params.fullName,
         gender: gender,
         age: age,
         height: height,

@@ -37,6 +37,7 @@ function SignUp() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      {/*CREATE ACCOUNT CONTAINER PAGE*/}
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Create Account</Text>

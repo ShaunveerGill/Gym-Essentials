@@ -12,40 +12,37 @@ import { auth } from "../firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
 import InformationScreen from "./InformationScreen";
 import SettingsScreen from "./SettingsScreen";
+import {UserContext, UserContextProvider} from "../UserContext";
+import { useContext } from "react";
 
 const AccountStack = createNativeStackNavigator();
 
 
 
 const AccountScreen = ({ navigation }) => {
+  const { userEmail, setUserEmail, userName, setUserName, gender, setGender, setAge, age, setHeight, height, setWeight, weight, setGoal, goal  } = useContext(UserContext);
 
-  const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState("");
-  const [gender, setGender] = useState("");
-  const [age, setAge] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [goal, setGoal] = useState("");
+  
+  // useEffect(() => {
+  //   const user = auth.currentUser;
+  //   if (user !== null) {
+  //     setUserEmail(user.email);
+  //     const db = getDatabase();
+  //     const userRef = ref(db, "users/" + user.uid);
+  //     onValue(userRef, (snapshot) => {
+  //       const data = snapshot.val();
+  //       if (data !== null) {
+  //         setUserName(data.name);
+  //         setGender(data.gender);
+  //         setAge(data.age);
+  //         setHeight(data.height);
+  //         setWeight(data.weight);
+  //         setGoal(data.goal);
 
-  useEffect(() => {
-    const user = auth.currentUser;
-    if (user !== null) {
-      setUserEmail(user.email);
-      const db = getDatabase();
-      const userRef = ref(db, "users/" + user.uid);
-      onValue(userRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data !== null) {
-          setUserName(data.name);
-          setGender(data.gender);
-          setAge(data.age);
-          setHeight(data.height);
-          setWeight(data.weight);
-          setGoal(data.goal);
-        }
-      });
-    }
-  }, []);
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   const handleLogout = () => {
     auth
@@ -59,7 +56,7 @@ const AccountScreen = ({ navigation }) => {
 
   return (
     <AccountStack.Navigator>
-      <AccountStack.Screen name="Account" options={{ headerShown: false }}>
+      <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
             <Image source={require("../assets/logo.png")} style={styles.logo} />
@@ -142,5 +139,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export {  };
+
 export default AccountScreen;
