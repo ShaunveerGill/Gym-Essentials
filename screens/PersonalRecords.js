@@ -23,7 +23,7 @@ function RecordItem({ exercise, record, date }) {
           <Text style={[styles.textBase, styles.exercise]}>
             {exercise}
           </Text>
-          <Text style={styles.textBase}>{date.toString()}</Text>
+          <Text style={styles.textBase}>{fixDate(date)}</Text> 
         </View>
         <View style={styles.recordContainer}>
           <Text style={styles.record}>{record}</Text>
@@ -38,7 +38,6 @@ function renderRecordItem(itemData) {
     <RecordItem {...itemData.item} />);  
 }
 
-
 function PersonalRecords() {
   return (
     <View style={styles.container}>
@@ -50,10 +49,9 @@ function PersonalRecords() {
     </View>
   );
 }
-
-{/*function fixDate(date) {
-  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
-}*/}
+function fixDate(date) {
+  return(date.getFullYear()+ "-" + (date.getMonth()+1) + "-" + (date.getDate()+1));
+}
 
 export default PersonalRecords;
 
@@ -68,13 +66,15 @@ const styles = StyleSheet.create({
   recordItem: {
     padding: 12,
     marginVertical: 8,
-    backgroundColor: 'white',
+    flexDirection: 'row',
+    backgroundColor: 'black',
+    justifyContent: 'space-between',
     borderRadius: 6,
     elevation: 3,
   },
-
+  
   textBase: {
-    color: 'black',
+    color: 'white',
   },
 
   exercise: {
@@ -84,13 +84,13 @@ const styles = StyleSheet.create({
   },
   
   recordContainer: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: '#cccccc',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
-    minWidth: 80
+    minWidth: 20
   },
 
   record: {
