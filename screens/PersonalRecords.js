@@ -1,4 +1,7 @@
-import { View, Text, StyleSheet, Pressable, FlatList} from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const DUMMY_RECORDS = [
   {
@@ -14,6 +17,10 @@ const DUMMY_RECORDS = [
     date: new Date('2021-12-19'),
   },
 ];
+
+function fixDate(date) {
+  return(date.getFullYear()+ "-" + (date.getMonth()+1) + "-" + (date.getDate()+1));
+}
 
 function RecordItem({ exercise, record, date }) {
   function recordPressHandler(){}
@@ -44,6 +51,27 @@ function renderRecordItem(itemData) {
 }
 
 function PersonalRecords() {
+  const navigation = useNavigation();
+
+  const handleAddRecord = () => {
+    // Handle the button press action here
+    
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'Personal Records',
+      headerRight: () => (
+        <TouchableOpacity 
+          onPress={handleAddRecord} 
+          style={({pressed}) => pressed && styles.pressed}
+        >
+          <Ionicons name="add" size={24} color="white" style={styles.addButton} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
         <FlatList
@@ -53,9 +81,6 @@ function PersonalRecords() {
         />
     </View>
   );
-}
-function fixDate(date) {
-  return(date.getFullYear()+ "-" + (date.getMonth()+1) + "-" + (date.getDate()+1));
 }
 
 export default PersonalRecords;
@@ -105,5 +130,8 @@ const styles = StyleSheet.create({
   record: {
     color: 'black',
     fontWeight: 'bold'
-  }
+  },
+  addButton: {
+    marginRight: 20,
+  },
 });
