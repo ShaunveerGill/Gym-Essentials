@@ -15,7 +15,10 @@ import SettingsScreen from "./SettingsScreen";
 
 const AccountStack = createNativeStackNavigator();
 
+
+
 const AccountScreen = ({ navigation }) => {
+
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [gender, setGender] = useState("");
@@ -139,4 +142,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export {  };
 export default AccountScreen;
