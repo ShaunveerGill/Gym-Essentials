@@ -14,13 +14,6 @@ import { Text, StyleSheet, View, Image } from "react-native";
 // weight (fat) loss = (weight/2.2) * (2.25g)
 // maintenance = (weight/2.2) * (1.7g)
 
-// ACTIVITY LEVELS:
-const SEDENTARY = 1.2;
-const LIGHTLY_ACTIVE = 1.375;
-const MODERATELY_ACTIVE = 1.55;
-const VERY_ACTIVE = 1.725;
-const EXTRA_ACTIVE = 1.9;
-
 const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
 
@@ -50,7 +43,7 @@ function FitnessCalculator() {
      } 
 
     }
-    
+
     setCaloricIntake(calories.toFixed(2));
     setProteinIntake(protein.toFixed(2));
   };
