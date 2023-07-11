@@ -2,41 +2,58 @@ import { Text, StyleSheet, View, Image } from "react-native";
 // import UserContext from "../context/context";
 // import { useContext } from "react";
 
+// CALORIES:
+// TDEE = BMR * ACTIVITY_LEVEL
+
+// weight loss calories = TDEE - 750
+// maintenance calories= TDEE
+// weight gain calories = TDEE + 375
+
+// PROTEIN:
+// weight (muscle) gain = (weight/2.2) * (1.9g)
+// weight (fat) loss = (weight/2.2) * (2.25g)
+// maintenance = (weight/2.2) * (1.7g)
+
+// ACTIVITY LEVELS:
 const SEDENTARY = 1.2;
 const LIGHTLY_ACTIVE = 1.375;
 const MODERATELY_ACTIVE = 1.55;
 const VERY_ACTIVE = 1.725;
 const EXTRA_ACTIVE = 1.9;
 
-// TDEE = BMR * ACTIVITY_LEVEL
+const LOSE_WEIGHT = -750;
+const GAIN_WEIGHT = 375;
 
-// const calculate = () => {
+function FitnessCalculator() {
+  const userData = useContext(DataContext);
+  const { weight, height, age, gender, goal, activityLevel } = userData;
+  const [caloricIntake, setCaloricIntake] = useState(0);
+  const [proteinIntake, setProteinIntake] = useState(0);
 
+  const calculate = () => {
+    let BMR = gender === 'Male'
+      ? 10 * weight + 6.25 * height - 5 * age + 5
+      : 10 * weight + 6.25 * height - 5 * age - 161;
 
-// };
-// function FitnessCalculator() {
-//   const userData = useContext(DataContext);
-//   const { weight, height, age, gender, activityLevel } = userData;
-//   const [caloricIntake, setCaloricIntake] = useState(0);
-//   const [proteinIntake, setProteinIntake] = useState(0);
+      let activityLevelInt  = parseInt(activityLevel, 10);
+      let TDEE = BMR * activityLevelInt;
 
-  // const calculate = () => {
-  //   let BMR = gender === 'Male'
-  //     ? 10 * weight + 6.25 * height - 5 * age + 5
-  //     : 10 * weight + 6.25 * height - 5 * age - 161;
+     if (goal == "Lose Weight") {
+      let calories = TDEE + LOSE_WEIGHT;
+      let protein = (weight/2.2) * 2.25;
+     } else if (goal == "Gain Weight") {
+      let calories = TDEE + GAIN_WEIGHT;
+      let protein = (weight/2.2) * 1.9;
+     } else if (goal == "Maintain Weight") {
+      let calories = TDEE;
+      let protein = (weight/2.2) * 1.7;
+     } 
 
-  //   // assuming activityLevel as sedentary for now.
-  //   let activityLevel = 1.2;
-
-  //   // adjust BMR based on activity level
-  //   let calories = BMR * activityLevel;
-
-  //   // calculate protein intake based on weight
-  //   let protein = weight * 0.8; // 0.8g per kg of body weight is a general recommendation
-
-  //   setCaloricIntake(calories.toFixed(2));
-  //   setProteinIntake(protein.toFixed(2));
-  //};
+    }
+    
+    setCaloricIntake(calories.toFixed(2));
+    setProteinIntake(protein.toFixed(2));
+  };
 
 function FitnessCalculators() {
   // const { item } = useContext(UserContext);

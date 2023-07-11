@@ -189,7 +189,7 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  goal === "Lightly active " ? "#ffffff" : "#cccccc",
+                  goal === "Lightly active" ? "#ffffff" : "#cccccc",
               },
             ]}
             onPress={() => handleActivityLevel("1.375")}
@@ -218,7 +218,7 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  goal === "Very active " ? "#ffffff" : "#cccccc",
+                  goal === "Very active" ? "#ffffff" : "#cccccc",
               },
             ]}
             onPress={() => handleActivityLevel("1.725")}
