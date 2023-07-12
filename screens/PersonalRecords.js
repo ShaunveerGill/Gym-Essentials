@@ -22,8 +22,14 @@ function fixDate(date) {
   return(date.getFullYear()+ "-" + (date.getMonth()+1) + "-" + (date.getDate()+1));
 }
 
-function RecordItem({ exercise, record, date }) {
-  function recordPressHandler(){}
+function RecordItem({ id, exercise, record, date }) {
+  const navigation = useNavigation();
+  
+  function recordPressHandler() {
+    navigation.navigate('ManageRecord', {
+      recordId: id
+    });
+  }
   
   return (
     <Pressable 
@@ -54,8 +60,7 @@ function PersonalRecords() {
   const navigation = useNavigation();
 
   const handleAddRecord = () => {
-    // Handle the button press action here
-    
+    navigation.navigate('ManageRecord');
   };
 
   React.useLayoutEffect(() => {
@@ -66,7 +71,7 @@ function PersonalRecords() {
           onPress={handleAddRecord} 
           style={({pressed}) => pressed && styles.pressed}
         >
-          <Ionicons name="add" size={24} color="white" style={styles.addButton} />
+          <Ionicons name="add" size={24} color="black" style={styles.addButton} />
         </TouchableOpacity>
       ),
     });

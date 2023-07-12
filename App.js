@@ -12,7 +12,11 @@ import FitnessCalculators from './screens/FitnessCalculators';
 import signup from './screens/signup';
 import AboutYou from './screens/AboutYou';
 import AccountScreen from './screens/AccountScreen';
+<<<<<<< Updated upstream
 import { UserProvider, UserContextProvider } from "./UserContext";
+=======
+import ManageRecord from './screens/ManageRecord';
+>>>>>>> Stashed changes
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -77,6 +81,7 @@ function FeaturesOverview() {
 
 export default function App() {
   return (
+<<<<<<< Updated upstream
     <UserContextProvider>
       <>
         <StatusBar style="auto" />
@@ -108,6 +113,38 @@ export default function App() {
         </NavigationContainer>
       </>
     </UserContextProvider>
+=======
+    <>
+      <StatusBar style="auto" />
+      <NavigationContainer>
+        <Stack.Navigator 
+          screenOptions={{ headerShown: false, gestureEnabled: false,
+            cardStyleInterpolator: ({ current, layouts }) => ({
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            }),
+          }}
+          initialRouteName="Welcome"
+        >
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="FeaturesOverview" component={FeaturesOverview} />
+          <Stack.Screen name="signup" component={signup} />
+          <Stack.Screen name="AboutYou" component={AboutYou} />
+          <Stack.Screen name="ManageRecord" component={ManageRecord}/>
+          <Stack.Screen name="Account" component={AccountScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
+>>>>>>> Stashed changes
   );
 }
 
