@@ -24,30 +24,30 @@ function ManageRecord({ route }) {
     <View style={styles.container}>
       {isEditing ? (
         <>
-          <Text>Edit Record</Text>
-
-          <TouchableOpacity onPress={confirmHandler}>
-            <Text>Update</Text>
+        
+          <TouchableOpacity style= {styles.button} onPress={confirmHandler}>
+            <Text style= {styles.buttonText}>Update</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={cancelHandler}>
-            <Text>Cancel</Text>
+          <TouchableOpacity style= {styles.button} onPress={deleteExpenseHandler}>
+            <Ionicons name="trash" color="white" size={36} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={deleteExpenseHandler}>
-            <Ionicons name="trash" color="black" size={36} />
+          <TouchableOpacity style= {styles.button} onPress={cancelHandler}>
+            <Text style= {styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
+
         </>
       ) : (
         <>
-          <Text>Add Record</Text>
+          <Text style= {styles.buttonText}>Add Record</Text>
 
-          <TouchableOpacity onPress={confirmHandler}>
-            <Text>Add</Text>
+          <TouchableOpacity style= {styles.button} onPress={confirmHandler}>
+            <Text style= {styles.buttonText}>Add</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={cancelHandler}>
-            <Text>Cancel</Text>
+          <TouchableOpacity style= {styles.button} onPress={cancelHandler}>
+            <Text style= {styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </>
       )}
@@ -63,4 +63,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  button: {
+    backgroundColor: "black",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "30%",
+    marginBottom: 10
+  },
+
+  buttonText: {
+    color: "white",
+    fontSize: 12
+  },
+
+  text: {
+    marginBottom: 20,
+
+  }
 });

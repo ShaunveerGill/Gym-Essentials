@@ -14,16 +14,18 @@ import AboutYou from './screens/AboutYou';
 import AccountScreen from './screens/AccountScreen';
 import { UserProvider, UserContextProvider } from "./UserContext";
 import ManageRecord from './screens/ManageRecord';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
+
 
 function FeaturesOverview() {
   return(
     <BottomTabs.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: '#D9D9D9' },
-        headerTintColor: 'white',
+        headerTintColor: 'black',
         tabBarStyle: { backgroundColor: '#D9D9D9' },
         tabBarActiveTintColor: 'white',
       }}
@@ -34,10 +36,15 @@ function FeaturesOverview() {
         options={{
           title: 'Workouts',
           tabBarLabel: 'Workouts',
-          tabBarIcon: ({ color, size }) => (
-            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/clock.png')}/>
+          tabBarIcon: ({ color, size }) => ( 
+            <Ionicons
+              name="barbell-outline"
+              color={color === 'white' ? 'white' : 'black'}
+              size={30}
+            />
           ),
         }}
+        
       />
       <BottomTabs.Screen 
         name="PersonalRecords" 
@@ -45,31 +52,45 @@ function FeaturesOverview() {
         options={{
           title: 'Personal Records',
           tabBarLabel: 'Personal Records',
-          tabBarIcon: ({ color, size }) => (
-            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/trophy.png')}/>
+          tabBarIcon: ({ color, size }) => ( 
+            <Ionicons
+              name="trophy-outline"
+              color={color === 'white' ? 'white' : 'black'}
+              size={30}
+            />
           ),
         }}
       />
+
       <BottomTabs.Screen 
         name="FitnessCalculators" 
         component={FitnessCalculators}
         options={{
           title: 'Fitness Calculators',
           tabBarLabel: 'Fitness Calculators',
-          tabBarIcon: ({ color, size }) => (
-            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/calculator.png')}/>
+          tabBarIcon: ({ color, size }) => ( 
+            <Ionicons
+              name="calculator-outline"
+              color={color === 'white' ? 'white' : 'black'}
+              size={30}
+            />
           ),
         }}
       />
+
       <BottomTabs.Screen 
         name="Account" 
         component={AccountScreen}
         options={{
           title: 'Account',
           tabBarLabel: 'Account',
-          tabBarIcon: ({ color, size }) => (
-            <Image style={{ width: size, height: size }} color={color} source={require('./assets/TaskBarIcons/clock.png')}/>
-            ),
+          tabBarIcon: ({ color, size }) => ( 
+            <Ionicons
+              name="person-outline"
+              color={color === 'white' ? 'white' : 'black'}
+              size={30}
+            />
+          ),
         }}
       />
     </BottomTabs.Navigator>
