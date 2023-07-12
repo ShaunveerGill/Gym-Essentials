@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Text, StyleSheet, View, Image } from "react-native";
 import { UserContext, UserContextProvider } from "../UserContext";
-import { useContext, useState, useEffect } from "react";
 
 
 const LOSE_WEIGHT = -750;
