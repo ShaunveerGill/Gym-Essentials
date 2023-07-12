@@ -22,21 +22,14 @@ function FitnessCalculators() {
     let weightInt  = parseInt(weight, 10);
     let heightInt  = parseInt(height, 10);
     let ageInt = parseInt(age, 10);
-    console.log(weightInt);
-    console.log(heightInt);
-    console.log(ageInt);
+
     let BMR = gender === 'Male'
       ? 10 * (weightInt/2.2) + 6.25 * heightInt - 5 * ageInt + 5
       : 10 * (weightInt/2.2) + 6.25 * heightInt - 5 * ageInt - 161;
 
-      console.log(BMR);
-
       let activityLevelInt  = 1.2; 
-      console.log(activityLevelInt);
 
-      console.log(activityLevelInt);
       let TDEE = Math.ceil(BMR * activityLevelInt);
-      console.log(TDEE);
 
      if (goal == "Lose Weight") {
       setCalories(TDEE + LOSE_WEIGHT);
@@ -49,9 +42,6 @@ function FitnessCalculators() {
       setCalories(TDEE);
       setProtein(Math.ceil((weightInt/2.2) * 1.7));
      } 
-
-      //setCalories(calories.toFixed(2));
-      //setProtein(protein.toFixed(2));
     }
 
     useEffect(() => {

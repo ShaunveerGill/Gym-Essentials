@@ -17,6 +17,7 @@ import TimerModal from './TimerModal';
 function Workouts() {
   const [modalVisible, setModalVisible] = useState(false);
   const [timerReset, setTimerReset] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
 
   const openModal = () => {
     setModalVisible(true);
@@ -30,6 +31,14 @@ function Workouts() {
   const resetTimer = () => {
     setModalVisible(true);
     setTimerReset(true);
+  };
+
+  const toggleCheckbox = () => {
+    setCheckboxChecked(!checkboxChecked);
+    if (!checkboxChecked) {
+      setModalVisible(true);
+      setTimerReset(false);
+    }
   };
 
   const {
@@ -73,7 +82,13 @@ function Workouts() {
 
   return  (
     <View>
-      <Button title="Open Modal" onPress={openModal} />
+      <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+        {checkboxChecked ? (
+          <Text style={styles.checkboxText}>✓</Text>
+        ) : (
+          <Text style={styles.checkboxText}>☐</Text>
+        )}
+      </TouchableOpacity>
       <TimerModal
         isVisible={modalVisible}
         onClose={closeModal}
@@ -84,5 +99,20 @@ function Workouts() {
   );
 
 }
+
+const styles = StyleSheet.create({
+  checkbox: {
+    borderWidth: 1,
+    borderColor: "black",
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  checkboxText: {
+    fontSize: 18,
+  },
+});
 
 export default Workouts;
