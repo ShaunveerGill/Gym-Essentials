@@ -4,7 +4,6 @@ import { Text, StyleSheet, View, Image } from "react-native";
 
 // CALORIES:
 // TDEE = BMR * ACTIVITY_LEVEL
-
 // weight loss calories = TDEE - 750
 // maintenance calories= TDEE
 // weight gain calories = TDEE + 375
@@ -25,8 +24,8 @@ function FitnessCalculator() {
 
   const calculate = () => {
     let BMR = gender === 'Male'
-      ? 10 * weight + 6.25 * height - 5 * age + 5
-      : 10 * weight + 6.25 * height - 5 * age - 161;
+      ? 10 * (weight/2.2) + 6.25 * height - 5 * age + 5
+      : 10 * (weight/2.2) + 6.25 * height - 5 * age - 161;
 
       let activityLevelInt  = parseInt(activityLevel, 10);
       let TDEE = BMR * activityLevelInt;
@@ -41,7 +40,6 @@ function FitnessCalculator() {
       let calories = TDEE;
       let protein = (weight/2.2) * 1.7;
      } 
-
     }
 
     setCaloricIntake(calories.toFixed(2));
