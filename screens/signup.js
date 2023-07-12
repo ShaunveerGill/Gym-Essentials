@@ -3,12 +3,28 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWi
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../firebase'
 import { SvgXml } from 'react-native-svg';
+import { UserContext } from "../UserContext";
+import { useContext } from "react";
 
 
 function SignUp() {
   const navigation = useNavigation();
-  const [fullName, setfullName] = useState('');
-  const [email, setEmail] = useState('')
+  const {
+    userEmail,
+    setUserEmail,
+    userName,
+    setUserName,
+    gender,
+    setGender,
+    setAge,
+    age,
+    setHeight,
+    height,
+    setWeight,
+    weight,
+    setGoal,
+    goal
+  } = useContext(UserContext);
   const [Cpassword, setCPassword] = useState('')
   const [password, setPassword] = useState('')
 
@@ -21,11 +37,12 @@ function SignUp() {
 
     if (Cpassword === password){
       auth
-        .createUserWithEmailAndPassword(email, Cpassword)
+        .createUserWithEmailAndPassword(userEmail, Cpassword)
         .then(userCredentials => {
             const user = userCredentials.user;
-            console.log('Registered with:', user.email);
-            navigation.navigate('AboutYou', { email: user.email, name: fullName });
+            console.log('Registered with:', userEmail);
+            console.log('Registered with name:', userName);
+            navigation.navigate('AboutYou', { email: user.email, name: userName });
         })
         .catch(error => alert(error.message))
     }
@@ -46,8 +63,8 @@ function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            value = {fullName}
-            onChangeText={text => setfullName(text)}
+            value = {userName}
+            onChangeText={text => setUserName(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
             <SvgXml xml={userSvg} width={20} height={20} />
@@ -57,8 +74,8 @@ function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Email Address"
-            value={email}
-            onChangeText={text => setEmail(text)}
+            value={setUserName}
+            onChangeText={text => setUserEmail(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
             <SvgXml xml={mailSvg} width={20} height={20} />

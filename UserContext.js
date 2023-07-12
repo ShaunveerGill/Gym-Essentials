@@ -1,20 +1,42 @@
+//UserContext.js
 import React, { useState, createContext } from "react";
 
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
-  const [userEmail, setUserEmail] = useState("some");
-  const [userName, setUserName] = useState("some");
-  const [gender, setGender] = useState("none");
-  const [age, setAge] = useState("none");
-  const [height, setHeight] = useState("none");
-  const [weight, setWeight] = useState("none");
-  const [goal, setGoal] = useState("none");
+  const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [goal, setGoal] = useState('');
+  const [activityLevel, setActivityLevel] = useState('');
+
   return (
-    <UserContext.Provider value={{userEmail, setUserEmail, userName, setUserName, gender, setGender, setAge, age, setHeight, height, setWeight, weight, setGoal, goal }}>
+    <UserContext.Provider
+      value={{
+        userEmail,
+        setUserEmail,
+        userName,
+        setUserName,
+        gender,
+        setGender,
+        age,
+        setAge,
+        height,
+        setHeight,
+        weight,
+        setWeight,
+        goal,
+        setGoal,
+        activityLevel,
+        setActivityLevel,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
-}
+};
 
-export {UserContext, UserContextProvider}
+export { UserContext, UserContextProvider };

@@ -1,55 +1,64 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Text, StyleSheet, View, Image } from "react-native";
-import { UserContext } from "../UserContext";
+import { UserContext, UserContextProvider } from "../UserContext";
+import { useContext, useState, useEffect } from "react";
+
 
 const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
 
-// CALORIES:
-// TDEE = BMR * ACTIVITY_LEVEL
-// weight loss calories = TDEE - 750
-// maintenance calories= TDEE
-// weight gain calories = TDEE + 375
-
-// PROTEIN:
-// weight (muscle) gain = (weight/2.2) * (1.9g)
-// weight (fat) loss = (weight/2.2) * (2.25g)
-// maintenance = (weight/2.2) * (1.7g)
-
 function FitnessCalculators() {
-  const { gender, weight, height, age, goal, activityLevel } = useContext(UserContext); 
-  const [caloricIntake, setCaloricIntake] = useState(0);
-  const [proteinIntake, setProteinIntake] = useState(0);
+  const [calories, setCalories] = useState("0");
+  const [protein, setProtein] = useState("0");
+  const {
+    gender,
+    age,
+    height,
+    weight,
+    goal,
+    activityLevel
+  } = useContext(UserContext);
 
   const calculate = () => {
-    console.log(gender, weight, height, age, goal, activityLevel);
+    let weightInt  = parseInt(weight, 10);
+    let heightInt  = parseInt(height, 10);
+    let ageInt = parseInt(age, 10);
+    console.log(weightInt);
+    console.log(heightInt);
+    console.log(ageInt);
     let BMR = gender === 'Male'
-      ? 10 * (weight/2.2) + 6.25 * height - 5 * age + 5
-      : 10 * (weight/2.2) + 6.25 * height - 5 * age - 161;
+      ? 10 * (weightInt/2.2) + 6.25 * heightInt - 5 * ageInt + 5
+      : 10 * (weightInt/2.2) + 6.25 * heightInt - 5 * ageInt - 161;
 
-    let activityLevelInt  = parseInt(activityLevel, 10);
-    let TDEE = BMR * activityLevelInt;
-    let calories, protein;
+      console.log(BMR);
 
-    if (goal == "Lose Weight") {
-      calories = TDEE + LOSE_WEIGHT;
-      protein = (weight/2.2) * 2.25;
-    } else if (goal == "Gain Weight") {
-      calories = TDEE + GAIN_WEIGHT;
-      protein = (weight/2.2) * 1.9;
-    } else if (goal == "Maintain Weight") {
-      calories = TDEE;
-      protein = (weight/2.2) * 1.7;
+      let activityLevelInt  = 1.2; 
+      console.log(activityLevelInt);
+
+      console.log(activityLevelInt);
+      let TDEE = Math.ceil(BMR * activityLevelInt);
+      console.log(TDEE);
+
+     if (goal == "Lose Weight") {
+      setCalories(TDEE + LOSE_WEIGHT);
+      setProtein(Math.ceil((weightInt/2.2) * 2.25));
+
+     } else if (goal == "Gain Weight") {
+      setCalories(TDEE + GAIN_WEIGHT);
+      setProtein(Math.ceil((weightInt/2.2) * 1.9));
+     } else if (goal == "Maintain Weight") {
+      setCalories(TDEE);
+      setProtein(Math.ceil((weightInt/2.2) * 1.7));
+     } 
+
+      //setCalories(calories.toFixed(2));
+      //setProtein(protein.toFixed(2));
     }
 
-    setCaloricIntake(calories.toFixed(2));
-    setProteinIntake(protein.toFixed(2));
-  };
-
-  useEffect(() => {
-    calculate();
-  }, []);
-
+    useEffect(() => {
+      calculate();
+    }, []);
+    
   return (
     <View style={styles.container}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />
@@ -61,7 +70,7 @@ function FitnessCalculators() {
           is:
           {"\n"}
         </Text>
-        <Text style={styles.intakeText}>{caloricIntake} calories</Text>
+        <Text style={styles.intakeText}>{calories} calories</Text>
       </View>
       <View style={styles.button}>
         <Text style={styles.buttonText}>
@@ -70,11 +79,11 @@ function FitnessCalculators() {
           is:
           {"\n"}
         </Text>
-        <Text style={styles.intakeText}>{proteinIntake}g</Text>
+        <Text style={styles.intakeText}>{protein}g</Text>
       </View>
     </View>
   );
-}
+  }
 
 const styles = StyleSheet.create({
   container: {

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+//AboutYou.js
+import { useState } from "react";
 import {
   Text,
   View,
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { auth } from "../firebase";
+<<<<<<< Updated upstream
 import { getDatabase, ref, set } from "firebase/database";
 
 function AboutYou() {
@@ -24,6 +26,33 @@ function AboutYou() {
   const [weight, setWeight] = useState("");
   const [goal, setGoal] = useState("");
   const [activityLevel, setActivityLevel] = useState("");
+=======
+import { getDatabase, ref, push, set } from "firebase/database";
+import React, { useContext } from "react";
+import { UserContext } from "../UserContext";
+
+
+function AboutYou() {
+  const navigation = useNavigation();
+  const {
+    userEmail,
+    setUserEmail,
+    userName,
+    setUserName,
+    gender,
+    setGender,
+    setAge,
+    age,
+    setHeight,
+    height,
+    setWeight,
+    weight,
+    setGoal,
+    goal,
+    setActivityLevel,
+    activityLevel
+  } = useContext(UserContext);
+>>>>>>> Stashed changes
 
   const handleGender = (selectedGender) => {
     setGender(selectedGender);
@@ -34,17 +63,28 @@ function AboutYou() {
   };
 
   const handleActivityLevel = (selectedActivityLevel) => {
+    console.log(selectedActivityLevel);
     setActivityLevel(selectedActivityLevel);
   };
 
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
   const handleFinishButtonPress = () => {
     // Check for the current user
     const user = auth.currentUser;
 
     if (user) {
       const userData = {
+<<<<<<< Updated upstream
         email: email,
         name: fullName,
+=======
+        email: userEmail,
+        name: userName,
+>>>>>>> Stashed changes
         gender: gender,
         age: age,
         height: height,
@@ -127,6 +167,7 @@ function AboutYou() {
             style={styles.input}
             onChangeText={(text) => setWeight(text)}
           />
+
           <View>
             <Text style={styles.questions}>What is your goal?</Text>
           </View>
@@ -172,6 +213,7 @@ function AboutYou() {
           </View>
 
           <TouchableOpacity
+<<<<<<< Updated upstream
       style={[
         styles.buttonGoals,
         { backgroundColor: activityLevel === "1.2" ? "#ffffff" : "#cccccc" },
@@ -226,6 +268,76 @@ function AboutYou() {
         Extra active (very active and physical job)
       </Text>
     </TouchableOpacity>
+=======
+            style={[
+              styles.buttonGoals,
+              { backgroundColor: activityLevel === "Sedentary" ? "#ffffff" : "#cccccc" },
+            ]}
+            onPress={() => handleActivityLevel("Sedentary")}
+          >
+            <Text style={styles.activityButtonText}>
+              Sedentary (little to no exercise)
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.buttonGoals,
+              {
+                backgroundColor:
+                activityLevel === "Lightly active" ? "#ffffff" : "#cccccc",
+              },
+            ]}
+            onPress={() => handleActivityLevel("Lightly active")}
+          >
+            <Text style={styles.activityButtonText}>
+              Lightly active (exercise 1-3 days/week)
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.buttonGoals,
+              {
+                backgroundColor:
+                activityLevel === "Moderately active" ? "#ffffff" : "#cccccc",
+              },
+            ]}
+            onPress={() => handleActivityLevel("Moderately active")}
+          >
+            <Text style={styles.activityButtonText}>
+              Moderately active (exercise 3-5 days/week)
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.buttonGoals,
+              {
+                backgroundColor:
+                activityLevel === "Very active" ? "#ffffff" : "#cccccc",
+              },
+            ]}
+            onPress={() => handleActivityLevel("Very active")}
+          >
+            <Text style={styles.activityButtonText}>
+              Very active (exercise 6-7 days/week)
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.buttonGoals,
+              {
+                backgroundColor:
+                activityLevel === "Extra active" ? "#ffffff" : "#cccccc",
+              },
+            ]}
+            onPress={() => handleActivityLevel("Extra active")}
+          >
+            <Text style={styles.activityButtonText}>
+              Extra active (very active and physical job)
+            </Text>
+          </TouchableOpacity>
+>>>>>>> Stashed changes
           <View style={styles.buttons}>
             <TouchableOpacity
               style={styles.finishButton}
