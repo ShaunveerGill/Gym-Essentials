@@ -7,17 +7,31 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth } from "../firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
-import InformationScreen from "./InformationScreen";
-import SettingsScreen from "./SettingsScreen";
 import { UserContext } from "../UserContext";
 import { useContext } from "react";
+import TimerModal from './TimerModal';
 
 
 function Workouts() {
-  console.log("hello");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [timerReset, setTimerReset] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+    setTimerReset(false);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const resetTimer = () => {
+    setModalVisible(true);
+    setTimerReset(true);
+  };
+
   const {
     userEmail,
     setUserEmail,
@@ -35,9 +49,9 @@ function Workouts() {
     goal
   } = useContext(UserContext); 
 
-
   useEffect(() => {
     const user = auth.currentUser;
+
     if (user !== null) {
       setUserEmail(user.email);
       const db = getDatabase();
@@ -57,7 +71,18 @@ function Workouts() {
     }
   }, []);
 
-  return <Text>Workouts Screen</Text>;
+  return  (
+    <View>
+      <Button title="Open Modal" onPress={openModal} />
+      <TimerModal
+        isVisible={modalVisible}
+        onClose={closeModal}
+        duration={60}
+        onReset={resetTimer}
+      />
+    </View>
+  );
+
 }
 
 export default Workouts;
