@@ -89,7 +89,7 @@ const AccountScreen = ({ navigation }) => {
 
   return (
     <AccountStack.Navigator>
-      <AccountStack.Screen name="Account" options={{ headerShown: false }}>
+      <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
             <Image source={require("../assets/logo.png")} style={styles.logo} />
@@ -195,5 +195,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export {  };
+
 export default AccountScreen;
