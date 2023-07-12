@@ -17,6 +17,7 @@ import { useContext } from "react";
 
 
 function Workouts() {
+  console.log("hello");
   const {
     userEmail,
     setUserEmail,
