@@ -14,39 +14,29 @@ import { auth } from "../firebase";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import InformationScreen from "./InformationScreen";
 import SettingsScreen from "./SettingsScreen";
+import { UserContext, UserContextProvider } from "../UserContext";
+import { useContext } from "react";
+
 import { TextInput } from "react-native-gesture-handler";
 const AccountStack = createNativeStackNavigator();
 
-
-
 const AccountScreen = ({ navigation }) => {
-  const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState("");
-  const [gender, setGender] = useState("");
-  const [age, setAge] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [goal, setGoal] = useState("");
-
-  useEffect(() => {
-    const user = auth.currentUser;
-    if (user !== null) {
-      setUserEmail(user.email);
-      const db = getDatabase();
-      const userRef = ref(db, "users/" + user.uid);
-      onValue(userRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data !== null) {
-          setUserName(data.name);
-          setGender(data.gender);
-          setAge(data.age);
-          setHeight(data.height);
-          setWeight(data.weight);
-          setGoal(data.goal);
-        }
-      });
-    }
-  }, []);
+  const {
+    userEmail,
+    setUserEmail,
+    userName,
+    setUserName,
+    gender,
+    setGender,
+    setAge,
+    age,
+    setHeight,
+    height,
+    setWeight,
+    weight,
+    setGoal,
+    goal
+  } = useContext(UserContext);
 
   const handleFinishButtonPress = () => {
     // Check for the current user
@@ -104,32 +94,31 @@ const AccountScreen = ({ navigation }) => {
 
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Gender: {gender}</Text>
-                
             </View>
-              <View style={styles.infoBoxes}>
+            <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Age: {age}</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={(text) => setAge(text)}
-                />
-              </View>
-              <View style={styles.infoBoxes}>
-                <Text style={styles.infoboxtext}>Height: {height}</Text>
-              </View>
-              <View style={styles.infoBoxes}>
-                <Text style={styles.infoboxtext}>Weight: {weight}</Text>
-              </View>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setAge(text)}
+              />
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Height: {height}</Text>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Weight: {weight}</Text>
+            </View>
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Goal: {goal}</Text>
             </View>
             <View style={styles.buttons}>
-            <TouchableOpacity
-              style={styles.finishButton}
-              onPress={handleFinishButtonPress}
-            >
-              <Text style={styles.buttonText}>Finish</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={styles.finishButton}
+                onPress={handleFinishButtonPress}
+              >
+                <Text style={styles.buttonText}>Finish</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={handleLogout}>
                 <Text style={styles.buttonText}>Log Out</Text>
@@ -171,7 +160,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 25,
     marginBottom: 20,
-    marginTop: 20,    
+    marginTop: 20,
   },
   logo: {
     width: 200,
@@ -194,6 +183,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-
 
 export default AccountScreen;

@@ -1,6 +1,6 @@
 import { Text, StyleSheet, View, Image } from "react-native";
-// import UserContext from "../context/context";
-// import { useContext } from "react";
+import { UserContext, UserContextProvider } from "../UserContext";
+import { useContext } from "react";
 
 // CALORIES:
 // TDEE = BMR * ACTIVITY_LEVEL
@@ -17,7 +17,6 @@ const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
 
 function FitnessCalculator() {
-  const { Cgender } = useContext(UserContext); 
   const [caloricIntake, setCaloricIntake] = useState(0);
   const [proteinIntake, setProteinIntake] = useState(0);
 
@@ -47,8 +46,8 @@ function FitnessCalculator() {
   };
 
 function FitnessCalculators() {
-  const { Cgender } = useContext(UserContext); 
-  console.log(Cgender);  
+  const { gender } = useContext(UserContext); 
+  console.log(gender);  
   return (
     <View style={styles.container}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />
