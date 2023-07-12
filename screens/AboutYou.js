@@ -11,10 +11,13 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { auth } from "../firebase";
-import { getDatabase, ref, push, set } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 
 function AboutYou() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { email, fullName } = route.params;
+
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
   const [height, setHeight] = useState("");
@@ -34,18 +37,14 @@ function AboutYou() {
     setActivityLevel(selectedActivityLevel);
   };
 
-  const route = useRoute();
-  const { email } = route.params;
-  const { fullName } = route.params;
-
   const handleFinishButtonPress = () => {
     // Check for the current user
     const user = auth.currentUser;
 
     if (user) {
       const userData = {
-        email: route.params.email,
-        name: route.params.fullName,
+        email: email,
+        name: fullName,
         gender: gender,
         age: age,
         height: height,
@@ -173,74 +172,60 @@ function AboutYou() {
           </View>
 
           <TouchableOpacity
-            style={[
-              styles.buttonGoals,
-              { backgroundColor: goal === "Sedentary" ? "#ffffff" : "#cccccc" },
-            ]}
-            onPress={() => handleActivityLevel("1.2")}
-          >
-            <Text style={styles.activityButtonText}>
-              Sedentary (little to no exercise)
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.buttonGoals,
-              {
-                backgroundColor:
-                  goal === "Lightly active" ? "#ffffff" : "#cccccc",
-              },
-            ]}
-            onPress={() => handleActivityLevel("1.375")}
-          >
-            <Text style={styles.activityButtonText}>
-              Lightly active (exercise 1-3 days/week)
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.buttonGoals,
-              {
-                backgroundColor:
-                  goal === "Moderately active" ? "#ffffff" : "#cccccc",
-              },
-            ]}
-            onPress={() => handleActivityLevel("1.55")}
-          >
-            <Text style={styles.activityButtonText}>
-              Moderately active (exercise 3-5 days/week)
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.buttonGoals,
-              {
-                backgroundColor:
-                  goal === "Very active" ? "#ffffff" : "#cccccc",
-              },
-            ]}
-            onPress={() => handleActivityLevel("1.725")}
-          >
-            <Text style={styles.activityButtonText}>
-              Very active (exercise 6-7 days/week)
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.buttonGoals,
-              {
-                backgroundColor:
-                  goal === "Extra active" ? "#ffffff" : "#cccccc",
-              },
-            ]}
-            onPress={() => handleActivityLevel("1.9")}
-          >
-            <Text style={styles.activityButtonText}>
-              Extra active (very active and physical job){" "}
-            </Text>
-          </TouchableOpacity>
+      style={[
+        styles.buttonGoals,
+        { backgroundColor: activityLevel === "1.2" ? "#ffffff" : "#cccccc" },
+      ]}
+      onPress={() => handleActivityLevel("1.2")}
+    >
+      <Text style={styles.activityButtonText}>
+        Sedentary (little to no exercise)
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.buttonGoals,
+        { backgroundColor: activityLevel === "1.375" ? "#ffffff" : "#cccccc" },
+      ]}
+      onPress={() => handleActivityLevel("1.375")}
+    >
+      <Text style={styles.activityButtonText}>
+        Lightly active (exercise 1-3 days/week)
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.buttonGoals,
+        { backgroundColor: activityLevel === "1.55" ? "#ffffff" : "#cccccc" },
+      ]}
+      onPress={() => handleActivityLevel("1.55")}
+    >
+      <Text style={styles.activityButtonText}>
+        Moderately active (exercise 3-5 days/week)
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.buttonGoals,
+        { backgroundColor: activityLevel === "1.725" ? "#ffffff" : "#cccccc" },
+      ]}
+      onPress={() => handleActivityLevel("1.725")}
+    >
+      <Text style={styles.activityButtonText}>
+        Very active (exercise 6-7 days/week)
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.buttonGoals,
+        { backgroundColor: activityLevel === "1.9" ? "#ffffff" : "#cccccc" },
+      ]}
+      onPress={() => handleActivityLevel("1.9")}
+    >
+      <Text style={styles.activityButtonText}>
+        Extra active (very active and physical job)
+      </Text>
+    </TouchableOpacity>
           <View style={styles.buttons}>
             <TouchableOpacity
               style={styles.finishButton}
