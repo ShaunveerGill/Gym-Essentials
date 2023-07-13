@@ -42,35 +42,6 @@ const AccountScreen = ({ navigation }) => {
     setActivityLevel,
   } = useContext(UserContext);
 
-  // const handleFinishButtonPress = () => {
-  //   // Check for the current user
-  //   const user = auth.currentUser;
-
-  //   if (user) {
-  //     const userData = {
-  //       gender: gender,
-  //       age: age,
-  //       height: height,
-  //       weight: weight,
-  //       goal: goal,
-  //     };
-
-  //     const db = getDatabase();
-  //     const userRef = ref(db, "users/" + user.uid);
-
-  //     set(userRef, userData)
-  //       .then(() => {
-  //         console.log("User data saved successfully");
-  //         navigation.navigate("FeaturesOverview");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error saving user data: ", error);
-  //       });
-  //   } else {
-  //     console.error("No user is signed in");
-  //   }
-  // };
-
   const handleLogout = () => {
     auth
       .signOut()
@@ -80,11 +51,8 @@ const AccountScreen = ({ navigation }) => {
       })
       .catch((error) => console.log(error));
   };
-
-  const handleGender = () => {
-    console.log("Changing Genders");
-    navigation.navigate("GenderEdit");
-  };
+  console.log(gender);
+  console.log(activityLevel);
 
   const nav = useNavigation();
 
@@ -145,7 +113,7 @@ const AccountScreen = ({ navigation }) => {
               <Text style={styles.infoboxtext}>Gender: {gender}</Text>
               <TouchableOpacity
                 style={styles.editButtonGender}
-                onPress={handleGender}
+                onPress={() => nav.navigate("GenderEdit")}
               >
                 <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>

@@ -55,7 +55,9 @@ function Workouts() {
     setWeight,
     weight,
     setGoal,
-    goal
+    goal,
+    activityLevel,
+    setActivityLevel,
   } = useContext(UserContext); 
 
   useEffect(() => {
@@ -74,7 +76,7 @@ function Workouts() {
           setHeight(data.height);
           setWeight(data.weight);
           setGoal(data.goal);
-
+          setActivityLevel(data.activityLevel);
         }
       });
     }
