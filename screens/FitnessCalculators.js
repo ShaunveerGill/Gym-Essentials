@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Text, StyleSheet, View, Image } from "react-native";
-import { UserContext, UserContextProvider } from "../UserContext";
-
+import { UserContext } from "../UserContext";
 
 const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
@@ -18,36 +17,35 @@ function FitnessCalculators() {
     activityLevel
   } = useContext(UserContext);
 
-  const calculate = () => {
-    let weightInt  = parseInt(weight, 10);
-    let heightInt  = parseInt(height, 10);
-    let ageInt = parseInt(age, 10);
+  useEffect(() => {
+    const calculate = () => {
+      let weightInt = parseInt(weight, 10);
+      let heightInt = parseInt(height, 10);
+      let ageInt = parseInt(age, 10);
 
-    let BMR = gender === 'Male'
-      ? 10 * (weightInt/2.2) + 6.25 * heightInt - 5 * ageInt + 5
-      : 10 * (weightInt/2.2) + 6.25 * heightInt - 5 * ageInt - 161;
+      let BMR = gender === 'Male'
+        ? 10 * (weightInt / 2.2) + 6.25 * heightInt - 5 * ageInt + 5
+        : 10 * (weightInt / 2.2) + 6.25 * heightInt - 5 * ageInt - 161;
 
-      let activityLevelInt  = 1.2; 
+      let activityLevelInt = 1.2;
 
       let TDEE = Math.ceil(BMR * activityLevelInt);
 
-     if (goal == "Lose Weight") {
-      setCalories(TDEE + LOSE_WEIGHT);
-      setProtein(Math.ceil((weightInt/2.2) * 2.25));
+      if (goal === "Lose Weight") {
+        setCalories(TDEE + LOSE_WEIGHT);
+        setProtein(Math.ceil((weightInt / 2.2) * 2.25));
+      } else if (goal === "Gain Weight") {
+        setCalories(TDEE + GAIN_WEIGHT);
+        setProtein(Math.ceil((weightInt / 2.2) * 1.9));
+      } else if (goal === "Maintain Weight") {
+        setCalories(TDEE);
+        setProtein(Math.ceil((weightInt / 2.2) * 1.7));
+      }
+    };
 
-     } else if (goal == "Gain Weight") {
-      setCalories(TDEE + GAIN_WEIGHT);
-      setProtein(Math.ceil((weightInt/2.2) * 1.9));
-     } else if (goal == "Maintain Weight") {
-      setCalories(TDEE);
-      setProtein(Math.ceil((weightInt/2.2) * 1.7));
-     } 
-    }
+    calculate();
+  }, [gender, age, height, weight, goal, activityLevel]);
 
-    useEffect(() => {
-      calculate();
-    }, []);
-    
   return (
     <View style={styles.container}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />
@@ -72,7 +70,7 @@ function FitnessCalculators() {
       </View>
     </View>
   );
-  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -115,4 +113,3 @@ const styles = StyleSheet.create({
 });
 
 export default FitnessCalculators;
-
