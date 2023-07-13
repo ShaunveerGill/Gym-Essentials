@@ -10,6 +10,7 @@ import {
   } from "react-native";
   import { useNavigation } from "@react-navigation/native";
   import { UserContext } from "../UserContext";
+  import React, { useContext } from "react";
   import firebase from "firebase/compat/app";
   import "firebase/compat/database";
   
