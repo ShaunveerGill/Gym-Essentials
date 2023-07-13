@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth } from "../firebase";
@@ -16,6 +17,7 @@ import InformationScreen from "./InformationScreen";
 import SettingsScreen from "./SettingsScreen";
 import { UserContext, UserContextProvider } from "../UserContext";
 import { useContext } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import { TextInput } from "react-native-gesture-handler";
 const AccountStack = createNativeStackNavigator();
@@ -35,37 +37,39 @@ const AccountScreen = ({ navigation }) => {
     setWeight,
     weight,
     setGoal,
-    goal
+    goal,
+    activityLevel,
+    setActivityLevel,
   } = useContext(UserContext);
 
-  const handleFinishButtonPress = () => {
-    // Check for the current user
-    const user = auth.currentUser;
+  // const handleFinishButtonPress = () => {
+  //   // Check for the current user
+  //   const user = auth.currentUser;
 
-    if (user) {
-      const userData = {
-        gender: gender,
-        age: age,
-        height: height,
-        weight: weight,
-        goal: goal,
-      };
+  //   if (user) {
+  //     const userData = {
+  //       gender: gender,
+  //       age: age,
+  //       height: height,
+  //       weight: weight,
+  //       goal: goal,
+  //     };
 
-      const db = getDatabase();
-      const userRef = ref(db, "users/" + user.uid);
+  //     const db = getDatabase();
+  //     const userRef = ref(db, "users/" + user.uid);
 
-      set(userRef, userData)
-        .then(() => {
-          console.log("User data saved successfully");
-          navigation.navigate("FeaturesOverview");
-        })
-        .catch((error) => {
-          console.error("Error saving user data: ", error);
-        });
-    } else {
-      console.error("No user is signed in");
-    }
-  };
+  //     set(userRef, userData)
+  //       .then(() => {
+  //         console.log("User data saved successfully");
+  //         navigation.navigate("FeaturesOverview");
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error saving user data: ", error);
+  //       });
+  //   } else {
+  //     console.error("No user is signed in");
+  //   }
+  // };
 
   const handleLogout = () => {
     auth
@@ -77,24 +81,36 @@ const AccountScreen = ({ navigation }) => {
       .catch((error) => console.log(error));
   };
 
+  const handleGender = () => {
+    console.log("Changing Genders");
+    navigation.navigate("GenderEdit");
+  };
+
+  const nav = useNavigation();
+
   return (
     <AccountStack.Navigator>
       <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
             <Image source={require("../assets/logo.png")} style={styles.logo} />
-            <Text style={styles.title}>Account Information</Text>
-            <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>User Name: {userName}</Text>
-            </View>
-            <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
-            </View>
-            {/*We won't change user name & email*/}
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Gender: {gender}</Text>
+              <View style={styles.scrollViewContainer}>
+                <ScrollView horizontal>
+                  <Text style={styles.infoboxtext}>User Name: {userName}</Text>
+                </ScrollView>
+              </View>
             </View>
+
+            <View style={styles.infoBoxes}>
+              <View style={styles.scrollViewContainer}>
+                <ScrollView horizontal>
+                  <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
+                </ScrollView>
+              </View>
+            </View>
+
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Age: {age}</Text>
               <TextInput
@@ -108,15 +124,32 @@ const AccountScreen = ({ navigation }) => {
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Weight: {weight}</Text>
             </View>
+
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Gender: {gender}</Text>
+              <TouchableOpacity
+                style={styles.editButtonGender}
+                onPress={handleGender}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Goal: {goal}</Text>
-            </View>
-            <View style={styles.buttons}>
               <TouchableOpacity
-                style={styles.finishButton}
-                onPress={handleFinishButtonPress}
+                style={styles.editButtonGoal}
+                onPress={() => nav.navigate("GoalEdit")}
               >
-                <Text style={styles.buttonText}>Finish</Text>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.infoBoxes}>
+              <Text style={styles.infoboxtext}>Activity: {activityLevel}</Text>
+              <TouchableOpacity
+                style={styles.editButtonGoal}
+                onPress={() => nav.navigate("ActivityEdit")}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.buttons}>
@@ -134,6 +167,28 @@ const AccountScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  editButtonGender: {
+    backgroundColor: "white",
+    position: "absolute",
+    left: "50%",
+    width: "25%",
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    marginLeft: 65,
+  },
+  editButtonGoal: {
+    position: "absolute",
+    left: "50%",
+    backgroundColor: "white",
+    width: "25%",
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    marginLeft: 65,
+  },
   container: {
     flex: 1,
     alignItems: "center",
@@ -178,9 +233,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   infoboxtext: {
-    fontSize: 18,
+    fontSize: 16,
     marginTop: 10,
     marginBottom: 10,
+  },
+  scrollViewContainer: {
+    flex: 1,
   },
 });
 
