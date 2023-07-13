@@ -13,11 +13,17 @@ import signup from "./screens/signup";
 import AboutYou from "./screens/AboutYou";
 import AccountScreen from "./screens/AccountScreen";
 import { UserProvider, UserContextProvider } from "./UserContext";
+<<<<<<< Updated upstream
 import ManageRecord from "./screens/ManageRecord";
 import { Ionicons } from "@expo/vector-icons";
 import GenderEdit from "./screens/GenderEdit";
 import GoalEdit from "./screens/GoalEdit";
 import ActivityEdit from "./screens/ActivityEdit";
+=======
+import { RecordsContextProvider } from "./RecordsContext";
+import ManageRecord from './screens/ManageRecord';
+import { Ionicons } from '@expo/vector-icons';
+>>>>>>> Stashed changes
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -100,6 +106,7 @@ function FeaturesOverview() {
 export default function App() {
   return (
     <UserContextProvider>
+      <RecordsContextProvider>
       <>
         <StatusBar style="auto" />
         <NavigationContainer>
@@ -138,6 +145,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </>
+      </RecordsContextProvider>
     </UserContextProvider>
   );
 }

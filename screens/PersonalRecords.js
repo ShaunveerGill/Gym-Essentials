@@ -1,25 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { RecordsContext } from '../RecordsContext';
 
-const DUMMY_RECORDS = [
-  {
-    id: 'r1',
-    exercise: 'Bench Press',
-    record: '125 lbs',
-    date: new Date('2021-12-19'),
-  },
-  {
-    id: 'r2',
-    exercise: 'Leg Press',
-    record: '120 lbs',
-    date: new Date('2021-12-19'),
-  },
-];
-
-function fixDate(date) {
+/*function fixDate(date) {
   return(date.getFullYear()+ "-" + (date.getMonth()+1) + "-" + (date.getDate()+1));
+}*/
+
+function getFormattedDate(date) {
+  return date.toISOString().slice(0, 10);
 }
 
 function RecordItem({ id, exercise, record, date }) {
@@ -41,7 +31,7 @@ function RecordItem({ id, exercise, record, date }) {
           <Text style={[styles.textBase, styles.exercise]}>
             {exercise}
           </Text>
-          <Text style={styles.textBase}>{fixDate(date)}</Text> 
+          <Text style={styles.textBase}>{getFormattedDate(date)}</Text> 
         </View>
         <View style={styles.recordContainer}>
           <Text style={styles.record}>{record}</Text>
@@ -58,6 +48,8 @@ function renderRecordItem(itemData) {
 
 function PersonalRecords() {
   const navigation = useNavigation();
+
+  const recordsCtx = useContext(RecordsContext);
 
   const handleAddRecord = () => {
     navigation.navigate('ManageRecord');
@@ -77,13 +69,20 @@ function PersonalRecords() {
     });
   }, [navigation]);
 
+  let content = <Text style={styles.infoText}>No Records Added!</Text>;
+
+  if (recordsCtx.records.length > 0) {
+    content = 
+    <FlatList
+      data={recordsCtx.records}
+      renderItem={renderRecordItem}
+      keyExtractor={(item) => item.id}
+    />;
+  }
+
   return (
     <View style={styles.container}>
-        <FlatList
-          data={DUMMY_RECORDS}
-          renderItem={renderRecordItem}
-          keyExtractor={(item) => item.id}
-        />
+        {content}
     </View>
   );
 }
@@ -138,5 +137,11 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginRight: 20,
+  },
+  infoText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 32,
   },
 });

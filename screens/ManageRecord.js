@@ -1,31 +1,88 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { RecordsContext } from '../RecordsContext';
 
 function ManageRecord({ route }) {
+  const recordsCtx = useContext(RecordsContext);
   const navigation = useNavigation();
   const editedRecordId = route.params?.recordId;
   const isEditing = !!editedRecordId;
 
   function deleteExpenseHandler() {
-    navigation.navigate('PersonalRecords')
-  }
-  
-  function cancelHandler() {
-    navigation.navigate('PersonalRecords')
+    recordsCtx.deleteRecord(editedRecordId);
+    navigation.navigate('PersonalRecords');
   }
 
-  function confirmHandler() {
-    navigation.navigate('PersonalRecords')
+  function cancelHandler() {
+    navigation.navigate('PersonalRecords');
+  }
+
+  function confirmHandler(recordData) {
+    if (isEditing){
+      recordsCtx.updateRecord(editedRecordId, recordData);
+    } else {
+      recordsCtx.addRecord(recordData);
+    }
+    navigation.navigate('PersonalRecords');
+  }
+
+  const [inputValues, setInputValues] = useState({
+    exercise: '',
+    record: '',
+    date: '',
+  });
+
+  function inputChangedHandler(inputIdentifier, enteredValue) {
+    setInputValues((curInputValues) => {
+      return {
+        ...curInputValues,
+        [inputIdentifier]: enteredValue,
+      };
+    });
+  }
+
+  function submitHandler() {
+    const recordData = {
+      exercise: inputValues.exercise,
+      record: inputValues.record,
+      date: new Date(inputValues.date),
+    };
+
+    confirmHandler(recordData);
   }
 
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
-        
-          <TouchableOpacity style= {styles.button} onPress={confirmHandler}>
+          <Text>Exercise</Text>
+          <TextInput 
+            style={styles.input}
+            placeholder="Exercise"
+            onChangeText={inputChangedHandler.bind(this, 'exercise')}
+            value={inputValues.exercise}
+          />
+
+          <Text>Record</Text> 
+          <TextInput 
+            style={styles.input}
+            placeholder="Record"
+            onChangeText={inputChangedHandler.bind(this, 'record')}
+            value={inputValues.record}
+          />
+
+          <Text>Date</Text>
+          <TextInput 
+            style={styles.input}
+            placeholder="YYYY-MM-DD"
+            maxLength={10}
+            onChangeText= {inputChangedHandler.bind(this, 'date')}
+            value={inputValues.date}
+          />
+
+          <TouchableOpacity style= {styles.button} onPress={submitHandler}>
             <Text style= {styles.buttonText}>Update</Text>
           </TouchableOpacity>
 
@@ -40,15 +97,39 @@ function ManageRecord({ route }) {
         </>
       ) : (
         <>
-          <Text style= {styles.buttonText}>Add Record</Text>
+          <Text>Exercise</Text>
+          <TextInput 
+            style={styles.input}
+            placeholder="Exercise"
+            onChangeText={inputChangedHandler.bind(this, 'exercise')}
+            value={inputValues.exercise}
+          />
 
-          <TouchableOpacity style= {styles.button} onPress={confirmHandler}>
+          <Text>Record</Text> 
+          <TextInput 
+            style={styles.input}
+            placeholder="Record"
+            onChangeText={inputChangedHandler.bind(this, 'record')}
+            value={inputValues.record}
+          />
+
+          <Text>Date</Text>
+          <TextInput 
+            style={styles.input}
+            placeholder="YYYY-MM-DD"
+            maxLength={10}
+            onChangeText= {inputChangedHandler.bind(this, 'date')}
+            value={inputValues.date}
+          />
+
+          <TouchableOpacity style= {styles.button} onPress={submitHandler}>
             <Text style= {styles.buttonText}>Add</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style= {styles.button} onPress={cancelHandler}>
             <Text style= {styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
+
         </>
       )}
     </View>
@@ -82,6 +163,14 @@ const styles = StyleSheet.create({
 
   text: {
     marginBottom: 20,
-
-  }
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    padding: 10,
+    minWidth: 200,
+    width: '80%',
+  },
 });
