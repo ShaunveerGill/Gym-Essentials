@@ -18,6 +18,9 @@ import { Ionicons } from "@expo/vector-icons";
 import GenderEdit from "./screens/GenderEdit";
 import GoalEdit from "./screens/GoalEdit";
 import ActivityEdit from "./screens/ActivityEdit";
+import AgeEdit from "./screens/AgeEdit"
+import HeightEdit from "./screens/HeightEdit"
+import WeightEdit from "./screens/WeightEdit"
 import { RecordsContextProvider } from "./RecordsContext";
 
 const Stack = createStackNavigator();
@@ -131,6 +134,9 @@ export default function App() {
               component={FeaturesOverview}
             />
             <Stack.Screen name="signup" component={signup} />
+            <Stack.Screen name="AgeEdit" component={AgeEdit} />
+            <Stack.Screen name="HeightEdit" component={HeightEdit} />
+            <Stack.Screen name="WeightEdit" component={WeightEdit} />
             <Stack.Screen name="GenderEdit" component={GenderEdit} />
             <Stack.Screen name="GoalEdit" component={GoalEdit} />
             <Stack.Screen name="ActivityEdit" component={ActivityEdit} />

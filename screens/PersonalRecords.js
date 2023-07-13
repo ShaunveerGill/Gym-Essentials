@@ -46,7 +46,7 @@ function renderRecordItem(itemData) {
     <RecordItem {...itemData.item} />);  
 }
 
-function PersonalRecords() {
+const PersonalRecords = () => {
   const navigation = useNavigation();
 
   const recordsCtx = useContext(RecordsContext);
@@ -59,9 +59,9 @@ function PersonalRecords() {
     navigation.setOptions({
       title: 'Personal Records',
       headerRight: () => (
-        <TouchableOpacity 
-          onPress={handleAddRecord} 
-          style={({pressed}) => pressed && styles.pressed}
+        <TouchableOpacity
+          onPress={handleAddRecord}
+          style={({ pressed }) => pressed && styles.pressed}
         >
           <Ionicons name="add" size={24} color="black" style={styles.addButton} />
         </TouchableOpacity>
@@ -69,36 +69,37 @@ function PersonalRecords() {
     });
   }, [navigation]);
 
-  let content = <Text style={styles.infoText}>No Records Added!</Text>;
+  let content = <Text style={styles.infoText}>No Records Added</Text>;
 
   if (recordsCtx.records.length > 0) {
-    content = 
-    <FlatList
-      data={recordsCtx.records}
-      renderItem={renderRecordItem}
-      keyExtractor={(item) => item.id}
-    />;
+    content = (
+      <FlatList
+        data={recordsCtx.records}
+        renderItem={renderRecordItem}
+        keyExtractor={(item) => item.id}
+      />
+    );
   }
 
-  return (
-    <View style={styles.container}>
-        {content}
-    </View>
-  );
-}
-
-export default PersonalRecords;
+  return <View style={styles.container}>{content}</View>;
+};
 
 const styles = StyleSheet.create({
   pressed: {
-    opacity: 0.75
+    opacity: 0.75,
   },
 
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 0,
+    justifyContent: 'center', // Center content vertically
+  },
+  infoText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 'auto', // Pushes the text to the top edge of the centered container
+    marginBottom: 'auto', // Pushes the text to the bottom edge of the centered container
   },
 
   recordItem: {
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     elevation: 3,
   },
-  
+
   textBase: {
     color: 'white',
   },
@@ -118,9 +119,9 @@ const styles = StyleSheet.create({
   exercise: {
     fontSize: 16,
     marginBottom: 4,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
-  
+
   recordContainer: {
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -128,20 +129,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
-    minWidth: 20
+    minWidth: 20,
   },
 
   record: {
     color: 'black',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   addButton: {
     marginRight: 20,
   },
-  infoText: {
-    color: 'black',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 32,
-  },
 });
+
+export default PersonalRecords

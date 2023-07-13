@@ -113,16 +113,32 @@ const AccountScreen = ({ navigation }) => {
 
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Age: {age}</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={(text) => setAge(text)}
-              />
+              <TouchableOpacity
+                style={styles.editButtonGoal}
+                onPress={() => nav.navigate("AgeEdit")}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
             </View>
+
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Height: {height}</Text>
+              <TouchableOpacity
+                style={styles.editButtonGoal}
+                onPress={() => nav.navigate("HeightEdit")}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
             </View>
+            
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Weight: {weight}</Text>
+              <TouchableOpacity
+                style={styles.editButtonGoal}
+                onPress={() => nav.navigate("WeightEdit")}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
@@ -134,6 +150,7 @@ const AccountScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             </View>
+
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Goal: {goal}</Text>
               <TouchableOpacity
@@ -143,6 +160,7 @@ const AccountScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             </View>
+
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Activity: {activityLevel}</Text>
               <TouchableOpacity
@@ -152,6 +170,7 @@ const AccountScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             </View>
+
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={handleLogout}>
                 <Text style={styles.buttonText}>Log Out</Text>
