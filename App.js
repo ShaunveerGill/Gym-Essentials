@@ -21,7 +21,10 @@ import ActivityEdit from "./screens/ActivityEdit";
 import AgeEdit from "./screens/AgeEdit"
 import HeightEdit from "./screens/HeightEdit"
 import WeightEdit from "./screens/WeightEdit"
+import ManageWorkout from "./screens/ManageWorkout";
+import EditWorkout from "./screens/EditWorkout";
 import { RecordsContextProvider } from "./RecordsContext";
+import TimerModal from "./screens/TimerModal";
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -143,6 +146,9 @@ export default function App() {
             <Stack.Screen name="ManageRecord" component={ManageRecord} />
             <Stack.Screen name="AboutYou" component={AboutYou} />
             <Stack.Screen name="AccountScreen" component={AccountScreen} />
+            <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
+            <Stack.Screen name="EditWorkout"component={EditWorkout}/>
+            <Stack.Screen name="TimerModal"component={TimerModal}/>
           </Stack.Navigator>
         </NavigationContainer>
       </>
