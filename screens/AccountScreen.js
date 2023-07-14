@@ -90,7 +90,7 @@ const AccountScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Height: {height}</Text>
+              <Text style={styles.infoboxtext}>Height (cm): {height}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("HeightEdit")}
@@ -100,7 +100,7 @@ const AccountScreen = ({ navigation }) => {
             </View>
             
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Weight: {weight}</Text>
+              <Text style={styles.infoboxtext}>Weight (lb): {weight}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("WeightEdit")}

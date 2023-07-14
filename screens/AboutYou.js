@@ -128,14 +128,14 @@ function AboutYou() {
             onChangeText={(text) => setAge(text)}
           />
           <View>
-            <Text style={styles.questions}>What is your height?</Text>
+            <Text style={styles.questions}>What is your height(cm)?</Text>
           </View>
           <TextInput
             style={styles.input}
             onChangeText={(text) => setHeight(text)}
           />
           <View>
-            <Text style={styles.questions}>What is your weight?</Text>
+            <Text style={styles.questions}>What is your weight(lb)?</Text>
           </View>
           <TextInput
             style={styles.input}
@@ -258,18 +258,19 @@ function AboutYou() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "left",
-    justifyContent: "center",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
     padding: 20,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 40,
+    
   },
   title: {
     fontSize: 40,
-    marginRight: 10,
+    marginTop: 90,
+    marginBottom: 40
   },
   input: {
     height: 40,
@@ -284,15 +285,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   finishButton: {
-    backgroundColor: "white",
+    backgroundColor: "#cccccc",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: "50%",
     marginBottom: 10,
-    marginTop: 20,
+    marginTop: 50,
+    marginLeft: 85
   },
   buttonText: {
     color: "black",
