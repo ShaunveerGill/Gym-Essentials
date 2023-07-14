@@ -7,6 +7,19 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import { set } from 'firebase/database';
 
+
+
+const DUMMY_WORKOUTS = [
+  {
+    id: 'w1',
+    workoutName: 'Workout 1',
+  },
+  {
+    id: 'w2',
+    workoutName: 'Workout 2',
+  },
+];
+
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }
@@ -23,7 +36,7 @@ function WorkoutItem({ id, exercise, record, date }) {
     navigation.navigate('ManageWorkout', {
       workoutId: id
     });
-  }
+  }  
   
   return (
     <Pressable 
@@ -53,7 +66,9 @@ const Workouts = () => {
   const workoutsCtx = useContext(WorkoutsContext);
 
   const handleAddWorkout = () => {
-    navigation.navigate('ManageWorkout');
+    navigation.navigate('ManageWorkout', {
+      workoutId: 'w1'
+    });
   };
 
   const user = auth.currentUser;
@@ -215,6 +230,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  
 });
 
 export default Workouts

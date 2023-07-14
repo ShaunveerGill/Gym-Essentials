@@ -1,10 +1,11 @@
-import React, { isValidElement, useContext, useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
+import React, { isValidElement, useContext, useState, useRef } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
+import TimerModal from './TimerModal';
 
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -132,10 +133,141 @@ function ManageWorkout({ route }) {
     );
   }
 
+  // ------------------------------------------------------------------------------------
+
+  const { workoutId } = route.params;
+
+  const [workoutName, setWorkoutName] = useState('');
+  const [exercises, setExercises] = useState([]);
+  const dropAnim = useRef(new Animated.Value(-100)).current;
+
+  const dropDown = () => {
+    Animated.timing(dropAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const addExerciseHandler = () => {
+    dropDown();
+    setExercises((currentExercises) => [
+      ...currentExercises,
+      { id: Math.random().toString(), name: '', sets: [{ sets: '', reps: '', done: false }] },
+    ]);
+  };
+
+  const addSetHandler = (index) => {
+    const newExercises = [...exercises];
+    newExercises[index].sets.push({ sets: '', reps: '', done: false });
+    setExercises(newExercises);
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [timerReset, setTimerReset] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+    setTimerReset(false);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const resetTimer = () => {
+    setModalVisible(true);
+    setTimerReset(true);
+  };
+
+  const toggleCheckbox = () => {
+    setCheckboxChecked(!checkboxChecked);
+    if (!checkboxChecked) {
+      setModalVisible(true);
+      setTimerReset(false);
+    }
+  };
+
+  const handleSave = () => {
+    navigation.goBack();
+  };
+
+  const renderExerciseItem = ({ item, index }) => (
+    <View>
+      <Animated.View style={{ ...styles.itemContainer, transform: [{ translateY: dropAnim }] }}>
+        <Text style={styles.text}>Exercise: </Text>
+        <TextInput 
+          style={styles.smallInput} 
+          value={item.name}
+          onChangeText={(text) => {
+            const newExercises = [...exercises];
+            newExercises[index].name = text;
+            setExercises(newExercises);
+          }}
+        />
+      </Animated.View>
+
+      <FlatList 
+        data={item.sets}
+        renderItem={({ item: setItem, index: setIndex }) => (
+          <Animated.View style={{ ...styles.itemContainer, transform: [{ translateY: dropAnim }] }}>
+            <Text style={styles.text}>Sets: </Text>
+            <TextInput 
+              style={styles.smallInput} 
+              value={setItem.sets}
+              onChangeText={(text) => {
+                const newExercises = [...exercises];
+                newExercises[index].sets[setIndex].sets = text;
+                setExercises(newExercises);
+              }}
+            />
+
+            <Text style={styles.text}> Reps: </Text>
+            <TextInput 
+              style={styles.smallInput} 
+              value={setItem.reps}
+              onChangeText={(text) => {
+                const newExercises = [...exercises];
+                newExercises[index].sets[setIndex].reps = text;
+                setExercises(newExercises);
+              }}
+            />
+
+            <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+              {checkboxChecked ? (
+                <Text style={styles.checkboxText}>✓</Text>
+              ) : (
+                <Text style={styles.checkboxText}>☐</Text>
+              )}
+            </TouchableOpacity>
+            <TimerModal
+              isVisible={modalVisible}
+              onClose={closeModal}
+              duration={60}
+              onReset={resetTimer}
+            />
+          </Animated.View>
+        )}
+        keyExtractor={(item, setIndex) => `set-${index}-${setIndex}`}
+      />
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => addSetHandler(index)}
+      >
+        <Text style={styles.buttonText}>Add Set</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  // ------------------------------------------------------------------------------------
+
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
+          {/*
           <Text style={[styles.text, !inputs.exercise.isValid && styles.invalidLabel]}>Exercise</Text>
   
           <View style={styles.inputContainer}>
@@ -189,7 +321,37 @@ function ManageWorkout({ route }) {
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
-  
+          */}
+          <View style={styles.container1}>
+      <View style={styles.headerContainer1}>
+        <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
+          <Text style={styles.headerButtonText1}>X</Text>
+        </TouchableOpacity>
+        <View style={styles.headerSpace1} />
+        <TouchableOpacity style={styles.headerButton1} onPress={() => handleSave()}>
+          <Text style={styles.headerButtonText1}>Save</Text>
+        </TouchableOpacity>
+      </View>
+      <TextInput 
+        style={styles.input1} 
+        placeholder="Workout Name" 
+        value={workoutName}
+        onChangeText={(text) => setWorkoutName(text)}
+      />
+
+      <FlatList 
+        data={exercises}
+        renderItem={renderExerciseItem}
+        keyExtractor={(item) => item.id}
+      />
+
+      <TouchableOpacity 
+        style={styles.button1} 
+        onPress={addExerciseHandler}
+      >
+        <Text style={styles.buttonText1}>Add Exercise</Text>
+      </TouchableOpacity>
+    </View>
         </>
       ) : (
         <>
@@ -324,4 +486,85 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  /*BELOW ARE STYLES FROM EDITWORKOUT.js */
+  wrapper1: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 20,
+  },
+  container1: {
+    flex: 1,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 60,
+  },
+  headerContainer1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  headerButton1: {
+    padding: 10,
+  },
+  headerButtonText1: {
+    fontSize: 18,
+  },
+  headerSpace1: {
+    flex: 1,
+  },
+  input1: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 30,
+    padding: 10,
+    width: '100%',
+  },
+  smallInput1: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    padding: 10,
+    width: '20%',
+    alignSelf: 'center',
+  },
+  itemContainer1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 25,
+    justifyContent: 'space-between',
+  },
+  text1: {
+    marginRight: 5,
+    alignSelf: 'center',
+  },
+  button1: {
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 30,
+  },
+  buttonText1: {
+    color: 'black',
+    fontSize: 18,
+  },
+  checkbox1: {
+    borderWidth: 1,
+    borderColor: 'black',
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 20,
+  },
+  checkboxText1: {
+    fontSize: 18,
+  },
 });
+
+
