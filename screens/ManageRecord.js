@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import React, { isValidElement, useContext, useState } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { RecordsContext } from '../RecordsContext';
@@ -9,6 +9,25 @@ function ManageRecord({ route }) {
   const navigation = useNavigation();
   const editedRecordId = route.params?.recordId;
   const isEditing = !!editedRecordId;
+
+  const selectedRecord = recordsCtx.records.find(
+    (record) => record.id === editedRecordId
+  );
+  
+  const [inputs, setInputs] = useState({
+    exercise: {
+      value: selectedRecord ? selectedRecord.exercise : '',
+      isValid: true,
+    },
+    record: {
+      value: selectedRecord ? selectedRecord.record : '',
+      isValid: true,
+    },
+    date: {
+      value: selectedRecord ? selectedRecord.date.toISOString().slice(0, 10): '',
+      isValid: true,
+    }
+  });
 
   function deleteExpenseHandler() {
     recordsCtx.deleteRecord(editedRecordId);
@@ -28,68 +47,88 @@ function ManageRecord({ route }) {
     navigation.navigate('PersonalRecords');
   }
 
-  const [inputValues, setInputValues] = useState({
-    exercise: '',
-    record: '',
-    date: '',
-  });
-
   function inputChangedHandler(inputIdentifier, enteredValue) {
-    setInputValues((curInputValues) => {
+    setInputs((curInputs) => {
       return {
-        ...curInputValues,
-        [inputIdentifier]: enteredValue,
+        ...curInputs,
+        [inputIdentifier]: { value: enteredValue, isValid: true },
       };
     });
   }
 
   function submitHandler() {
     const recordData = {
-      exercise: inputValues.exercise,
-      record: inputValues.record,
-      date: new Date(inputValues.date),
+      exercise: inputs.exercise.value,
+      record: inputs.record.value,
+      date: new Date(inputs.date.value),
     };
+
+    const exerciseIsValid = recordData.exercise.trim().length > 0;
+    const recordIsValid = recordData.record.trim().length > 0;
+    const dateIsValid = recordData.date.toString() !== 'Invalid Date';
+
+    if (!exerciseIsValid || !recordIsValid || !dateIsValid) {
+      setInputs((curInputs) => {
+        return {
+          exercise: { value: curInputs.exercise.value, isValid: exerciseIsValid },
+          record: { value: curInputs.record.value, isValid: recordIsValid },
+          date: { value: curInputs.date.value, isValid: dateIsValid }
+        };
+      });
+      return;
+    }
 
     confirmHandler(recordData);
   }
+
+  const formIsInvalid =
+    !inputs.exercise.isValid ||
+    !inputs.record.isValid ||
+    !inputs.date.isValid;
 
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
-          <Text style={styles.text}>Exercise</Text>
+          <Text style={[styles.text, !inputs.exercise.isValid && styles.invalidLabel]}>Exercise</Text>
   
           <View style={styles.inputContainer}>
             <TextInput 
-              style={styles.input}
+              style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
               placeholder="Exercise"
               onChangeText={inputChangedHandler.bind(this, 'exercise')}
-              value={inputValues.exercise}
+              value={inputs.exercise.value}
             />
           </View>
   
-          <Text style={styles.text}>Record</Text> 
+          <Text style={[styles.text, !inputs.record.isValid && styles.invalidLabel]}>Record</Text> 
   
           <View style={styles.inputContainer}>
             <TextInput 
-              style={styles.input}
+              style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
               placeholder="Record"
               onChangeText={inputChangedHandler.bind(this, 'record')}
-              value={inputValues.record}
+              value={inputs.record.value}
             />
           </View>
   
-          <Text style={styles.text}>Date</Text>
+          <Text style={[styles.text, !inputs.date.isValid && styles.invalidLabel]}>Date</Text>
   
           <View style={styles.inputContainer}>
             <TextInput 
-              style={styles.input}
+              style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
               placeholder="YYYY-MM-DD"
               maxLength={10}
               onChangeText={inputChangedHandler.bind(this, 'date')}
-              value={inputValues.date}
+              value={inputs.date.value}
             />
           </View>
+
+          {formIsInvalid && (
+            <Text style={styles.errorText}>
+              Invalid input values - please check your entered data!
+            </Text>
+          )}
   
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={submitHandler}>
@@ -108,40 +147,46 @@ function ManageRecord({ route }) {
         </>
       ) : (
         <>
-          <Text style={styles.text}>Exercise</Text>
+          <Text style={[styles.text, !inputs.exercise.isValid && styles.invalidLabel]}>Exercise</Text>
   
           <View style={styles.inputContainer}>
             <TextInput 
-              style={styles.input}
+              style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
               placeholder="Exercise"
               onChangeText={inputChangedHandler.bind(this, 'exercise')}
-              value={inputValues.exercise}
+              value={inputs.exercise.value}
             />
           </View>
   
-          <Text style={styles.text}>Record</Text> 
+          <Text style={[styles.text, !inputs.record.isValid && styles.invalidLabel]}>Record</Text> 
   
           <View style={styles.inputContainer}>
             <TextInput 
-              style={styles.input}
+              style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
               placeholder="Record"
               onChangeText={inputChangedHandler.bind(this, 'record')}
-              value={inputValues.record}
+              value={inputs.record.value}
             />
           </View>
   
-          <Text style={styles.text}>Date</Text>
+          <Text style={[styles.text, !inputs.date.isValid && styles.invalidLabel]}>Date</Text>
   
           <View style={styles.inputContainer}>
             <TextInput 
-              style={styles.input}
+              style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
               placeholder="YYYY-MM-DD"
               maxLength={10}
               onChangeText={inputChangedHandler.bind(this, 'date')}
-              value={inputValues.date}
+              value={inputs.date.value}
             />
           </View>
-  
+
+          {formIsInvalid && (
+            <Text style={styles.errorText}>
+              Invalid input values - please check your entered data!
+            </Text>
+          )}
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={submitHandler}>
               <Text style={styles.buttonText}>Add</Text>
@@ -198,5 +243,16 @@ const styles = StyleSheet.create({
   buttonText : {
     color: 'white',
     fontSize: 16,
-  }
+  },
+  errorText: {
+    textAlign: 'center',
+    color: 'red',
+    margin: 8,
+  },
+  invalidLabel: {
+    color: 'red'
+  },
+  invalidInput: {
+    backgroundColor: '#ffb6c1'
+  },
 });
