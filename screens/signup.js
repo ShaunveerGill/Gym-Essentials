@@ -6,7 +6,6 @@ import { SvgXml } from 'react-native-svg';
 import { UserContext } from "../UserContext";
 import { useContext } from "react";
 
-
 function SignUp() {
   const navigation = useNavigation();
   const {
@@ -14,47 +13,49 @@ function SignUp() {
     setUserEmail,
     userName,
     setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal
   } = useContext(UserContext);
-  const [Cpassword, setCPassword] = useState('')
-  const [password, setPassword] = useState('')
+
+  const [Cpassword, setCPassword] = useState('');
+  const [password, setPassword] = useState('');
+  const [ValidPassword, setValidPassword] = useState(true);
+
+  const handlePassword = (Cpassword, password) => {
+    const amountIsValid = Cpassword === password;
+    setValidPassword(amountIsValid);
+    if (amountIsValid) {
+      handleSignUp();
+    }
+  };
 
   const userSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
   const mailSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
   const lockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
 
+  const formIsInvalid = !ValidPassword;
 
   const handleSignUp = () => {
-
-    if (Cpassword === password){
-      auth
-        .createUserWithEmailAndPassword(userEmail, Cpassword)
-        .then(userCredentials => {
-            const user = userCredentials.user;
-            console.log('Registered with:', userEmail);
-            console.log('Registered with name:', userName);
-            navigation.navigate('AboutYou', { email: user.email, name: userName });
-        })
-        .catch(error => alert(error.message))
-    }
-    else{
-      console.log("error")
-    }
+    auth
+      .createUserWithEmailAndPassword(userEmail, Cpassword)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log('Registered with:', userEmail);
+        console.log('Registered with name:', userName);
+        setPassword('');
+        setCPassword('');
+        navigation.navigate('AboutYou');
+      })
+      .catch(error => alert(error.message))
   }
 
-
+  const handleBack = () => {
+    setPassword('');
+    setCPassword('');
+    setUserEmail('');
+    setUserName('');
+    navigation.navigate('Login');
+  }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      {/*CREATE ACCOUNT CONTAINER PAGE*/}
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Create Account</Text>
@@ -63,7 +64,7 @@ function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            value = {userName}
+            value={userName}
             onChangeText={text => setUserName(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
@@ -74,7 +75,7 @@ function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Email Address"
-            value={setUserName}
+            value={userEmail}
             onChangeText={text => setUserEmail(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
@@ -83,46 +84,64 @@ function SignUp() {
         </View>
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              !ValidPassword && styles.invalidInput
+            ]}
             placeholder="Password"
             value={password}
             onChangeText={text => setPassword(text)}
             secureTextEntry
-
           />
           <TouchableOpacity style={styles.iconContainer}>
             <SvgXml xml={lockSvg} width={20} height={20} />
           </TouchableOpacity>
         </View>
-
+        
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              !ValidPassword && styles.invalidInput
+            ]}
             placeholder="Confirm Password"
             value={Cpassword}
             onChangeText={text => setCPassword(text)}
             secureTextEntry
           />
+          <TouchableOpacity style={styles.iconContainer}>
+            <SvgXml xml={lockSvg} width={20} height={20} />
+          </TouchableOpacity>
         </View>
-
+        
+        {formIsInvalid && (
+          <Text style={styles.errorText}>
+            Passwords do not match
+          </Text>
+        )}
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.createAccountButton} onPress={handleSignUp}>
+          <TouchableOpacity
+            style={[
+              styles.createAccountButton,
+              formIsInvalid
+            ]}
+            onPress={() => handlePassword(Cpassword, password)}
+            // disabled={formIsInvalid}
+          >
             <Text style={styles.buttonText}>Create account</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.createAccountButton} onPress={() => {navigation.navigate('Login');}}>
+          <TouchableOpacity style={styles.createAccountButton} onPress={() => handleBack()}>
             <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
         </View>
-
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
-
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -169,8 +188,17 @@ const styles = {
   buttonText: {
     color: 'black',
     fontSize: 18,
-  }
-};
+  },
+  invalidInput: {
+    borderColor: 'red',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+});
 
 export default SignUp;
-

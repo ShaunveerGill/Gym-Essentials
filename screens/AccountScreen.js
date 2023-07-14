@@ -46,6 +46,13 @@ const AccountScreen = ({ navigation }) => {
     auth
       .signOut()
       .then(() => {
+        setUserName('');
+        setGender('');
+        setAge('');
+        setHeight('');
+        setWeight('');
+        setGoal('');
+        setActivityLevel('');
         console.log("User signed out");
         navigation.navigate("Login");
       })
