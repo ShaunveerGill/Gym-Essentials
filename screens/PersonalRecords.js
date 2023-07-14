@@ -1,8 +1,11 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { RecordsContext } from '../RecordsContext';
+import { auth } from "../firebase";
+import axios from 'axios';
+import { set } from 'firebase/database';
 
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
@@ -45,11 +48,48 @@ function RecordItem({ id, exercise, record, date }) {
 const PersonalRecords = () => {
   const navigation = useNavigation();
 
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState();
   const recordsCtx = useContext(RecordsContext);
 
   const handleAddRecord = () => {
     navigation.navigate('ManageRecord');
   };
+
+  const user = auth.currentUser;
+  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
+
+  useEffect(() => {
+    async function getRecords() {
+      setIsFetching(true);
+      try {
+        const records = await fetchRecords();
+        recordsCtx.setRecords(records);
+      } catch (error) {
+        setError('Could not fetch personal records!');
+      }
+      setIsFetching(false);
+    }
+    getRecords();
+  }, []);
+
+  async function fetchRecords() {
+    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/personalrecords.json');
+  
+    const records = [];
+
+    for (const key in response.data) {
+      const recordObj = {
+        id: key,
+        exercise: response.data[key].exercise,
+        record: response.data[key].record,
+        date: new Date(response.data[key].date)
+      };
+      records.push(recordObj);
+    }
+  
+    return records;
+  }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -74,6 +114,23 @@ const PersonalRecords = () => {
         renderItem={renderRecordItem}
         keyExtractor={(item) => item.id}
       />
+    );
+  }
+
+  if (error && !isFetching) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={[styles.errorText, styles.errorTitle]}>An error occurred!</Text>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  if(isFetching) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="black" />
+      </View>      
     );
   }
 
@@ -134,6 +191,29 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginRight: 20,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'white',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'white',
+  },
+  errorText: {
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 

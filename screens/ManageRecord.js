@@ -1,14 +1,21 @@
 import React, { isValidElement, useContext, useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { RecordsContext } from '../RecordsContext';
+import { auth } from "../firebase";
+import axios from 'axios';
 
 function ManageRecord({ route }) {
   const recordsCtx = useContext(RecordsContext);
   const navigation = useNavigation();
   const editedRecordId = route.params?.recordId;
   const isEditing = !!editedRecordId;
+  const user = auth.currentUser;
+  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
   const selectedRecord = recordsCtx.records.find(
     (record) => record.id === editedRecordId
@@ -29,22 +36,43 @@ function ManageRecord({ route }) {
     }
   });
 
-  function deleteExpenseHandler() {
-    recordsCtx.deleteRecord(editedRecordId);
-    navigation.navigate('PersonalRecords');
+  async function deleteExpenseHandler() {
+    setIsSubmitting(true);
+    try {
+      await axios.delete(BACKEND_URL + '/users/' + user.uid + '/personalrecords/' + editedRecordId + '.json');
+      recordsCtx.deleteRecord(editedRecordId);
+      navigation.navigate('PersonalRecords');
+    } catch (error) {
+      setError('Could not delete record - please try again later!');
+      setIsSubmitting(false);
+    }
   }
 
   function cancelHandler() {
     navigation.navigate('PersonalRecords');
   }
 
-  function confirmHandler(recordData) {
-    if (isEditing){
-      recordsCtx.updateRecord(editedRecordId, recordData);
-    } else {
-      recordsCtx.addRecord(recordData);
+  async function storeRecord(recordData) {
+    const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/personalrecords.json', recordData);
+    const id = response.data.name;
+    return id;
+  }  
+
+  async function confirmHandler(recordData) {
+    setIsSubmitting(true);
+    try {
+      if (isEditing){
+        recordsCtx.updateRecord(editedRecordId, recordData);
+        await axios.put(BACKEND_URL + '/users/' + user.uid + '/personalrecords/' + editedRecordId + '.json', recordData);
+      } else {
+        const id = await storeRecord(recordData);
+        recordsCtx.addRecord({...recordData, id: id});
+      }
+      navigation.navigate('PersonalRecords');
+    } catch (error) {
+      setError('Could not save data - please try again later!');
+      setIsSubmitting(false);
     }
-    navigation.navigate('PersonalRecords');
   }
 
   function inputChangedHandler(inputIdentifier, enteredValue) {
@@ -85,6 +113,23 @@ function ManageRecord({ route }) {
     !inputs.exercise.isValid ||
     !inputs.record.isValid ||
     !inputs.date.isValid;
+
+  if (error && !isSubmitting) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={[styles.errorText, styles.errorTitle]}>An error occurred!</Text>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  if (isSubmitting) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="black" />
+      </View>      
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -254,5 +299,28 @@ const styles = StyleSheet.create({
   },
   invalidInput: {
     backgroundColor: '#ffb6c1'
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'white',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'white',
+  },
+  errorText: {
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
