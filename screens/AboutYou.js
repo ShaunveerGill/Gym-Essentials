@@ -189,9 +189,9 @@ function AboutYou() {
           <TouchableOpacity
       style={[
         styles.buttonGoals,
-        { backgroundColor: activityLevel === "1.2" ? "#ffffff" : "#cccccc" },
+        { backgroundColor: activityLevel === "Sedentary" ? "#ffffff" : "#cccccc" },
       ]}
-      onPress={() => handleActivityLevel("1.2")}
+      onPress={() => handleActivityLevel("Sedentary")}
     >
       <Text style={styles.activityButtonText}>
         Sedentary (little to no exercise)
@@ -200,9 +200,9 @@ function AboutYou() {
     <TouchableOpacity
       style={[
         styles.buttonGoals,
-        { backgroundColor: activityLevel === "1.375" ? "#ffffff" : "#cccccc" },
+        { backgroundColor: activityLevel === "Lightly active" ? "#ffffff" : "#cccccc" },
       ]}
-      onPress={() => handleActivityLevel("1.375")}
+      onPress={() => handleActivityLevel("Lightly active")}
     >
       <Text style={styles.activityButtonText}>
         Lightly active (exercise 1-3 days/week)
@@ -211,9 +211,9 @@ function AboutYou() {
     <TouchableOpacity
       style={[
         styles.buttonGoals,
-        { backgroundColor: activityLevel === "1.55" ? "#ffffff" : "#cccccc" },
+        { backgroundColor: activityLevel === "Moderately active" ? "#ffffff" : "#cccccc" },
       ]}
-      onPress={() => handleActivityLevel("1.55")}
+      onPress={() => handleActivityLevel("Moderately active")}
     >
       <Text style={styles.activityButtonText}>
         Moderately active (exercise 3-5 days/week)
@@ -222,9 +222,9 @@ function AboutYou() {
     <TouchableOpacity
       style={[
         styles.buttonGoals,
-        { backgroundColor: activityLevel === "1.725" ? "#ffffff" : "#cccccc" },
+        { backgroundColor: activityLevel === "Very active" ? "#ffffff" : "#cccccc" },
       ]}
-      onPress={() => handleActivityLevel("1.725")}
+      onPress={() => handleActivityLevel("Very active")}
     >
       <Text style={styles.activityButtonText}>
         Very active (exercise 6-7 days/week)
@@ -233,9 +233,9 @@ function AboutYou() {
     <TouchableOpacity
       style={[
         styles.buttonGoals,
-        { backgroundColor: activityLevel === "1.9" ? "#ffffff" : "#cccccc" },
+        { backgroundColor: activityLevel === "Extra active" ? "#ffffff" : "#cccccc" },
       ]}
-      onPress={() => handleActivityLevel("1.9")}
+      onPress={() => handleActivityLevel("Extra active")}
     >
       <Text style={styles.activityButtonText}>
         Extra active (very active and physical job)

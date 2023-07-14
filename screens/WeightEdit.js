@@ -83,7 +83,7 @@ function WeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validWeightInput && styles.invalidLabel]}>What is your weight?</Text>
+          <Text style={[styles.question, !validWeightInput && styles.invalidLabel]}>What is your weight(lb)?</Text>
           <TextInput
             style={[
               styles.inputBox,

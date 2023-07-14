@@ -5,6 +5,8 @@ import { UserContext } from "../UserContext";
 const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
 
+// MEN 88.362 + (13.397 * (weightInt / 2.2)) + (4.799 * heightInt) – (5.677 * ageInt)
+// WOMEN 447.593 + (9.247 * (weightInt / 2.2)) + (3.098 * heightInt) – (4.330 * ageInt)
 function FitnessCalculators() {
   const [calories, setCalories] = useState("0");
   const [protein, setProtein] = useState("0");
@@ -19,18 +21,31 @@ function FitnessCalculators() {
 
   useEffect(() => {
     const calculate = () => {
-      let weightInt = parseInt(weight, 10);
-      let heightInt = parseInt(height, 10);
-      let ageInt = parseInt(age, 10);
+      let weightInt = parseFloat(weight, 10);
+      let heightInt = parseFloat(height, 10);
+      let ageInt = parseFloat(age, 10);
+      let activityLevelInt = 1;
+
+      if (activityLevel === "Sedentary") {
+        let activityLevelInt = 1.2;
+      } else if (activityLevel === "Lightly active") {
+        activityLevelInt = 1.375;
+      } else if (activityLevel === "Moderately active") {
+        activityLevelInt = 1.55;
+      } else if (activityLevel === "Very active") {
+        activityLevelInt = 1.725;
+      } else {
+        activityLevelInt = 1.9;
+      } 
 
       let BMR = gender === 'Male'
-        ? 10 * (weightInt / 2.2) + 6.25 * heightInt - 5 * ageInt + 5
-        : 10 * (weightInt / 2.2) + 6.25 * heightInt - 5 * ageInt - 161;
+        ? 88.362 + (13.397 * (weightInt / 2.2)) + (4.799 * heightInt) - (5.677 * ageInt)
+        : 447.593 + (9.247 * (weightInt / 2.2)) + (3.098 * heightInt) - (4.330 * ageInt);
 
-      let activityLevelInt = 1.2;
-
+      console.log(BMR);
       let TDEE = Math.ceil(BMR * activityLevelInt);
 
+      console.log("TDEE: " + TDEE);
       if (goal === "Lose Weight") {
         setCalories(TDEE + LOSE_WEIGHT);
         setProtein(Math.ceil((weightInt / 2.2) * 2.25));

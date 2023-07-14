@@ -83,7 +83,7 @@ function HeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validHeightInput && styles.invalidLabel]}>What is your height?</Text>
+          <Text style={[styles.question, !validHeightInput && styles.invalidLabel]}>What is your height(cm)?</Text>
           <TextInput
             style={[
               styles.inputBox,
