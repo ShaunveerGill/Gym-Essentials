@@ -4,12 +4,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { RecordsContext } from '../RecordsContext';
 
-/*function fixDate(date) {
-  return(date.getFullYear()+ "-" + (date.getMonth()+1) + "-" + (date.getDate()+1));
-}*/
-
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
+}
+
+function renderRecordItem(itemData) {
+  return (
+    <RecordItem {...itemData.item} />);  
 }
 
 function RecordItem({ id, exercise, record, date }) {
@@ -39,11 +40,6 @@ function RecordItem({ id, exercise, record, date }) {
       </View>
     </Pressable>
   );
-}
-
-function renderRecordItem(itemData) {
-  return (
-    <RecordItem {...itemData.item} />);  
 }
 
 const PersonalRecords = () => {

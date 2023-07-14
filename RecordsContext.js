@@ -1,20 +1,5 @@
 import { createContext, useReducer } from "react";
 
-const DUMMY_RECORDS = [
-    {
-      id: 'r1',
-      exercise: 'Bench Press',
-      record: '125 lbs',
-      date: new Date('2021-12-19'),
-    },
-    {
-      id: 'r2',
-      exercise: 'Leg Press',
-      record: '120 lbs',
-      date: new Date('2021-12-19'),
-    },
-];
-
 export const RecordsContext = createContext({
     records: [],
     addRecord: ({exercise, record, date}) => {},
@@ -44,7 +29,7 @@ function recordsReducer(state, action) {
 }
 
 function RecordsContextProvider({children}) {
-    const [recordsState, dispatch] = useReducer(recordsReducer, DUMMY_RECORDS);
+    const [recordsState, dispatch] = useReducer(recordsReducer, []);
 
     function addRecord(recordData) {
         dispatch({type: 'ADD', payload: recordData});
