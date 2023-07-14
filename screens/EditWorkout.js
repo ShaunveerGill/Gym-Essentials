@@ -1,3 +1,5 @@
+/*WE ARE NO LONGER USING THIS ANYMORE*/
+
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Animated } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -5,10 +7,10 @@ import TimerModal from './TimerModal';
 
 function EditWorkout({ navigation, route }) {
   const { workoutId } = route.params;
-  
+
   const [workoutName, setWorkoutName] = useState('');
   const [exercises, setExercises] = useState([]);
-  const dropAnim = useRef(new Animated.Value(-100)).current;
+  const dropAnim = useRef(new Animated.Value(-100)).current; // Initial value for drop: -100
 
   const dropDown = () => {
     // Will change dropAnim value to 0
@@ -27,6 +29,40 @@ function EditWorkout({ navigation, route }) {
     ]);
   };
 
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.headerButtonText}>X</Text>
+        </TouchableOpacity>
+        <View style={styles.headerSpace} />
+        <TouchableOpacity style={styles.headerButton} onPress={() => alert('Save button pressed')}>
+          <Text style={styles.headerButtonText}>Save</Text>
+        </TouchableOpacity>
+      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Workout Name"
+        value={workoutName}
+        onChangeText={(text) => setWorkoutName(text)}
+      />
+
+      <FlatList
+        data={exercises}
+        renderItem={({ item }) => (
+          <ExerciseItem item={item} exercises={exercises} setExercises={setExercises} dropAnim={dropAnim} />
+        )}
+        keyExtractor={(item) => item.id}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={addExerciseHandler}>
+        <Text style={styles.buttonText}>Add Set</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const ExerciseItem = ({ item, exercises, setExercises, dropAnim }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [timerReset, setTimerReset] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
@@ -52,27 +88,28 @@ function EditWorkout({ navigation, route }) {
     }
   };
 
-  const renderExerciseItem = ({ item }) => (
+  return (
     <Animated.View style={{ ...styles.itemContainer, transform: [{ translateY: dropAnim }] }}>
-      <Text style={styles.text}>Sets: </Text>
-      <TextInput 
-        style={styles.smallInput} 
+      <Text style={styles.text}>Sets
+      : </Text>
+      <TextInput
+        style={styles.smallInput}
         value={item.sets}
         onChangeText={(text) => {
           const newExercises = [...exercises];
-          const index = exercises.findIndex(exercise => exercise.id === item.id);
+          const index = exercises.findIndex((exercise) => exercise.id === item.id);
           newExercises[index].sets = text;
           setExercises(newExercises);
         }}
       />
 
       <Text style={styles.text}> Reps: </Text>
-      <TextInput 
-        style={styles.smallInput} 
+      <TextInput
+        style={styles.smallInput}
         value={item.reps}
         onChangeText={(text) => {
           const newExercises = [...exercises];
-          const index = exercises.findIndex(exercise => exercise.id === item.id);
+          const index = exercises.findIndex((exercise) => exercise.id === item.id);
           newExercises[index].reps = text;
           setExercises(newExercises);
         }}
@@ -85,46 +122,10 @@ function EditWorkout({ navigation, route }) {
           <Text style={styles.checkboxText}>☐</Text>
         )}
       </TouchableOpacity>
-      <TimerModal
-        isVisible={modalVisible}
-        onClose={closeModal}
-        duration={60}
-        onReset={resetTimer}
-      />
+      {modalVisible && (
+        <TimerModal isVisible={modalVisible} onClose={closeModal} duration={60} onReset={resetTimer} />
+      )}
     </Animated.View>
-  );
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerButtonText}>X</Text>
-        </TouchableOpacity>
-        <View style={styles.headerSpace} />
-        <TouchableOpacity style={styles.headerButton} onPress={() => alert('Save button pressed')}>
-          <Text style={styles.headerButtonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
-      <TextInput 
-        style={styles.input} 
-        placeholder="Workout Name" 
-        value={workoutName}
-        onChangeText={(text) => setWorkoutName(text)}
-      />
-
-      <FlatList 
-        data={exercises}
-        renderItem={renderExerciseItem}
-        keyExtractor={(item) => item.id}
-      />
-
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={addExerciseHandler}
-      >
-        <Text style={styles.buttonText}>Add Set</Text>
-      </TouchableOpacity>
-    </View>
   );
 };
 
@@ -206,3 +207,4 @@ const styles = StyleSheet.create({
 
 
 export default EditWorkout;
+

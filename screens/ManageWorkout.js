@@ -193,7 +193,10 @@ function ManageWorkout({ route }) {
     navigation.goBack();
   };
 
+  // ------------------------------------------------------------------------------------
+
   const renderExerciseItem = ({ item, index }) => (
+    
     <View>
       <Animated.View style={{ ...styles.itemContainer, transform: [{ translateY: dropAnim }] }}>
         <Text style={styles.text}>Exercise: </Text>
@@ -234,19 +237,16 @@ function ManageWorkout({ route }) {
               }}
             />
 
-            <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
-              {checkboxChecked ? (
-                <Text style={styles.checkboxText}>✓</Text>
-              ) : (
-                <Text style={styles.checkboxText}>☐</Text>
-              )}
-            </TouchableOpacity>
-            <TimerModal
-              isVisible={modalVisible}
-              onClose={closeModal}
-              duration={60}
-              onReset={resetTimer}
-            />
+      <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+        {checkboxChecked ? (
+          <Text style={styles.checkboxText}>✓</Text>
+        ) : (
+          <Text style={styles.checkboxText}>☐</Text>
+        )}
+      </TouchableOpacity>
+      {modalVisible && (
+        <TimerModal isVisible={modalVisible} onClose={closeModal} duration={60} onReset={resetTimer} />
+      )}
           </Animated.View>
         )}
         keyExtractor={(item, setIndex) => `set-${index}-${setIndex}`}
@@ -261,67 +261,15 @@ function ManageWorkout({ route }) {
     </View>
   );
 
+
+
+
   // ------------------------------------------------------------------------------------
 
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
-          {/*
-          <Text style={[styles.text, !inputs.exercise.isValid && styles.invalidLabel]}>Exercise</Text>
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
-              placeholder="Exercise"
-              onChangeText={inputChangedHandler.bind(this, 'exercise')}
-              value={inputs.exercise.value}
-            />
-          </View>
-  
-          <Text style={[styles.text, !inputs.record.isValid && styles.invalidLabel]}>Record</Text> 
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
-              placeholder="Record"
-              onChangeText={inputChangedHandler.bind(this, 'record')}
-              value={inputs.record.value}
-            />
-          </View>
-  
-          <Text style={[styles.text, !inputs.date.isValid && styles.invalidLabel]}>Date</Text>
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
-              placeholder="YYYY-MM-DD"
-              maxLength={10}
-              onChangeText={inputChangedHandler.bind(this, 'date')}
-              value={inputs.date.value}
-            />
-          </View>
-
-          {formIsInvalid && (
-            <Text style={styles.errorText}>
-              Invalid input values - please check your entered data!
-            </Text>
-          )}
-  
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={submitHandler}>
-              <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
-  
-            <TouchableOpacity style={styles.button} onPress={deleteWorkoutHandler}>
-              <Ionicons name="trash" color="white" size={20} />
-            </TouchableOpacity>
-  
-            <TouchableOpacity style={styles.button} onPress={cancelHandler}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-          */}
           <View style={styles.container1}>
       <View style={styles.headerContainer1}>
         <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
@@ -336,7 +284,7 @@ function ManageWorkout({ route }) {
         style={styles.input1} 
         placeholder="Workout Name" 
         value={workoutName}
-        onChangeText={(text) => setWorkoutName(text)}
+        onChangeText={inputChangedHandler.bind(this, 'workoutname')}
       />
 
       <FlatList 
@@ -566,5 +514,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-
