@@ -193,6 +193,19 @@ function ManageWorkout({ route }) {
     navigation.goBack();
   };
 
+  const handleDeleteSet = (exerciseIndex, setIndex) => {
+    const newExercises = [...exercises];
+    newExercises[exerciseIndex].sets.splice(setIndex, 1);
+  
+    // Check if there are no sets left in the exercise.
+    if (newExercises[exerciseIndex].sets.length === 0) {
+      // Remove the exercise.
+      newExercises.splice(exerciseIndex, 1);
+    }
+  
+    setExercises(newExercises);
+  };
+
   // ------------------------------------------------------------------------------------
   const renderExerciseItem = ({ item, index }) => (
     <View style={styles.exerciseContainer}>
@@ -294,12 +307,14 @@ function ManageWorkout({ route }) {
                 <Text style={styles.headerButtonText1}>Save</Text>
               </TouchableOpacity>
             </View>
+
             <TextInput 
-              style={styles.input1} 
-              placeholder="Workout Name" 
-              value={workoutName}
-              onChangeText={inputChangedHandler.bind(this, 'workoutname')}
+            style={styles.input1} 
+            placeholder="Workout Name" 
+            value={workoutName}
+            onChangeText={(text) => setWorkoutName(text)}
             />
+
 
             <FlatList 
               data={exercises}
