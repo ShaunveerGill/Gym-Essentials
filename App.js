@@ -22,7 +22,6 @@ import AgeEdit from "./screens/AgeEdit"
 import HeightEdit from "./screens/HeightEdit"
 import WeightEdit from "./screens/WeightEdit"
 import ManageWorkout from "./screens/ManageWorkout";
-import EditWorkout from "./screens/EditWorkout";
 import { RecordsContextProvider } from "./RecordsContext";
 import { WorkoutsContextProvider } from "./WorkoutsContext";
 
@@ -150,7 +149,6 @@ export default function App() {
               <Stack.Screen name="AboutYou" component={AboutYou} />
               <Stack.Screen name="AccountScreen" component={AccountScreen} />
               <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
-              <Stack.Screen name="EditWorkout"component={EditWorkout}/>
               <Stack.Screen name="TimerModal"component={TimerModal}/>
             </Stack.Navigator>
           </NavigationContainer>

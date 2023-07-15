@@ -198,9 +198,9 @@ function ManageWorkout({ route }) {
     <View style={styles.exerciseContainer}>
       <View>
         <View style={styles.itemContainer}>
-          <Text style={[styles.text, styles.exerciseLabel]}>Exercise:</Text>
+          <Text style={styles.exerciseLabel}>Exercise:</Text>
           <TextInput 
-            style={[styles.exerciseInput, { width: '100%' }]} 
+            style={styles.exerciseInput} 
             value={item.name}
             onChangeText={(text) => {
               const newExercises = [...exercises];
@@ -209,63 +209,63 @@ function ManageWorkout({ route }) {
             }}
           />
         </View>
-
-      
+  
         {item.sets.map((setItem, setIndex) => (
-          <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Sets:</Text>
-              <View style={styles.inputWrapper}>
-                <TextInput 
-                  style={styles.smallInput} 
-                  value={setItem.sets}
-                  onChangeText={(text) => {
-                    const newExercises = [...exercises];
-                    newExercises[index].sets[setIndex].sets = text;
-                    setExercises(newExercises);
-                  }}
-                />
-              </View>
-            </View>
-  
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Reps:</Text>
-              <View style={styles.inputWrapper}>
-                <TextInput 
-                  style={styles.smallInput} 
-                  value={setItem.reps}
-                  onChangeText={(text) => {
-                    const newExercises = [...exercises];
-                    newExercises[index].sets[setIndex].reps = text;
-                    setExercises(newExercises);
-                  }}
-                />
-              </View>
-            </View>
-  
-            <View style={styles.inputContainer}>
-              <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
-                {checkboxChecked ? (
-                  <Text style={styles.checkboxText}>✓</Text>
-                ) : (
-                  <Text style={styles.checkboxText}>☐</Text>
-                )}
-              </TouchableOpacity>
-              <TimerModal
-                isVisible={modalVisible}
-                onClose={closeModal}
-                duration={60}
-                onReset={resetTimer}
-              />
-            </View>
+  <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
+    <View style={styles.inputContainer}>
+      <Text style={styles.label}>Sets:</Text>
+      <View style={styles.inputWrapper}>
+        <TextInput 
+          style={styles.smallInput} 
+          value={setItem.sets}
+          onChangeText={(text) => {
+            const newExercises = [...exercises];
+            newExercises[index].sets[setIndex].sets = text;
+            setExercises(newExercises);
+          }}
+        />
+      </View>
+    </View>
 
-            <View style={styles.inputContainer}>
-              <TouchableOpacity onPress={() => handleDeleteSet(index, setIndex)}>
-                <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+    <View style={styles.inputContainer}>
+      <Text style={styles.label}>Reps:</Text>
+      <View style={styles.inputWrapper}>
+        <TextInput 
+          style={styles.smallInput} 
+          value={setItem.reps}
+          onChangeText={(text) => {
+            const newExercises = [...exercises];
+            newExercises[index].sets[setIndex].reps = text;
+            setExercises(newExercises);
+          }}
+        />
+      </View>
+    </View>
+
+    <View style={styles.inputContainer}>
+      <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+        {checkboxChecked ? (
+          <Text style={styles.checkboxText}>✓</Text>
+        ) : (
+          <Text style={styles.checkboxText}>☐</Text>
+        )}
+      </TouchableOpacity>
+      <TimerModal
+        isVisible={modalVisible}
+        onClose={closeModal}
+        duration={60}
+        onReset={resetTimer}
+      />
+    </View>
+
+    <View style={styles.inputContainer}>
+      <TouchableOpacity onPress={() => handleDeleteSet(index, setIndex)}>
+        <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
+      </TouchableOpacity>
+    </View>
+  </View>
+))}
+
   
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
@@ -278,8 +278,6 @@ function ManageWorkout({ route }) {
       </View>
     </View>
   );
-  
-  
   // ------------------------------------------------------------------------------------
 
   return (
@@ -300,7 +298,7 @@ function ManageWorkout({ route }) {
         style={styles.input1} 
         placeholder="Workout Name" 
         value={workoutName}
-        onChangeText={(text) => setWorkoutName(text)}
+        onChangeText={inputChangedHandler.bind(this, 'workoutname')}
       />
 
       <FlatList 
@@ -339,12 +337,12 @@ function ManageWorkout({ route }) {
           */}
 
            <TouchableOpacity
-            style={[styles.save, !validAgeInput && { opacity: 0.5 }]}
+            style={styles.save2}
             onPress={saveAndNavigate}
             disabled={!validAgeInput}
            >
             <View>
-             <Text style={styles.buttonText}>Save</Text>
+             <Text style={styles.buttonText2}>Save</Text>
             </View>
            </TouchableOpacity>
           </View>
@@ -568,22 +566,23 @@ const styles = StyleSheet.create({
   checkboxText1: {
     fontSize: 18,
   },
+
   //AGE EDIT STYLES for ):(
-  container: {
+  container2: {
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
   },
-  header: {
+  header2: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 40,
   },
-  title: {
+  title2: {
     fontSize: 40,
     marginRight: 10,
   },
-  inputBox: {
+  inputBox2: {
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
@@ -592,14 +591,14 @@ const styles = StyleSheet.create({
     minWidth: 200,
     width: "100%",
   },
-  buttonText: {
+  buttonText2: {
     color: "white",
     fontSize: 16,
   },
-  questions: {
+  questions2: {
     marginBottom: 10,
   },
-  save: {
+  save2: {
     backgroundColor: "black",
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -610,3 +609,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
+
+
