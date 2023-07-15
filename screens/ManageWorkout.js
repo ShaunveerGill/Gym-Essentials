@@ -1,5 +1,5 @@
 import React, { isValidElement, useContext, useState, useRef } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList, ScrollView} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList, ScrollView, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
@@ -285,69 +285,59 @@ function ManageWorkout({ route }) {
       {isEditing ? (
         <>
           <View style={styles.container1}>
-      <View style={styles.headerContainer1}>
-        <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerButtonText1}>X</Text>
-        </TouchableOpacity>
-        <View style={styles.headerSpace1} />
-        <TouchableOpacity style={styles.headerButton1} onPress={() => handleSave()}>
-          <Text style={styles.headerButtonText1}>Save</Text>
-        </TouchableOpacity>
-      </View>
-      <TextInput 
-        style={styles.input1} 
-        placeholder="Workout Name" 
-        value={workoutName}
-        onChangeText={inputChangedHandler.bind(this, 'workoutname')}
-      />
+            <View style={styles.headerContainer1}>
+              <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
+                <Text style={styles.headerButtonText1}>X</Text>
+              </TouchableOpacity>
+              {/*<View style={styles.headerSpace1} />*/}
+              <TouchableOpacity style={styles.headerButton1} onPress={() => handleSave()}>
+                <Text style={styles.headerButtonText1}>Save</Text>
+              </TouchableOpacity>
+            </View>
+            <TextInput 
+              style={styles.input1} 
+              placeholder="Workout Name" 
+              value={workoutName}
+              onChangeText={inputChangedHandler.bind(this, 'workoutname')}
+            />
 
-      <FlatList 
-        data={exercises}
-        renderItem={renderExerciseItem}
-        keyExtractor={(item) => item.id}
-      />
+            <FlatList 
+              data={exercises}
+              renderItem={renderExerciseItem}
+              keyExtractor={(item) => item.id}
+            />
 
-      <TouchableOpacity 
-        style={styles.button1} 
-        onPress={addExerciseHandler}
-      >
-        <Text style={styles.buttonText1}>Add Exercise</Text>
-      </TouchableOpacity>
-    </View>
+            <TouchableOpacity 
+              style={styles.button1} 
+              onPress={addExerciseHandler}
+            >
+              <Text style={styles.buttonText1}>Add Exercise</Text>
+            </TouchableOpacity>
+          </View>
         </>
       ) : (
         <>
          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container2}>
-           <View style={styles.header2}>
-            <Text style={styles.title2}>Adding Workout</Text>
-           </View>
-
-           <View style={styles.center2}>
-            <Text style={styles.question2}>Workout Name</Text>
-            <TextInput style={styles.inputBox2}/> {/* onChangeText={} */}
-           </View>
-
-          {/*
-          {formIsInvalid && (
-           <Text style={styles.errorText}>
-            Please Enter A Valid Age
-           </Text>
-          )}
-          */}
-
-           <TouchableOpacity
-            style={styles.save2}
-            onPress={saveAndNavigate}
-            disabled={!validAgeInput}
-           >
-            <View>
-             <Text style={styles.buttonText2}>Save</Text>
+           
+            <View style={styles.header2}>
+              <Text style={styles.title2}>Adding Workout</Text>
             </View>
-           </TouchableOpacity>
+
+            <View style={styles.center2}>
+              <Text style={styles.question2}>Workout Name</Text>
+              <TextInput style={styles.inputBox2}/>
+            </View>
+
+            <TouchableOpacity
+              style={styles.save2}
+              onPress={() => {navigation.goBack()}}
+            >
+              <Text style={styles.buttonText2}>Save</Text>
+            </TouchableOpacity>
+
           </View>
          </TouchableWithoutFeedback>
-  
         </>
       )}
     </View>
