@@ -1,5 +1,5 @@
 import React, { isValidElement, useContext, useState, useRef } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
@@ -97,7 +97,7 @@ function ManageWorkout({ route }) {
     const recordIsValid = workoutData.record.trim().length > 0;
     const dateIsValid = workoutData.date.toString() !== 'Invalid Date';
 
-    if (!exerciseIsValid || !recordIsValid || !dateIsValid) {
+    if (!exerciseIsValid || !recordIsValid|| !dateIsValid) { // || !recordIsValid|| !dateIsValid
       setInputs((curInputs) => {
         return {
           exercise: { value: curInputs.exercise.value, isValid: exerciseIsValid },
@@ -193,135 +193,99 @@ function ManageWorkout({ route }) {
     navigation.goBack();
   };
 
+  // ------------------------------------------------------------------------------------
   const renderExerciseItem = ({ item, index }) => (
-    <View>
-      <Animated.View style={{ ...styles.itemContainer, transform: [{ translateY: dropAnim }] }}>
-        <Text style={styles.text}>Exercise: </Text>
-        <TextInput 
-          style={styles.smallInput} 
-          value={item.name}
-          onChangeText={(text) => {
-            const newExercises = [...exercises];
-            newExercises[index].name = text;
-            setExercises(newExercises);
-          }}
-        />
-      </Animated.View>
+    <View style={styles.exerciseContainer}>
+      <View>
+        <View style={styles.itemContainer}>
+          <Text style={[styles.text, styles.exerciseLabel]}>Exercise:</Text>
+          <TextInput 
+            style={[styles.exerciseInput, { width: '100%' }]} 
+            value={item.name}
+            onChangeText={(text) => {
+              const newExercises = [...exercises];
+              newExercises[index].name = text;
+              setExercises(newExercises);
+            }}
+          />
+        </View>
 
-      <FlatList 
-        data={item.sets}
-        renderItem={({ item: setItem, index: setIndex }) => (
-          <Animated.View style={{ ...styles.itemContainer, transform: [{ translateY: dropAnim }] }}>
-            <Text style={styles.text}>Sets: </Text>
-            <TextInput 
-              style={styles.smallInput} 
-              value={setItem.sets}
-              onChangeText={(text) => {
-                const newExercises = [...exercises];
-                newExercises[index].sets[setIndex].sets = text;
-                setExercises(newExercises);
-              }}
-            />
+      
+        {item.sets.map((setItem, setIndex) => (
+          <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Sets:</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput 
+                  style={styles.smallInput} 
+                  value={setItem.sets}
+                  onChangeText={(text) => {
+                    const newExercises = [...exercises];
+                    newExercises[index].sets[setIndex].sets = text;
+                    setExercises(newExercises);
+                  }}
+                />
+              </View>
+            </View>
+  
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Reps:</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput 
+                  style={styles.smallInput} 
+                  value={setItem.reps}
+                  onChangeText={(text) => {
+                    const newExercises = [...exercises];
+                    newExercises[index].sets[setIndex].reps = text;
+                    setExercises(newExercises);
+                  }}
+                />
+              </View>
+            </View>
+  
+            <View style={styles.inputContainer}>
+              <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+                {checkboxChecked ? (
+                  <Text style={styles.checkboxText}>✓</Text>
+                ) : (
+                  <Text style={styles.checkboxText}>☐</Text>
+                )}
+              </TouchableOpacity>
+              <TimerModal
+                isVisible={modalVisible}
+                onClose={closeModal}
+                duration={60}
+                onReset={resetTimer}
+              />
+            </View>
 
-            <Text style={styles.text}> Reps: </Text>
-            <TextInput 
-              style={styles.smallInput} 
-              value={setItem.reps}
-              onChangeText={(text) => {
-                const newExercises = [...exercises];
-                newExercises[index].sets[setIndex].reps = text;
-                setExercises(newExercises);
-              }}
-            />
-
-            <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
-              {checkboxChecked ? (
-                <Text style={styles.checkboxText}>✓</Text>
-              ) : (
-                <Text style={styles.checkboxText}>☐</Text>
-              )}
-            </TouchableOpacity>
-            <TimerModal
-              isVisible={modalVisible}
-              onClose={closeModal}
-              duration={60}
-              onReset={resetTimer}
-            />
-          </Animated.View>
-        )}
-        keyExtractor={(item, setIndex) => `set-${index}-${setIndex}`}
-      />
-
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => addSetHandler(index)}
-      >
-        <Text style={styles.buttonText}>Add Set</Text>
-      </TouchableOpacity>
+            <View style={styles.inputContainer}>
+              <TouchableOpacity onPress={() => handleDeleteSet(index, setIndex)}>
+                <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+  
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={() => addSetHandler(index)}
+          >
+            <Text style={styles.buttonText}>Add Set</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
-
+  
+  
   // ------------------------------------------------------------------------------------
 
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
-          {/*
-          <Text style={[styles.text, !inputs.exercise.isValid && styles.invalidLabel]}>Exercise</Text>
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
-              placeholder="Exercise"
-              onChangeText={inputChangedHandler.bind(this, 'exercise')}
-              value={inputs.exercise.value}
-            />
-          </View>
-  
-          <Text style={[styles.text, !inputs.record.isValid && styles.invalidLabel]}>Record</Text> 
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
-              placeholder="Record"
-              onChangeText={inputChangedHandler.bind(this, 'record')}
-              value={inputs.record.value}
-            />
-          </View>
-  
-          <Text style={[styles.text, !inputs.date.isValid && styles.invalidLabel]}>Date</Text>
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
-              placeholder="YYYY-MM-DD"
-              maxLength={10}
-              onChangeText={inputChangedHandler.bind(this, 'date')}
-              value={inputs.date.value}
-            />
-          </View>
-
-          {formIsInvalid && (
-            <Text style={styles.errorText}>
-              Invalid input values - please check your entered data!
-            </Text>
-          )}
-  
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={submitHandler}>
-              <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
-  
-            <TouchableOpacity style={styles.button} onPress={deleteWorkoutHandler}>
-              <Ionicons name="trash" color="white" size={20} />
-            </TouchableOpacity>
-  
-            <TouchableOpacity style={styles.button} onPress={cancelHandler}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-          */}
           <View style={styles.container1}>
       <View style={styles.headerContainer1}>
         <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
@@ -355,55 +319,36 @@ function ManageWorkout({ route }) {
         </>
       ) : (
         <>
-          <Text style={[styles.text, !inputs.exercise.isValid && styles.invalidLabel]}>Exercise</Text>
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
-              placeholder="Exercise"
-              onChangeText={inputChangedHandler.bind(this, 'exercise')}
-              value={inputs.exercise.value}
-            />
-          </View>
-  
-          <Text style={[styles.text, !inputs.record.isValid && styles.invalidLabel]}>Record</Text> 
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
-              placeholder="Record"
-              onChangeText={inputChangedHandler.bind(this, 'record')}
-              value={inputs.record.value}
-            />
-          </View>
-  
-          <Text style={[styles.text, !inputs.date.isValid && styles.invalidLabel]}>Date</Text>
-  
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
-              placeholder="YYYY-MM-DD"
-              maxLength={10}
-              onChangeText={inputChangedHandler.bind(this, 'date')}
-              value={inputs.date.value}
-            />
-          </View>
+         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container2}>
+           <View style={styles.header2}>
+            <Text style={styles.title2}>Adding Workout</Text>
+           </View>
 
+           <View style={styles.center2}>
+            <Text style={styles.question2}>Workout Name</Text>
+            <TextInput style={styles.inputBox2}/> {/* onChangeText={} */}
+           </View>
+
+          {/*
           {formIsInvalid && (
-            <Text style={styles.errorText}>
-              Invalid input values - please check your entered data!
-            </Text>
+           <Text style={styles.errorText}>
+            Please Enter A Valid Age
+           </Text>
           )}
+          */}
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={submitHandler}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableOpacity>
-  
-            <TouchableOpacity style={styles.button} onPress={cancelHandler}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+           <TouchableOpacity
+            style={[styles.save, !validAgeInput && { opacity: 0.5 }]}
+            onPress={saveAndNavigate}
+            disabled={!validAgeInput}
+           >
+            <View>
+             <Text style={styles.buttonText}>Save</Text>
+            </View>
+           </TouchableOpacity>
           </View>
+         </TouchableWithoutFeedback>
   
         </>
       )}
@@ -415,6 +360,62 @@ function ManageWorkout({ route }) {
 export default ManageWorkout;
 
 const styles = StyleSheet.create({
+  exerciseInput: {
+    flex: 1,
+    height: 30,
+    borderColor: 'black',
+    borderWidth: 1,
+    paddingLeft: 10,
+  },
+  exerciseLabel: {
+    marginLeft: 0,
+    marginRight: 5,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 25,
+    justifyContent: 'space-between',
+  },
+  label: {
+    marginRight: 10,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  smallInput: {
+    height: 24,
+    borderColor: 'black',
+    borderWidth: 1,
+    paddingLeft: 10,
+    width: 40,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 0, // Add padding on the right side
+  },
+  checkbox: {
+    borderWidth: 1,
+    borderColor: 'black',
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxText: {
+    fontSize: 18,
+  },
+  exerciseContainer: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+  },
+  exerciseContent: {
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -423,8 +424,8 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 40, // Adjust the left margin as per your preference
   },
-  inputContainer: {
-    alignItems: 'center',
+  inputText: {
+    flex: 1,
   },
   input: {
     height: 40,
@@ -445,12 +446,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '30%',
+    width: '40%',
+    height: 36,
     marginBottom: 10, // Add bottom margin for spacing between buttons
   },
   buttonText : {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
   },
   errorText: {
     textAlign: 'center',
@@ -486,6 +488,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+
   /*BELOW ARE STYLES FROM EDITWORKOUT.js */
   wrapper1: {
     flex: 1,
@@ -565,6 +568,45 @@ const styles = StyleSheet.create({
   checkboxText1: {
     fontSize: 18,
   },
+  //AGE EDIT STYLES for ):(
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 20,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  title: {
+    fontSize: 40,
+    marginRight: 10,
+  },
+  inputBox: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 20,
+    padding: 10,
+    minWidth: 200,
+    width: "100%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  questions: {
+    marginBottom: 10,
+  },
+  save: {
+    backgroundColor: "black",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "30%",
+    alignSelf: "center",
+  },
 });
-
-

@@ -48,10 +48,11 @@ function WorkoutItem({ id, exercise, record, date }) {
           <Text style={[styles.textBase, styles.exercise]}>
             {exercise}
           </Text>
-          <Text style={styles.textBase}>{getFormattedDate(date)}</Text> 
+          {/*<Text style={styles.textBase}>{getFormattedDate(date)}</Text> */}
         </View>
         <View style={styles.recordContainer}>
-          <Text style={styles.workout}>{record}</Text>
+          {/*<Text style={styles.workout}>{record}</Text>*/}
+          <Ionicons name="trash-outline" size={28} style={styles.workout} />
         </View>
       </View>
     </Pressable>
