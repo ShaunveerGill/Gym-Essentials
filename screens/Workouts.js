@@ -7,19 +7,6 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import { set } from 'firebase/database';
 
-
-
-const DUMMY_WORKOUTS = [
-  {
-    id: 'w1',
-    workoutName: 'Workout 1',
-  },
-  {
-    id: 'w2',
-    workoutName: 'Workout 2',
-  },
-];
-
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }
@@ -29,7 +16,7 @@ function renderWorkoutItem(itemData) {
     <WorkoutItem {...itemData.item} />);  
 }
 
-function WorkoutItem({ id, exercise, record, date }) {
+function WorkoutItem({ id, workoutName }) {
   const navigation = useNavigation();
   
   function workoutPressHandler() {
@@ -46,13 +33,8 @@ function WorkoutItem({ id, exercise, record, date }) {
       <View style={styles.workoutItem}>
         <View>
           <Text style={[styles.textBase, styles.exercise]}>
-            {exercise}
+            {workoutName}
           </Text>
-          {/*<Text style={styles.textBase}>{getFormattedDate(date)}</Text> */}
-        </View>
-        <View style={styles.recordContainer}>
-          {/*<Text style={styles.workout}>{record}</Text>*/}
-          <Ionicons name="trash-outline" size={28} style={styles.workout} />
         </View>
       </View>
     </Pressable>
@@ -67,9 +49,7 @@ const Workouts = () => {
   const workoutsCtx = useContext(WorkoutsContext);
 
   const handleAddWorkout = () => {
-    navigation.navigate('ManageWorkout', {
-      workoutId: 'w1'
-    });
+    navigation.navigate('ManageWorkout');
   };
 
   const user = auth.currentUser;
@@ -90,16 +70,14 @@ const Workouts = () => {
   }, []);
 
   async function fetchWorkouts() {
-    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/workouts/.json');
+    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/workouts.json');
   
     const workouts = [];
 
     for (const key in response.data) {
       const workoutObj = {
         id: key,
-        exercise: response.data[key].exercise,
-        record: response.data[key].record,
-        date: new Date(response.data[key].date)
+        workoutName: response.data[key].workoutName,
       };
       workouts.push(workoutObj);
     }

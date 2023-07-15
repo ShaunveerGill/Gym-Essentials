@@ -23,21 +23,13 @@ function ManageWorkout({ route }) {
   );
   
   const [inputs, setInputs] = useState({
-    exercise: {
-      value: selectedWorkout ? selectedWorkout.exercise : '',
-      isValid: true,
-    },
-    record: {
-      value: selectedWorkout ? selectedWorkout.record : '',
-      isValid: true,
-    },
-    date: {
-      value: selectedWorkout ? selectedWorkout.date.toISOString().slice(0, 10): '',
-      isValid: true,
+    workoutName: {
+      value: selectedWorkout ? selectedWorkout.workoutName : '',
+      isValid: true
     }
   });
 
-  async function deleteWorkoutHandler() {
+  async function deleteHandler() {
     setIsSubmitting(true);
     try {
       await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json');
@@ -88,21 +80,15 @@ function ManageWorkout({ route }) {
 
   function submitHandler() {
     const workoutData = {
-      exercise: inputs.exercise.value,
-      record: inputs.record.value,
-      date: new Date(inputs.date.value),
+      workoutName: inputs.workoutName.value
     };
 
-    const exerciseIsValid = workoutData.exercise.trim().length > 0;
-    const recordIsValid = workoutData.record.trim().length > 0;
-    const dateIsValid = workoutData.date.toString() !== 'Invalid Date';
+    const workoutNameIsValid = workoutData.workoutName.trim().length > 0;
 
-    if (!exerciseIsValid || !recordIsValid|| !dateIsValid) { // || !recordIsValid|| !dateIsValid
+    if (!workoutNameIsValid) {
       setInputs((curInputs) => {
         return {
-          exercise: { value: curInputs.exercise.value, isValid: exerciseIsValid },
-          record: { value: curInputs.record.value, isValid: recordIsValid },
-          date: { value: curInputs.date.value, isValid: dateIsValid }
+          workoutName: { value: curInputs.workoutName.value, isValid: workoutNameIsValid }
         };
       });
       return;
@@ -111,10 +97,7 @@ function ManageWorkout({ route }) {
     confirmHandler(workoutData);
   }
 
-  const formIsInvalid =
-    !inputs.exercise.isValid ||
-    !inputs.record.isValid ||
-    !inputs.date.isValid;
+  const formIsInvalid = !inputs.workoutName.isValid;
 
   if (error && !isSubmitting) {
     return (
@@ -135,173 +118,172 @@ function ManageWorkout({ route }) {
 
   // ------------------------------------------------------------------------------------
 
-  const { workoutId } = route.params;
+  // const [exercises, setExercises] = useState([]);
 
-  const [workoutName, setWorkoutName] = useState('');
-  const [exercises, setExercises] = useState([]);
-  const dropAnim = useRef(new Animated.Value(-100)).current;
+  // /*const dropDown = () => {
+  //   Animated.timing(dropAnim, {
+  //     toValue: 0,
+  //     duration: 500,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };*/
 
-  const dropDown = () => {
-    Animated.timing(dropAnim, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  };
+  // const addExerciseHandler = () => {
+  //   dropDown();
+  //   setExercises((currentExercises) => [
+  //     ...currentExercises,
+  //     { id: Math.random().toString(), name: '', sets: [{ sets: '', reps: '', done: false }] },
+  //   ]);
+  // };
 
-  const addExerciseHandler = () => {
-    dropDown();
-    setExercises((currentExercises) => [
-      ...currentExercises,
-      { id: Math.random().toString(), name: '', sets: [{ sets: '', reps: '', done: false }] },
-    ]);
-  };
+  // const addSetHandler = (index) => {
+  //   const newExercises = [...exercises];
+  //   newExercises[index].sets.push({ sets: '', reps: '', done: false });
+  //   setExercises(newExercises);
+  // };
 
-  const addSetHandler = (index) => {
-    const newExercises = [...exercises];
-    newExercises[index].sets.push({ sets: '', reps: '', done: false });
-    setExercises(newExercises);
-  };
+  // const [modalVisible, setModalVisible] = useState(false);
+  // const [timerReset, setTimerReset] = useState(false);
+  // const [checkboxChecked, setCheckboxChecked] = useState(false);
+  // const [activeExerciseIndex, setActiveExerciseIndex] = useState(null);
+  // const [checkedExercises, setCheckedExercises] = useState([]);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [timerReset, setTimerReset] = useState(false);
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
+  // const openModal = () => {
+  //   setModalVisible(true);
+  //   setTimerReset(false);
+  // };
 
-  const openModal = () => {
-    setModalVisible(true);
-    setTimerReset(false);
-  };
+  // const closeModal = () => {
+  //   setModalVisible(false);
+  // };
 
-  const closeModal = () => {
-    setModalVisible(false);
-  };
+  // const resetTimer = () => {
+  //   setModalVisible(true);
+  //   setTimerReset(true);
+  // };
 
-  const resetTimer = () => {
-    setModalVisible(true);
-    setTimerReset(true);
-  };
-
-  const toggleCheckbox = () => {
-    setCheckboxChecked(!checkboxChecked);
-    if (!checkboxChecked) {
-      setModalVisible(true);
-      setTimerReset(false);
-    }
-  };
-
-  const handleSave = () => {
-    navigation.goBack();
-  };
-
-  // ------------------------------------------------------------------------------------
-  const renderExerciseItem = ({ item, index }) => (
-    <View style={styles.exerciseContainer}>
-      <View>
-        <View style={styles.itemContainer}>
-          <Text style={styles.exerciseLabel}>Exercise:</Text>
-          <TextInput 
-            style={styles.exerciseInput} 
-            value={item.name}
-            onChangeText={(text) => {
-              const newExercises = [...exercises];
-              newExercises[index].name = text;
-              setExercises(newExercises);
-            }}
-          />
-        </View>
+  // // const toggleCheckbox = (index) => {
+  // //   setCheckedExercises((prevCheckedExercises) => {
+  // //     const updatedCheckedExercises = [...prevCheckedExercises];
+  // //     updatedCheckedExercises[index] = !updatedCheckedExercises[index];
+  // //     return updatedCheckedExercises;
+  // //   });
   
-        {item.sets.map((setItem, setIndex) => (
-  <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
-    <View style={styles.inputContainer}>
-      <Text style={styles.label}>Sets:</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput 
-          style={styles.smallInput} 
-          value={setItem.sets}
-          onChangeText={(text) => {
-            const newExercises = [...exercises];
-            newExercises[index].sets[setIndex].sets = text;
-            setExercises(newExercises);
-          }}
-        />
-      </View>
-    </View>
-
-    <View style={styles.inputContainer}>
-      <Text style={styles.label}>Reps:</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput 
-          style={styles.smallInput} 
-          value={setItem.reps}
-          onChangeText={(text) => {
-            const newExercises = [...exercises];
-            newExercises[index].sets[setIndex].reps = text;
-            setExercises(newExercises);
-          }}
-        />
-      </View>
-    </View>
-
-    <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
-        {checkboxChecked ? (
-          <Text style={styles.checkboxText}>✓</Text>
-        ) : (
-          <Text style={styles.checkboxText}>☐</Text>
-        )}
-      </TouchableOpacity>
-      <TimerModal
-        isVisible={modalVisible}
-        onClose={closeModal}
-        duration={60}
-        onReset={resetTimer}
-      />
-    </View>
-
-    <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={() => handleDeleteSet(index, setIndex)}>
-        <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
-      </TouchableOpacity>
-    </View>
-  </View>
-))}
-
+  // //   setActiveExerciseIndex(index);
   
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => addSetHandler(index)}
-          >
-            <Text style={styles.buttonText}>Add Set</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  );
+  // //   setModalVisible(true);
+  // //   setTimerReset(false);
+  // // };
+
+  // const handleSave = () => {
+  //   navigation.goBack();
+  // };
+
+  // // ------------------------------------------------------------------------------------
+  // const renderExerciseItem = ({ item, index }) => (
+  //   <View style={styles.exerciseContainer}>
+  //     <View>
+  //       <View style={styles.itemContainer}>
+  //         <Text style={styles.exerciseLabel}>Exercise:</Text>
+  //         <TextInput
+  //           style={styles.exerciseInput}
+  //           value={item.name}
+  //           onChangeText={(text) => {
+  //             const newExercises = [...exercises];
+  //             newExercises[index].name = text;
+  //             setExercises(newExercises);
+  //           }}
+  //         />
+  //       </View>
+  
+  //       {item.sets.map((setItem, setIndex) => (
+  //         <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
+  //           <View style={styles.inputContainer}>
+  //             <Text style={styles.label}>Sets:</Text>
+  //             <View style={styles.inputWrapper}>
+  //               <TextInput
+  //                 style={styles.smallInput}
+  //                 value={setItem.sets}
+  //                 onChangeText={(text) => {
+  //                   const newExercises = [...exercises];
+  //                   newExercises[index].sets[setIndex].sets = text;
+  //                   setExercises(newExercises);
+  //                 }}
+  //               />
+  //             </View>
+  //           </View>
+  
+  //           <View style={styles.inputContainer}>
+  //             <Text style={styles.label}>Reps:</Text>
+  //             <View style={styles.inputWrapper}>
+  //               <TextInput
+  //                 style={styles.smallInput}
+  //                 value={setItem.reps}
+  //                 onChangeText={(text) => {
+  //                   const newExercises = [...exercises];
+  //                   newExercises[index].sets[setIndex].reps = text;
+  //                   setExercises(newExercises);
+  //                 }}
+  //               />
+  //             </View>
+  //           </View>
+  
+  //           <View style={styles.inputContainer}>
+          
+  //             <TouchableOpacity onPress={() => openModal()} style={styles.timerIcon}>
+  //               <Ionicons name="timer-outline" size={24} color="black" />
+  //             </TouchableOpacity>
+
+  //             {modalVisible && (
+  //               <TimerModal
+  //                 isVisible={modalVisible}
+  //                 onClose={closeModal}
+  //                 duration={60}
+  //                 onReset={resetTimer}
+  //               />
+  //             )}
+  //           </View>
+  //         </View>
+  //       ))}
+  //     </View>
+  
+  //     <View style={styles.buttonContainer}>
+  //       <TouchableOpacity style={styles.button} onPress={() => {}}>
+  //         <Ionicons name="trash-outline" size={15} color="white" />
+  //       </TouchableOpacity>
+  //     </View>
+  //   </View>
+  // );
   // ------------------------------------------------------------------------------------
 
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
-          <View style={styles.container1}>
+          <View style={styles.container1}>  
             <View style={styles.headerContainer1}>
               <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
                 <Text style={styles.headerButtonText1}>X</Text>
               </TouchableOpacity>
-              {/*<View style={styles.headerSpace1} />*/}
-              <TouchableOpacity style={styles.headerButton1} onPress={() => handleSave()}>
+              
+              <TouchableOpacity style={styles.headerButton1} onPress={submitHandler}>
                 <Text style={styles.headerButtonText1}>Save</Text>
               </TouchableOpacity>
             </View>
             <TextInput 
-              style={styles.input1} 
+              style={[styles.input1, !inputs.workoutName.isValid && styles.invalidInput]} 
               placeholder="Workout Name" 
-              value={workoutName}
-              onChangeText={inputChangedHandler.bind(this, 'workoutname')}
+              value={inputs.workoutName.value}
+              onChangeText={inputChangedHandler.bind(this, 'workoutName')}
             />
 
-            <FlatList 
+            {formIsInvalid && (
+              <Text style={styles.errorText}>
+                Invalid input values - please check your entered data!
+              </Text>
+            )}
+
+            {/* <FlatList 
               data={exercises}
               renderItem={renderExerciseItem}
               keyExtractor={(item) => item.id}
@@ -312,7 +294,12 @@ function ManageWorkout({ route }) {
               onPress={addExerciseHandler}
             >
               <Text style={styles.buttonText1}>Add Exercise</Text>
+            </TouchableOpacity> */}
+
+            <TouchableOpacity style={styles.button} onPress={deleteHandler}>
+              <Ionicons name="trash" color="white" size={20} />
             </TouchableOpacity>
+
           </View>
         </>
       ) : (
@@ -326,15 +313,28 @@ function ManageWorkout({ route }) {
 
             <View style={styles.center2}>
               <Text style={styles.question2}>Workout Name</Text>
-              <TextInput style={styles.inputBox2}/>
+              <TextInput 
+                style={[styles.input, !inputs.workoutName.isValid && styles.invalidInput]}
+                onChangeText={inputChangedHandler.bind(this, 'workoutName')}
+                value={inputs.workoutName.value}
+              />
             </View>
 
-            <TouchableOpacity
-              style={styles.save2}
-              onPress={() => {navigation.goBack()}}
-            >
-              <Text style={styles.buttonText2}>Save</Text>
+            {formIsInvalid && (
+              <Text style={styles.errorText}>
+                Invalid input values - please check your entered data!
+              </Text>
+            )}
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={submitHandler}>
+              <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
+  
+            <TouchableOpacity style={styles.button} onPress={cancelHandler}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
 
           </View>
          </TouchableWithoutFeedback>

@@ -2,10 +2,10 @@ import React, { createContext, useReducer } from "react";
 
 export const WorkoutsContext = createContext({
   workouts: [],
-  addWorkout: ({ workoutname, record, date }) => {},
+  addWorkout: ({ workoutName }) => {},
   setWorkouts: (workouts) => {},
   deleteWorkout: (id) => {},
-  updateWorkout: (id, { exercise, record, date }) => {}
+  updateWorkout: (id, { workoutName }) => {}
 });
 
 function workoutsReducer(state, action) {
