@@ -7,6 +7,7 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import TimerModal from './TimerModal';
 
+
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
   const navigation = useNavigation();
@@ -14,6 +15,27 @@ function ManageWorkout({ route }) {
   const isEditing = !!editedWorkoutId;
   const user = auth.currentUser;
   const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
+
+  workoutsCtx.exercises = populateExercise();
+  
+  async function populateExercise() {
+    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises.json');
+  
+    const temp = [];
+
+    for (const key in response.data) {
+      const workoutObj = {
+        id: key,
+        exerciseName: response.data[key].workoutName,
+        sets: response.data[key].sets,
+        reps: response.data[key].reps
+      };
+      workouts.push(workoutObj);
+    }
+    return temp;
+  }
+
+  console.log(workoutsCtx.exercises);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
@@ -116,145 +138,49 @@ function ManageWorkout({ route }) {
     );
   }
 
-  // ------------------------------------------------------------------------------------
+  const renderExerciseItem = () => {
+    <View style={styles.wrapper1}>
+      <View style={styles.container}>
+        <View style={styles.header2}>
+          <Text style={styles.title2}>Adding Exercise</Text>
+        </View>
+        <View style={styles.itemContainer1}>
+          <Text style={styles.text1}>Exercise:</Text>
+          <Text
+            style={styles.exerciseInput} 
+            />
+        </View>
 
-  // const [exercises, setExercises] = useState([]);
+        <View style={styles.itemContainer1}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Sets:</Text>
+            <View style={styles.inputWrapper}>
+              <Text 
+                style={styles.label} 
+              />
+            </View>
+          </View>
 
-  // /*const dropDown = () => {
-  //   Animated.timing(dropAnim, {
-  //     toValue: 0,
-  //     duration: 500,
-  //     useNativeDriver: true,
-  //   }).start();
-  // };*/
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Reps:</Text>
+            <View style={styles.inputWrapper}>
+              <Text
+                style={styles.label} 
+              />
+            </View>
+          </View>
+        </View>
 
-  // const addExerciseHandler = () => {
-  //   dropDown();
-  //   setExercises((currentExercises) => [
-  //     ...currentExercises,
-  //     { id: Math.random().toString(), name: '', sets: [{ sets: '', reps: '', done: false }] },
-  //   ]);
-  // };
-
-  // const addSetHandler = (index) => {
-  //   const newExercises = [...exercises];
-  //   newExercises[index].sets.push({ sets: '', reps: '', done: false });
-  //   setExercises(newExercises);
-  // };
-
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [timerReset, setTimerReset] = useState(false);
-  // const [checkboxChecked, setCheckboxChecked] = useState(false);
-  // const [activeExerciseIndex, setActiveExerciseIndex] = useState(null);
-  // const [checkedExercises, setCheckedExercises] = useState([]);
-
-  // const openModal = () => {
-  //   setModalVisible(true);
-  //   setTimerReset(false);
-  // };
-
-  // const closeModal = () => {
-  //   setModalVisible(false);
-  // };
-
-  // const resetTimer = () => {
-  //   setModalVisible(true);
-  //   setTimerReset(true);
-  // };
-
-  // // const toggleCheckbox = (index) => {
-  // //   setCheckedExercises((prevCheckedExercises) => {
-  // //     const updatedCheckedExercises = [...prevCheckedExercises];
-  // //     updatedCheckedExercises[index] = !updatedCheckedExercises[index];
-  // //     return updatedCheckedExercises;
-  // //   });
-  
-  // //   setActiveExerciseIndex(index);
-  
-  // //   setModalVisible(true);
-  // //   setTimerReset(false);
-  // // };
-
-  // const handleSave = () => {
-  //   navigation.goBack();
-  // };
-
-  // // ------------------------------------------------------------------------------------
-  // const renderExerciseItem = ({ item, index }) => (
-  //   <View style={styles.exerciseContainer}>
-  //     <View>
-  //       <View style={styles.itemContainer}>
-  //         <Text style={styles.exerciseLabel}>Exercise:</Text>
-  //         <TextInput
-  //           style={styles.exerciseInput}
-  //           value={item.name}
-  //           onChangeText={(text) => {
-  //             const newExercises = [...exercises];
-  //             newExercises[index].name = text;
-  //             setExercises(newExercises);
-  //           }}
-  //         />
-  //       </View>
-  
-  //       {item.sets.map((setItem, setIndex) => (
-  //         <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
-  //           <View style={styles.inputContainer}>
-  //             <Text style={styles.label}>Sets:</Text>
-  //             <View style={styles.inputWrapper}>
-  //               <TextInput
-  //                 style={styles.smallInput}
-  //                 value={setItem.sets}
-  //                 onChangeText={(text) => {
-  //                   const newExercises = [...exercises];
-  //                   newExercises[index].sets[setIndex].sets = text;
-  //                   setExercises(newExercises);
-  //                 }}
-  //               />
-  //             </View>
-  //           </View>
-  
-  //           <View style={styles.inputContainer}>
-  //             <Text style={styles.label}>Reps:</Text>
-  //             <View style={styles.inputWrapper}>
-  //               <TextInput
-  //                 style={styles.smallInput}
-  //                 value={setItem.reps}
-  //                 onChangeText={(text) => {
-  //                   const newExercises = [...exercises];
-  //                   newExercises[index].sets[setIndex].reps = text;
-  //                   setExercises(newExercises);
-  //                 }}
-  //               />
-  //             </View>
-  //           </View>
-  
-  //           <View style={styles.inputContainer}>
-          
-  //             <TouchableOpacity onPress={() => openModal()} style={styles.timerIcon}>
-  //               <Ionicons name="timer-outline" size={24} color="black" />
-  //             </TouchableOpacity>
-
-  //             {modalVisible && (
-  //               <TimerModal
-  //                 isVisible={modalVisible}
-  //                 onClose={closeModal}
-  //                 duration={60}
-  //                 onReset={resetTimer}
-  //               />
-  //             )}
-  //           </View>
-  //         </View>
-  //       ))}
-  //     </View>
-  
-  //     <View style={styles.buttonContainer}>
-  //       <TouchableOpacity style={styles.button} onPress={() => {}}>
-  //         <Ionicons name="trash-outline" size={15} color="white" />
-  //       </TouchableOpacity>
-  //     </View>
-  //   </View>
-  // );
-  // ------------------------------------------------------------------------------------
+        <TouchableOpacity style={styles.button1} onPress={submitHandler}>
+          <Text style={styles.buttonText1}>Submit</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.button1} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText1}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  }
 
   return (
     <View style={styles.container}>
@@ -267,7 +193,7 @@ function ManageWorkout({ route }) {
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.headerButton1} onPress={submitHandler}>
-                <Text style={styles.headerButtonText1}>Save</Text>
+                <Text style={styles.headerButtonText1}>Save Workout Name</Text>
               </TouchableOpacity>
             </View>
             <TextInput 
@@ -287,14 +213,14 @@ function ManageWorkout({ route }) {
               data={exercises}
               renderItem={renderExerciseItem}
               keyExtractor={(item) => item.id}
-            />
+            />            */}
 
             <TouchableOpacity 
               style={styles.button1} 
-              onPress={addExerciseHandler}
+              onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId })}
             >
               <Text style={styles.buttonText1}>Add Exercise</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={deleteHandler}>
               <Ionicons name="trash" color="white" size={20} />
@@ -346,6 +272,280 @@ function ManageWorkout({ route }) {
 }
 
 export default ManageWorkout;
+// import React, { isValidElement, useContext, useState, useRef } from 'react';
+// import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList, ScrollView, TouchableWithoutFeedback, Keyboard} from 'react-native';
+// import { useNavigation } from '@react-navigation/native';
+// import { Ionicons } from '@expo/vector-icons';
+// import { WorkoutsContext } from '../WorkoutsContext';
+// import { auth } from "../firebase";
+// import axios from 'axios';
+// import TimerModal from './TimerModal';
+
+
+// function ManageWorkout({ route }) {
+//   const workoutsCtx = useContext(WorkoutsContext);
+//   const navigation = useNavigation();
+//   const editedWorkoutId = route.params?.workoutId;
+//   const isEditing = !!editedWorkoutId;
+//   const user = auth.currentUser;
+//   const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
+
+//   workoutsCtx.exercises = populateExercise();
+  
+//   async function populateExercise() {
+//     const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/workouts/' + currentEditId + '/exercises.json');
+  
+//     const temp = [];
+
+//     for (const key in response.data) {
+//       const workoutObj = {
+//         id: key,
+//         exerciseName: response.data[key].workoutName,
+//         sets: response.data[key].sets,
+//         reps: response.data[key].reps
+//       };
+//       workouts.push(workoutObj);
+//     }
+//     return temp;
+//   }
+
+//   console.log(workoutsCtx.exercises);
+
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [error, setError] = useState(false);
+
+//   const selectedWorkout = workoutsCtx.workouts.find(
+//     (workout) => workout.id === editedWorkoutId
+//   );
+  
+//   const [inputs, setInputs] = useState({
+//     workoutName: {
+//       value: selectedWorkout ? selectedWorkout.workoutName : '',
+//       isValid: true
+//     }
+//   });
+
+//   async function deleteHandler() {
+//     setIsSubmitting(true);
+//     try {
+//       await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json');
+//       workoutsCtx.deleteWorkout(editedWorkoutId);
+//       navigation.navigate('Workouts');
+//     } catch (error) {
+//       setError('Could not delete workout - please try again later!');
+//       setIsSubmitting(false);
+//     }
+//   }
+
+//   function cancelHandler() {
+//     navigation.navigate('Workouts');
+//   }
+
+//   async function storeWorkout(workoutData) {
+//     const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts.json', workoutData);
+//     const id = response.data.name;
+//     return id;
+//   }  
+
+//   async function confirmHandler(workoutData) {
+//     setIsSubmitting(true);
+//     try {
+//       if (isEditing){
+//         workoutsCtx.updateWorkout(editedWorkoutId, workoutData);
+
+//         await axios.put(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json', workoutData);
+//       } else {
+//         const id = await storeWorkout(workoutData);
+//         workoutsCtx.addWorkout({...workoutData, id: id});
+//       }
+//       navigation.navigate('Workouts');
+//     } catch (error) {
+//       setError('Could not save data - please try again later!');
+//       setIsSubmitting(false);
+//     }
+//   }
+
+//   function inputChangedHandler(inputIdentifier, enteredValue) {
+//     setInputs((curInputs) => {
+//       return {
+//         ...curInputs,
+//         [inputIdentifier]: { value: enteredValue, isValid: true },
+//       };
+//     });
+//   }
+
+//   function submitHandler() {
+//     const workoutData = {
+//       workoutName: inputs.workoutName.value
+//     };
+
+//     const workoutNameIsValid = workoutData.workoutName.trim().length > 0;
+
+//     if (!workoutNameIsValid) {
+//       setInputs((curInputs) => {
+//         return {
+//           workoutName: { value: curInputs.workoutName.value, isValid: workoutNameIsValid }
+//         };
+//       });
+//       return;
+//     }
+
+//     confirmHandler(workoutData);
+//   }
+
+//   const formIsInvalid = !inputs.workoutName.isValid;
+
+//   if (error && !isSubmitting) {
+//     return (
+//       <View style={styles.errorContainer}>
+//         <Text style={[styles.errorText, styles.errorTitle]}>An error occurred!</Text>
+//         <Text style={styles.errorText}>{error}</Text>
+//       </View>
+//     );
+//   }
+
+//   if (isSubmitting) {
+//     return (
+//       <View style={styles.loading}>
+//         <ActivityIndicator size="large" color="black" />
+//       </View>      
+//     );
+//   }
+
+//   const renderExerciseItem = () => {
+//     <View style={styles.wrapper1}>
+//       <View style={styles.container}>
+//         <View style={styles.header2}>
+//           <Text style={styles.title2}>Adding Exercise</Text>
+//         </View>
+//         <View style={styles.itemContainer1}>
+//           <Text style={styles.text1}>Exercise:</Text>
+//           <Text
+//             style={styles.exerciseInput} 
+//             />
+//         </View>
+
+//         <View style={styles.itemContainer1}>
+//           <View style={styles.inputContainer}>
+//             <Text style={styles.label}>Sets:</Text>
+//             <View style={styles.inputWrapper}>
+//               <Text 
+//                 style={styles.label} 
+//               />
+//             </View>
+//           </View>
+
+//           <View style={styles.inputContainer}>
+//             <Text style={styles.label}>Reps:</Text>
+//             <View style={styles.inputWrapper}>
+//               <Text
+//                 style={styles.label} 
+//               />
+//             </View>
+//           </View>
+//         </View>
+
+//         <TouchableOpacity style={styles.button1} onPress={submitHandler}>
+//           <Text style={styles.buttonText1}>Submit</Text>
+//         </TouchableOpacity>
+        
+//         <TouchableOpacity style={styles.button1} onPress={() => navigation.goBack()}>
+//           <Text style={styles.buttonText1}>Cancel</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       {isEditing ? (
+//         <>
+//           <View style={styles.container1}>  
+//             <View style={styles.headerContainer1}>
+//               <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
+//                 <Text style={styles.headerButtonText1}>X</Text>
+//               </TouchableOpacity>
+              
+//               <TouchableOpacity style={styles.headerButton1} onPress={submitHandler}>
+//                 <Text style={styles.headerButtonText1}>Save Workout Name</Text>
+//               </TouchableOpacity>
+//             </View>
+//             <TextInput 
+//               style={[styles.input1, !inputs.workoutName.isValid && styles.invalidInput]} 
+//               placeholder="Workout Name" 
+//               value={inputs.workoutName.value}
+//               onChangeText={inputChangedHandler.bind(this, 'workoutName')}
+//             />
+
+//             {formIsInvalid && (
+//               <Text style={styles.errorText}>
+//                 Invalid input values - please check your entered data!
+//               </Text>
+//             )}
+
+//             {/* <FlatList 
+//               data={exercises}
+//               renderItem={renderExerciseItem}
+//               keyExtractor={(item) => item.id}
+//             />            */}
+
+//             <TouchableOpacity 
+//               style={styles.button1} 
+//               onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId })}
+//             >
+//               <Text style={styles.buttonText1}>Add Exercise</Text>
+//             </TouchableOpacity>
+
+//             <TouchableOpacity style={styles.button} onPress={deleteHandler}>
+//               <Ionicons name="trash" color="white" size={20} />
+//             </TouchableOpacity>
+
+//           </View>
+//         </>
+//       ) : (
+//         <>
+//          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+//           <View style={styles.container2}>
+           
+//             <View style={styles.header2}>
+//               <Text style={styles.title2}>Adding Workout</Text>
+//             </View>
+
+//             <View style={styles.center2}>
+//               <Text style={styles.question2}>Workout Name</Text>
+//               <TextInput 
+//                 style={[styles.input, !inputs.workoutName.isValid && styles.invalidInput]}
+//                 onChangeText={inputChangedHandler.bind(this, 'workoutName')}
+//                 value={inputs.workoutName.value}
+//               />
+//             </View>
+
+//             {formIsInvalid && (
+//               <Text style={styles.errorText}>
+//                 Invalid input values - please check your entered data!
+//               </Text>
+//             )}
+
+//           <View style={styles.buttonContainer}>
+//             <TouchableOpacity style={styles.button} onPress={submitHandler}>
+//               <Text style={styles.buttonText}>Add</Text>
+//             </TouchableOpacity>
+  
+//             <TouchableOpacity style={styles.button} onPress={cancelHandler}>
+//               <Text style={styles.buttonText}>Cancel</Text>
+//             </TouchableOpacity>
+//           </View>
+
+//           </View>
+//          </TouchableWithoutFeedback>
+//         </>
+//       )}
+//     </View>
+//   );
+  
+// }
+
+// export default ManageWorkout;
 
 const styles = StyleSheet.create({
   exerciseInput: {
@@ -597,6 +797,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "30%",
     alignSelf: "center",
+  },
+  infoText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 'auto', // Pushes the text to the top edge of the centered container
+    marginBottom: 'auto', // Pushes the text to the bottom edge of the centered container
   },
 });
 
