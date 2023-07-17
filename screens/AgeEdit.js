@@ -90,6 +90,7 @@ function AgeEdit() {
               !validAgeInput && styles.invalidInput,
             ]}
             onChangeText={handleAge}
+            keyboardType="numeric"
           />
         </View>
 

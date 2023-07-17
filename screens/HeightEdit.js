@@ -90,6 +90,7 @@ function HeightEdit() {
               !validHeightInput && styles.invalidInput,
             ]}
             onChangeText={handleHeight}
+            keyboardType="numeric"
           />
         </View>
 

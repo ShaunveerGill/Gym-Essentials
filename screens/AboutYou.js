@@ -145,6 +145,7 @@ function AboutYou() {
           <TextInput
             style={[styles.input, Sub && !age && styles.invalidInput]}
             onChangeText={(text) => setAge(text)}
+            keyboardType="numeric"
           />
           <View>
             <Text style={styles.questions}>What is your height(cm)?</Text>
@@ -152,6 +153,7 @@ function AboutYou() {
           <TextInput
             style={[styles.input, Sub && !height && styles.invalidInput]}
             onChangeText={(text) => setHeight(text)}
+            keyboardType="numeric"
           />
           <View>
             <Text style={styles.questions}>What is your weight(lb)?</Text>
@@ -159,6 +161,7 @@ function AboutYou() {
           <TextInput
             style={[styles.input, Sub && !weight && styles.invalidInput]}
             onChangeText={(text) => setWeight(text)}
+            keyboardType="numeric"
           />
           {formIsInvalid && (
             <Text style={styles.errorText}>
