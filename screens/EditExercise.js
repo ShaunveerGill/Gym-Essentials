@@ -14,8 +14,11 @@ function EditExercise({ route }) {
   const user = auth.currentUser;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-const selectedExercise = workoutsCtx.workouts.find((workout) => workout.id === currentEditId);
-  
+  // NEED TO FIX
+const selectedExercise = workoutsCtx.workouts.find((exercise) => exercise.id === currentEditId);
+console.log(workoutsCtx.workouts);
+console.log(currentEditId);
+
 const [inputs, setInputs] = useState({
   exerciseName: {
     value: selectedExercise ? selectedExercise.exerciseName : '',
@@ -41,18 +44,19 @@ const [inputs, setInputs] = useState({
   }
   
 
-    async function storeWorkout(exerciseData) {
-      const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts/' + currentEditId + '/exercises.json', exerciseData);
-      const id = response.data.name;
-      return id;
-    }  
+  async function storeWorkout(exerciseData) {
+    const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts/' + currentEditId + '/exercises.json', exerciseData);
+    const id = response.data.name;
+    exerciseData.exerciseId = id; 
+    return id;
+  } 
 
   async function confirmHandler(exerciseData) {
         console.log(exerciseData);
         if (true){
-          workoutsCtx.addExercise(currentEditId, exerciseData);
-  
-          await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts/' + currentEditId + '/exercises.json', exerciseData);
+          const id = await storeWorkout(exerciseData);
+          console.log(id);
+          workoutsCtx.addExercise(currentEditId, exerciseData, id);
         } 
 
         navigation.goBack();

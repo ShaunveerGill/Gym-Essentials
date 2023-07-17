@@ -32,17 +32,21 @@ function ManageWorkout({ route }) {
     }
   });
 
-  async function deleteExerciseHandler(exercirseId) {
-    console.log(editedWorkoutId);
-    console.log(exercirseId);
+  async function deleteExerciseHandler(exerciseId) {
     try {
-      await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises/' + exercirseId + '.json');
-      const workoutId = editedWorkoutId;
-      workoutsCtx.deleteExercise(workoutId, exercirseId);
+      await axios.delete(
+        BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises/' + exerciseId + '.json'
+      );
+      const updatedWorkout = { ...selectedWorkout };
+      updatedWorkout.exercises = updatedWorkout.exercises.filter(
+        (exercise) => exercise.id !== exerciseId
+      );
+      workoutsCtx.updateWorkout(editedWorkoutId, updatedWorkout);
     } catch (error) {
-      setError('Could not delete workout - please try again later!');
+      setError('Could not delete exercise - please try again later!');
     }
   }
+  
 
   async function deleteHandler() {
     setIsSubmitting(true);
@@ -147,6 +151,24 @@ function ManageWorkout({ route }) {
   }
 
 
+  // const renderExerciseItem = ({ item }) => (
+  //   <View style={styles.wrapper1}>
+  //     <View style={styles.container}>
+  //       <View style={styles.header2}>
+  //         <Text style={styles.text}>{item.exerciseName}</Text>
+  //       </View>
+  //       <View style={styles.header2}>
+  //         <Text style={styles.text}>{item.reps}</Text>
+  //         <Text style={styles.text}>{item.sets}</Text>
+  //       </View>
+  //       <View>
+  //         <TouchableOpacity style={styles.button} onPress={() => deleteExerciseHandler(item.id)}>
+  //           <Ionicons name="trash" color="white" size={20} />
+  //         </TouchableOpacity>
+  //       </View>
+  //     </View>
+  //   </View>
+  // );
   const renderExerciseItem = ({ item }) => (
     <View style={styles.wrapper1}>
       <View style={styles.container}>
@@ -158,7 +180,10 @@ function ManageWorkout({ route }) {
           <Text style={styles.text}>{item.sets}</Text>
         </View>
         <View>
-          <TouchableOpacity style={styles.button} onPress={() => deleteExerciseHandler(item.id)}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => deleteExerciseHandler(item.id)}
+          >
             <Ionicons name="trash" color="white" size={20} />
           </TouchableOpacity>
         </View>
@@ -321,7 +346,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20, // Add horizontal padding for space on the sides
+    paddingHorizontal: 10, // Add horizontal padding for space on the sides
   },
   text: {
     marginLeft: 40, // Adjust the left margin as per your preference
@@ -409,7 +434,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerButton1: {
-    padding: 10,
+    padding: 5,
   },
   headerButtonText1: {
     fontSize: 18,
@@ -418,12 +443,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input1: {
-    height: 40,
-    borderColor: 'gray',
+    height: 60,
+    borderColor: 'transparent',
     borderWidth: 1,
     marginBottom: 30,
     padding: 10,
     width: '100%',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
   smallInput1: {
     height: 40,

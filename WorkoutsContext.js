@@ -7,7 +7,7 @@ export const WorkoutsContext = createContext({
   setWorkouts: (workouts) => {},
   deleteWorkout: (id) => {},
   updateWorkout: (id, { workoutName }) => {},
-  addExercise: ({ exerciseName, sets, reps }) => {},
+  addExercise: ({ exerciseName, sets, reps}) => {},
   deleteExercise: (workoutId, exerciseId) => {},
   setExercises: (exercises) => {},
 });
@@ -55,20 +55,25 @@ function WorkoutsContextProvider({ children }) {
     dispatch({ type: 'DELETE', payload: id });
   }
 
-  function addExercise(workoutId, exerciseData) {
+  function addExercise(workoutId, exerciseData, id) {
     const updatedWorkouts = workoutsState.map((workout) => {
       if (workout.id === workoutId) {
         return {
           ...workout,
-          exercises: [...workout.exercises, exerciseData],
+          exercises: [
+            ...workout.exercises,
+            {
+              ...exerciseData,
+              id: id,
+            },
+          ],
         };
       }
       return workout;
     });
-  
     dispatch({ type: 'SET', payload: updatedWorkouts });
   }
-  
+
   function deleteExercise(workoutId, exerciseId) {
     const updatedWorkouts = workoutsState.map((workout) => {
       if (workout.id === workoutId) {
@@ -80,10 +85,11 @@ function WorkoutsContextProvider({ children }) {
       }
       return workout;
     });
-
-    dispatch({ type: 'SET', payload: updatedWorkouts });
+    setExercisesState(updatedWorkouts);
   }
-
+  
+  
+  
   const value = {
     workouts: workoutsState,
     exercises: exercisesState,
