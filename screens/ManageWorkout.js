@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
+import TimerModal from './TimerModal';
 
 
 function ManageWorkout({ route }) {
@@ -18,6 +19,32 @@ function ManageWorkout({ route }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [timerReset, setTimerReset] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+    setTimerReset(false);
+  };
+  
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const resetTimer = () => {
+    setModalVisible(true);
+    setTimerReset(true);
+  };
+
+  const toggleCheckbox = () => {
+    setCheckboxChecked(!checkboxChecked);
+    if (!checkboxChecked) {
+      setModalVisible(true);
+      setTimerReset(false);
+    }
+  };
+  
   const selectedWorkout = workoutsCtx.workouts.find(
     (workout) => workout.id === editedWorkoutId
   );
@@ -134,17 +161,19 @@ function ManageWorkout({ route }) {
     );
   }
 
+
+
   const renderExerciseItem = ({ item }) => (
     <View style={styles.exerciseContainer}>
-    <View style={styles.itemContainer}>
       <View style={styles.itemContainer}>
-        <Text style={styles.exerciseLabel}>Exercise:</Text>
-        <Text style={styles.text}>{item.exerciseName}</Text>
+        <View style={styles.exerciseLabelContainer}>
+          <Text style={styles.exerciseLabel}>Exercise:</Text>
+          <Text style={styles.text}>{item.exerciseName}</Text>
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId, exerciseId: item.id })}>
+          <Ionicons name="ellipsis-vertical" size={24} color="black" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId, exerciseId: item.id })}>
-        <Ionicons name="ellipsis-vertical" size={24} color="black" />
-      </TouchableOpacity>
-    </View>
 
       <View style={styles.itemContainer}>
         <View style={styles.inputContainer}>
@@ -155,10 +184,21 @@ function ManageWorkout({ route }) {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Reps:</Text>
+          <Text style={styles.exerciseLabel}>Reps:</Text>
           <View style={styles.inputWrapper}>
             <Text style={styles.text}>{item.reps}</Text>
           </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+            {checkboxChecked ? (
+              <Text style={styles.checkboxText}>✓</Text>
+            ) : (
+              <Text style={styles.checkboxText}>☐</Text>
+            )}
+          </TouchableOpacity>
+          <TimerModal isVisible={modalVisible} onClose={closeModal} duration={60} onReset={resetTimer} />
         </View>
 
         <View style={styles.inputContainer}>
@@ -169,6 +209,7 @@ function ManageWorkout({ route }) {
       </View>
     </View>
   );
+
   
 
   return (
@@ -264,18 +305,16 @@ export default ManageWorkout;
 
 
 const styles = StyleSheet.create({
-  exerciseInput: {
-    flex: 1,
-    height: 30,
-    borderColor: 'black',
-    borderWidth: 1,
-    paddingLeft: 10,
+  exerciseLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   exerciseLabel: {
     marginLeft: 0,
     marginRight: 5,
-    fontSize: 16, 
+    fontSize: 18, 
     fontFamily: 'Arial', 
+    fontWeight: 'bold',
   },
   
   itemContainer: {
@@ -283,20 +322,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 25,
     justifyContent: 'space-between',
-  },
-  label: {
-    marginRight: 10,
+    width: '100%',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  smallInput: {
-    height: 24,
-    borderColor: 'black',
-    borderWidth: 1,
-    paddingLeft: 10,
-    width: 40,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -316,9 +346,11 @@ const styles = StyleSheet.create({
   },
   exerciseContainer: {
     backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    borderRadius: 30,
+    padding: 20,
+    marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   exerciseContent: {
     alignItems: 'center',
@@ -329,7 +361,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   text: {
-    marginLeft: 40,
+    fontSize: 18,
+    marginLeft: 10,
   },
   inputText: {
     flex: 1,
