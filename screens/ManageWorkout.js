@@ -24,25 +24,50 @@ function ManageWorkout({ route }) {
   const [timerReset, setTimerReset] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
 
-  const openModal = () => {
-    setModalVisible(true);
-    setTimerReset(false);
-  };
+  // const openModal = () => {
+  //   setModalVisible(true);
+  //   setTimerReset(false);
+  // };
   
-  const closeModal = () => {
-    setModalVisible(false);
-  };
+  // const closeModal = () => {
+  //   setModalVisible(false);
+  // };
 
   const resetTimer = () => {
     setModalVisible(true);
     setTimerReset(true);
   };
 
-  const toggleCheckbox = () => {
-    setCheckboxChecked(!checkboxChecked);
+  // const toggleCheckbox = () => {
+  //   setCheckboxChecked(!checkboxChecked);
+  //   if (!checkboxChecked) {
+  //     setModalVisible(true);
+  //     setTimerReset(false);
+  //   }
+  // };
+
+  const [exerciseModalVisible, setExerciseModalVisible] = useState({});
+
+  const openModal = (exerciseId) => {
+    setExerciseModalVisible((prevState) => ({
+      ...prevState,
+      [exerciseId]: true,
+    }));
+  };
+
+  const closeModal = (exerciseId) => {
+    setExerciseModalVisible((prevState) => ({
+      ...prevState,
+      [exerciseId]: false,
+    }));
+  };
+
+  const toggleCheckbox = (exerciseId) => {
+    setCheckboxChecked((prevState) => !prevState);
     if (!checkboxChecked) {
-      setModalVisible(true);
-      setTimerReset(false);
+      openModal(exerciseId);
+    } else {
+      closeModal(exerciseId);
     }
   };
 
@@ -229,14 +254,21 @@ function ManageWorkout({ route }) {
         </View>
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
-            {checkboxChecked ? (
-              <Text style={styles.checkboxText}>✓</Text>
-            ) : (
-              <Text style={styles.checkboxText}> </Text>
-            )}
-          </TouchableOpacity>
-          <TimerModal isVisible={modalVisible} onClose={closeModal} duration={60} onReset={resetTimer} />
+
+          <TouchableOpacity onPress={() => toggleCheckbox(item.id)} style={styles.c}>
+          {checkboxChecked ? (
+            <Ionicons name="timer-outline" size={25} style={styles.trashIcon} />
+          ) : (
+            <Ionicons name="timer-outline" size={25} style={styles.trashIcon} />
+          )}
+        </TouchableOpacity>
+        <TimerModal
+          isVisible={exerciseModalVisible[item.id]}
+          onClose={() => closeModal(item.id)}
+          duration={60}
+          onReset={resetTimer}
+        />
+
         </View>
 
         <View style={styles.inputContainer}>
