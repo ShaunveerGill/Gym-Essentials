@@ -64,12 +64,10 @@ function HeightEdit() {
         console.error("Error updating data:", error);
       });
 
-    console.log("height: ", height);
     navigation.navigate("FeaturesOverview");
   };
 
   const handleAccountPress = () => {
-    console.log("Going back to AccountScreen");
     navigation.navigate("AccountScreen");
   };
 
@@ -90,6 +88,7 @@ function HeightEdit() {
               !validHeightInput && styles.invalidInput,
             ]}
             onChangeText={handleHeight}
+            keyboardType="numeric"
           />
         </View>
 

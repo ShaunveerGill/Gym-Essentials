@@ -134,7 +134,82 @@ function ManageWorkout({ route }) {
     );
   }
 
-  const renderExerciseItem = ({ item }) => (
+
+  // ------------------------------------------------------------------------------------
+
+  const { workoutId } = route.params;
+
+  const [workoutName, setWorkoutName] = useState('');
+  const [exercises, setExercises] = useState([]);
+  const dropAnim = useRef(new Animated.Value(-100)).current;
+
+  const dropDown = () => {
+    Animated.timing(dropAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const addExerciseHandler = () => {
+    dropDown();
+    setExercises((currentExercises) => [
+      ...currentExercises,
+      { id: Math.random().toString(), name: '', sets: [{ sets: '', reps: '', done: false }] },
+    ]);
+  };
+
+  const addSetHandler = (index) => {
+    const newExercises = [...exercises];
+    newExercises[index].sets.push({ sets: '', reps: '', done: false });
+    setExercises(newExercises);
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [timerReset, setTimerReset] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+    setTimerReset(false);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const resetTimer = () => {
+    setModalVisible(true);
+    setTimerReset(true);
+  };
+
+  const toggleCheckbox = () => {
+    setCheckboxChecked(!checkboxChecked);
+    if (!checkboxChecked) {
+      setModalVisible(true);
+      setTimerReset(false);
+    }
+  };
+
+  const handleSave = () => {
+    navigation.goBack();
+  };
+
+  const handleDeleteSet = (exerciseIndex, setIndex) => {
+    const newExercises = [...exercises];
+    newExercises[exerciseIndex].sets.splice(setIndex, 1);
+  
+    // Check if there are no sets left in the exercise.
+    if (newExercises[exerciseIndex].sets.length === 0) {
+      // Remove the exercise.
+      newExercises.splice(exerciseIndex, 1);
+    }
+  
+    setExercises(newExercises);
+  };
+
+  // ------------------------------------------------------------------------------------
+  const renderExerciseItem = ({ item, index }) => (
     <View style={styles.exerciseContainer}>
     <View style={styles.itemContainer}>
       <View style={styles.itemContainer}>
@@ -186,16 +261,18 @@ function ManageWorkout({ route }) {
               </TouchableOpacity>
 
             </View>
+
             <TextInput 
-              style={[styles.input1, !inputs.workoutName.isValid && styles.invalidInput]} 
-              placeholder="Workout Name" 
-              value={inputs.workoutName.value}
-              onChangeText={inputChangedHandler.bind(this, 'workoutName')}
+            style={styles.input1} 
+            placeholder="Workout Name" 
+            value={workoutName}
+            onChangeText={(text) => setWorkoutName(text)}
             />
 
-          {selectedWorkout?.exercises && selectedWorkout.exercises.length > 0 && (
-            <FlatList
-              data={selectedWorkout.exercises}
+
+            <FlatList 
+              data={exercises}
+
               renderItem={renderExerciseItem}
               keyExtractor={(item) => item.id}
             />

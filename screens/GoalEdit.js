@@ -35,7 +35,6 @@ function GoalEdit() {
       .catch((error) => {
         console.error("Error updating data:", error);
       });
-    console.log("Goal: ", goal);
     navigation.navigate("FeaturesOverview");
   };
 

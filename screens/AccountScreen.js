@@ -58,8 +58,6 @@ const AccountScreen = ({ navigation }) => {
       })
       .catch((error) => console.log(error));
   };
-  console.log(gender);
-  console.log(activityLevel);
 
   const nav = useNavigation();
 
