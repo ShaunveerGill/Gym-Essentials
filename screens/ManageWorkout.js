@@ -15,16 +15,12 @@ function ManageWorkout({ route }) {
   const user = auth.currentUser;
   const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
 
-
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
 
   const selectedWorkout = workoutsCtx.workouts.find(
     (workout) => workout.id === editedWorkoutId
   );
-  
-  console.log(selectedWorkout);
   
   const [inputs, setInputs] = useState({
     workoutName: {
@@ -64,29 +60,17 @@ function ManageWorkout({ route }) {
     navigation.navigate('Workouts');
   }
 
-  async function storeWorkout(workoutData) {
-    const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts.json', workoutData);
-    const id = response.data.name;
-    return id;
-  }  
-
   async function confirmHandler(workoutData) {
     setIsSubmitting(true);
     try {
       if (isEditing) {
         workoutsCtx.updateWorkout(editedWorkoutId, workoutData);
-        await axios.put(
-          BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json',
-          workoutData
-        );
+        await axios.put(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json', workoutData);
       } else {
-        const response = await axios.post(
-          BACKEND_URL + '/users/' + user.uid + '/workouts.json',
-          workoutData
-        );
+        const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts.json', workoutData);
         const id = response.data.name;
-        workoutData.exercises = []; // Initialize exercises as an empty array
-        workoutData.id = id; // Assign the newly generated ID
+        workoutData.exercises = []; 
+        workoutData.id = id; 
         workoutsCtx.addWorkout(workoutData);
       }
       navigation.navigate('Workouts');
@@ -127,7 +111,6 @@ function ManageWorkout({ route }) {
   }
   
   function addHandler() {
-    console.log(editedWorkoutId)
     navigation.navigate('EditExercise', { currentEditId: editedWorkoutId });
   }
 
@@ -158,23 +141,11 @@ function ManageWorkout({ route }) {
         <Text style={styles.exerciseLabel}>Exercise:</Text>
         <Text style={styles.text}>{item.exerciseName}</Text>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { exerciseId: item.id })}>
+      <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId, exerciseId: item.id })}>
         <Ionicons name="ellipsis-vertical" size={24} color="black" />
       </TouchableOpacity>
     </View>
 
-      {/* <View style={styles.exerciseContainer}>
-    <View style={styles.itemContainer}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={styles.exerciseLabel}>Exercise:</Text>
-          <Text style={styles.text}>{item.exerciseName}</Text>
-        </View>
-        <TouchableOpacity onPress={() => console.log("Edit button pressed")}>
-          <Ionicons name="ellipsis-vertical" size={20} color="black" />
-        </TouchableOpacity>
-      </View>
-      </View> */}
       <View style={styles.itemContainer}>
         <View style={styles.inputContainer}>
           <Text style={styles.exerciseLabel}>Sets:</Text>
@@ -330,7 +301,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 0, // Add padding on the right side
+    paddingRight: 0,
   },
   checkbox: {
     borderWidth: 1,
@@ -355,10 +326,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 10, // Add horizontal padding for space on the sides
+    paddingHorizontal: 10,
   },
   text: {
-    marginLeft: 40, // Adjust the left margin as per your preference
+    marginLeft: 40,
   },
   inputText: {
     flex: 1,
@@ -373,7 +344,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   buttonContainer: {
-    alignItems: 'center', // Align buttons in the center horizontally
+    alignItems: 'center',
   },
   button: {
     backgroundColor: 'black',
@@ -384,7 +355,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '40%',
     height: 36,
-    marginBottom: 10, // Add bottom margin for spacing between buttons
+    marginBottom: 10,
   },
   buttonText : {
     color: 'white',
@@ -424,8 +395,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-
-  /*BELOW ARE STYLES FROM EDITWORKOUT.js */
   wrapper1: {
     flex: 1,
     backgroundColor: 'white',
@@ -514,8 +483,6 @@ const styles = StyleSheet.create({
   checkboxText1: {
     fontSize: 18,
   },
-
-  //AGE EDIT STYLES for ):(
   container2: {
     flex: 1,
     justifyContent: "center",

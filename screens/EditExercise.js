@@ -12,30 +12,31 @@ function EditExercise({ route }) {
   const navigation = useNavigation();
   const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
   const user = auth.currentUser;
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const editedExerciseId = route.params?.exerciseId;
   const isEditing = !!editedExerciseId;
-  // NEED TO FIX THIS selectedExercise to find the exerciseid
-  const selectedExercise = workoutsCtx.exercises.find(
-    (exercise) => exercise.id === editedExerciseId
-  );
+  const selectedExercise = workoutsCtx.workouts.reduce((selected, workout) => {
+    const exercise = workout.exercises.find(ex => ex.id === editedExerciseId);
+    if (exercise) {
+      selected = exercise;
+    }
+    return selected;
+  }, null);
 
-
-const [inputs, setInputs] = useState({
-  exerciseName: {
-    value: selectedExercise ? selectedExercise.exerciseName : '',
-    isValid: true,
-  },
-  sets: {
-    value: selectedExercise ? selectedExercise.sets : '',
-    isValid: true,
-  },
-  reps: {
-    value: selectedExercise ? selectedExercise.reps : '',
-    isValid: true,
-  },
-});
+  const [inputs, setInputs] = useState({
+    exerciseName: {
+      value: selectedExercise ? selectedExercise.exerciseName : '',
+      isValid: true,
+    },
+    sets: {
+      value: selectedExercise ? selectedExercise.sets : '',
+      isValid: true,
+    },
+    reps: {
+      value: selectedExercise ? selectedExercise.reps : '',
+      isValid: true,
+    },
+  });
 
   function inputChangedHandler(inputIdentifier, enteredValue) {
     setInputs((curInputs) => {
@@ -55,44 +56,50 @@ const [inputs, setInputs] = useState({
   } 
 
   async function confirmHandler(exerciseData) {
-        if (isEditing){
-          
-        } else {
-          const id = await storeWorkout(exerciseData);
-          workoutsCtx.addExercise(currentEditId, exerciseData, id);
-        }
-
-        navigation.goBack();
+      if (isEditing){
+        const updatedWorkout = workoutsCtx.workouts.find(workout => workout.id === currentEditId);
+        const updatedExercises = updatedWorkout.exercises.map(exercise => {
+          if (exercise.id === editedExerciseId) {
+            return { ...exercise, ...exerciseData };
+          }
+          return exercise;
+        });
+        updatedWorkout.exercises = updatedExercises;
+        workoutsCtx.updateWorkout(currentEditId, updatedWorkout);
+        await axios.put(BACKEND_URL + '/users/' + user.uid + '/workouts/' + currentEditId + '/exercises/' + editedExerciseId + '.json', exerciseData);
+      } else {
+        const id = await storeWorkout(exerciseData);
+        workoutsCtx.addExercise(currentEditId, exerciseData, id);
+      }
+      navigation.goBack();
+  }
+    
+  function submitHandler() {
+    const exerciseData = {
+      exerciseName: inputs.exerciseName.value,
+      sets: inputs.sets.value,
+      reps: inputs.reps.value,
+    };
+      
+    const exerciseNameIsValid = exerciseData.exerciseName.trim().length > 0;
+    const setsIsValid = exerciseData.sets.trim().length > 0;
+    const repsIsValid = exerciseData.reps.trim().length > 0;
+        
+    if (!exerciseNameIsValid || !setsIsValid || !repsIsValid) {
+      setInputs((curInputs) => {
+        return {
+          exerciseName: { value: curInputs.exerciseName.value, isValid: exerciseNameIsValid },
+          sets: { value: curInputs.sets.value, isValid: setsIsValid },
+          reps: { value: curInputs.reps.value, isValid: repsIsValid }, 
+        };
+      });
+      return;
     }
     
-    
-      
-      function submitHandler() {
-        const exerciseData = {
-          exerciseName: inputs.exerciseName.value,
-          sets: inputs.sets.value,
-          reps: inputs.reps.value,
-        };
-      
-        const exerciseNameIsValid = exerciseData.exerciseName.trim().length > 0;
-        const setsIsValid = exerciseData.sets.trim().length > 0;
-        const repsIsValid = exerciseData.reps.trim().length > 0;
-      
-        if (!exerciseNameIsValid || !setsIsValid || !repsIsValid) {
-          setInputs((curInputs) => {
-            return {
-              exerciseName: { value: curInputs.exerciseName.value, isValid: exerciseNameIsValid },
-              sets: { value: curInputs.sets.value, isValid: setsIsValid },
-              reps: { value: curInputs.reps.value, isValid: repsIsValid }, 
-            };
-          });
-          return;
-        }
-    
-        confirmHandler(exerciseData);
-      }
+    confirmHandler(exerciseData);
+  }
 
-      const formIsInvalid =
+  const formIsInvalid =
     !inputs.exerciseName.isValid ||
     !inputs.sets.isValid ||
     !inputs.reps.isValid;
@@ -111,7 +118,7 @@ const [inputs, setInputs] = useState({
               <TextInput  
                 style={[styles.exerciseInput, !inputs.exerciseName.isValid && styles.invalidInput]} 
                 value={inputs.exerciseName.value}
-                // onChangeText={(text) => inputChangedHandler('exerciseName', text)}
+                onChangeText={(text) => inputChangedHandler('exerciseName', text)}
                 />
             </View>
 
@@ -122,7 +129,7 @@ const [inputs, setInputs] = useState({
                   <TextInput 
                     style={[styles.smallInput, !inputs.sets.isValid && styles.invalidInput]} 
                     value={inputs.sets.value}
-                    // onChangeText={(text) => inputChangedHandler('sets', text)}
+                    onChangeText={(text) => inputChangedHandler('sets', text)}
                   />
                 </View>
               </View>
@@ -133,7 +140,7 @@ const [inputs, setInputs] = useState({
                   <TextInput 
                     style={[styles.smallInput, !inputs.reps.isValid && styles.invalidInput]} 
                     value={inputs.reps.value}
-                    // onChangeText={(text) => inputChangedHandler('reps', text)}
+                    onChangeText={(text) => inputChangedHandler('reps', text)}
                   />
                 </View>
               </View>
@@ -431,7 +438,7 @@ const styles = StyleSheet.create({
   isEditingcontainer: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20, // Add horizontal padding for space on the sides
+    paddingHorizontal: 20,
   },
 });
 

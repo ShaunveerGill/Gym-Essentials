@@ -2,14 +2,11 @@ import React, { createContext, useReducer, useState } from "react";
 
 export const WorkoutsContext = createContext({
   workouts: [],
-  exercises: [],
   addWorkout: ({ workoutName }) => {},
   setWorkouts: (workouts) => {},
   deleteWorkout: (id) => {},
   updateWorkout: (id, { workoutName }) => {},
-  addExercise: ({ exerciseName, sets, reps}) => {},
-  deleteExercise: (workoutId, exerciseId) => {},
-  setExercises: (exercises) => {},
+  addExercise: (workoutId, { exerciseName, sets, reps}, id) => {},
 });
 
 function workoutsReducer(state, action) {
@@ -37,7 +34,6 @@ function workoutsReducer(state, action) {
 
 function WorkoutsContextProvider({ children }) {
   const [workoutsState, dispatch] = useReducer(workoutsReducer, []);
-  const [exercisesState, setExercisesState] = useState([]);
 
   function addWorkout(workoutData) {
     dispatch({ type: 'ADD', payload: workoutData });
@@ -73,33 +69,14 @@ function WorkoutsContextProvider({ children }) {
     });
     dispatch({ type: 'SET', payload: updatedWorkouts });
   }
-
-  function deleteExercise(workoutId, exerciseId) {
-    const updatedWorkouts = workoutsState.map((workout) => {
-      if (workout.id === workoutId) {
-        const updatedExercises = workout.exercises.filter((exercise) => exercise.id !== exerciseId);
-        return {
-          ...workout,
-          exercises: updatedExercises,
-        };
-      }
-      return workout;
-    });
-    setExercisesState(updatedWorkouts);
-  }
-  
-  
   
   const value = {
     workouts: workoutsState,
-    exercises: exercisesState,
     addWorkout: addWorkout,
     setWorkouts: setWorkouts,
     updateWorkout: updateWorkout,
     deleteWorkout: deleteWorkout,
     addExercise: addExercise,
-    deleteExercise: deleteExercise,
-    setExercises: setExercisesState,
   };
 
   return <WorkoutsContext.Provider value={value}>{children}</WorkoutsContext.Provider>;
