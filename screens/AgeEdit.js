@@ -64,12 +64,10 @@ function AgeEdit() {
         console.error("Error updating data:", error);
       });
 
-    console.log("age: ", age);
     navigation.navigate("FeaturesOverview");
   };
 
   const handleAccountPress = () => {
-    console.log("Going back to AccountScreen");
     navigation.navigate("AccountScreen");
   };
 

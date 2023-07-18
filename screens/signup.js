@@ -38,8 +38,6 @@ function SignUp() {
       .createUserWithEmailAndPassword(userEmail, Cpassword)
       .then(userCredentials => {
         const user = userCredentials.user;
-        console.log('Registered with:', userEmail);
-        console.log('Registered with name:', userName);
         setPassword('');
         setCPassword('');
         navigation.navigate('AboutYou');

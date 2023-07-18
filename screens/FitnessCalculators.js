@@ -42,10 +42,8 @@ function FitnessCalculators() {
         ? 88.362 + (13.397 * (weightInt / 2.2)) + (4.799 * heightInt) - (5.677 * ageInt)
         : 447.593 + (9.247 * (weightInt / 2.2)) + (3.098 * heightInt) - (4.330 * ageInt);
 
-      console.log(BMR);
       let TDEE = Math.ceil(BMR * activityLevelInt);
 
-      console.log("TDEE: " + TDEE);
       if (goal === "Lose Weight") {
         setCalories(TDEE + LOSE_WEIGHT);
         setProtein(Math.ceil((weightInt / 2.2) * 2.25));

@@ -8,18 +8,6 @@ import axios from 'axios';
 import { set } from 'firebase/database';
 
 
-
-const DUMMY_WORKOUTS = [
-  {
-    id: 'w1',
-    workoutName: 'Workout 1',
-  },
-  {
-    id: 'w2',
-    workoutName: 'Workout 2',
-  },
-];
-
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }

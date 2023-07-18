@@ -50,7 +50,6 @@ function AboutYou() {
   };
 
   const handleActivityLevel = (selectedActivityLevel) => {
-    console.log(selectedActivityLevel);
     setActivityLevel(selectedActivityLevel);
   };
 
@@ -88,7 +87,6 @@ function AboutYou() {
 
         set(userRef, userData)
           .then(() => {
-            console.log("User data saved successfully");
             navigation.navigate("FeaturesOverview");
           })
           .catch((error) => {

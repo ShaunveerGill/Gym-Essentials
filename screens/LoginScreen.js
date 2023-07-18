@@ -31,7 +31,6 @@ function LoginScreen() {
       .signInWithEmailAndPassword(userEmail, password)
       .then(userCredentials => {
         const user = userCredentials.user;
-        console.log('logged in with:', user.email);
         const userData = auth.currentUser;
         if (userData !== null) {
           setUserEmail(userData.email);
