@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
-import TimerModal from './TimerModal';
+
 
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -23,21 +23,29 @@ function ManageWorkout({ route }) {
   );
   
   const [inputs, setInputs] = useState({
-    exercise: {
-      value: selectedWorkout ? selectedWorkout.exercise : '',
-      isValid: true,
-    },
-    record: {
-      value: selectedWorkout ? selectedWorkout.record : '',
-      isValid: true,
-    },
-    date: {
-      value: selectedWorkout ? selectedWorkout.date.toISOString().slice(0, 10): '',
-      isValid: true,
+    workoutName: {
+      value: selectedWorkout ? selectedWorkout.workoutName : '',
+      isValid: true
     }
   });
 
-  async function deleteWorkoutHandler() {
+  async function deleteExerciseHandler(exerciseId) {
+    try {
+      await axios.delete(
+        BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises/' + exerciseId + '.json'
+      );
+      const updatedWorkout = { ...selectedWorkout };
+      updatedWorkout.exercises = updatedWorkout.exercises.filter(
+        (exercise) => exercise.id !== exerciseId
+      );
+      workoutsCtx.updateWorkout(editedWorkoutId, updatedWorkout);
+    } catch (error) {
+      setError('Could not delete exercise - please try again later!');
+    }
+  }
+  
+
+  async function deleteHandler() {
     setIsSubmitting(true);
     try {
       await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json');
@@ -48,27 +56,22 @@ function ManageWorkout({ route }) {
       setIsSubmitting(false);
     }
   }
-
   function cancelHandler() {
     navigation.navigate('Workouts');
   }
 
-  async function storeWorkout(workoutData) {
-    const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts.json', workoutData);
-    const id = response.data.name;
-    return id;
-  }  
-
   async function confirmHandler(workoutData) {
     setIsSubmitting(true);
     try {
-      if (isEditing){
+      if (isEditing) {
         workoutsCtx.updateWorkout(editedWorkoutId, workoutData);
-
         await axios.put(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json', workoutData);
       } else {
-        const id = await storeWorkout(workoutData);
-        workoutsCtx.addWorkout({...workoutData, id: id});
+        const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/workouts.json', workoutData);
+        const id = response.data.name;
+        workoutData.exercises = []; 
+        workoutData.id = id; 
+        workoutsCtx.addWorkout(workoutData);
       }
       navigation.navigate('Workouts');
     } catch (error) {
@@ -76,6 +79,7 @@ function ManageWorkout({ route }) {
       setIsSubmitting(false);
     }
   }
+  
 
   function inputChangedHandler(inputIdentifier, enteredValue) {
     setInputs((curInputs) => {
@@ -88,33 +92,30 @@ function ManageWorkout({ route }) {
 
   function submitHandler() {
     const workoutData = {
-      exercise: inputs.exercise.value,
-      record: inputs.record.value,
-      date: new Date(inputs.date.value),
+      workoutName: inputs.workoutName.value
     };
 
-    const exerciseIsValid = workoutData.exercise.trim().length > 0;
-    const recordIsValid = workoutData.record.trim().length > 0;
-    const dateIsValid = workoutData.date.toString() !== 'Invalid Date';
+    const workoutNameIsValid = workoutData.workoutName.trim().length > 0;
 
-    if (!exerciseIsValid || !recordIsValid|| !dateIsValid) { // || !recordIsValid|| !dateIsValid
+    if (!workoutNameIsValid) {
       setInputs((curInputs) => {
         return {
-          exercise: { value: curInputs.exercise.value, isValid: exerciseIsValid },
-          record: { value: curInputs.record.value, isValid: recordIsValid },
-          date: { value: curInputs.date.value, isValid: dateIsValid }
+          workoutName: { value: curInputs.workoutName.value, isValid: workoutNameIsValid }
         };
       });
       return;
     }
 
     confirmHandler(workoutData);
+
+  }
+  
+  function addHandler() {
+    navigation.navigate('EditExercise', { currentEditId: editedWorkoutId });
   }
 
-  const formIsInvalid =
-    !inputs.exercise.isValid ||
-    !inputs.record.isValid ||
-    !inputs.date.isValid;
+  
+  const formIsInvalid = !inputs.workoutName.isValid;
 
   if (error && !isSubmitting) {
     return (
@@ -132,6 +133,7 @@ function ManageWorkout({ route }) {
       </View>      
     );
   }
+
 
   // ------------------------------------------------------------------------------------
 
@@ -209,103 +211,55 @@ function ManageWorkout({ route }) {
   // ------------------------------------------------------------------------------------
   const renderExerciseItem = ({ item, index }) => (
     <View style={styles.exerciseContainer}>
-      <View>
-        <View style={styles.itemContainer}>
-          <Text style={styles.exerciseLabel}>Exercise:</Text>
-          <TextInput 
-            style={styles.exerciseInput} 
-            value={item.name}
-            onChangeText={(text) => {
-              const newExercises = [...exercises];
-              newExercises[index].name = text;
-              setExercises(newExercises);
-            }}
-          />
+    <View style={styles.itemContainer}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.exerciseLabel}>Exercise:</Text>
+        <Text style={styles.text}>{item.exerciseName}</Text>
+      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId, exerciseId: item.id })}>
+        <Ionicons name="ellipsis-vertical" size={24} color="black" />
+      </TouchableOpacity>
+    </View>
+
+      <View style={styles.itemContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.exerciseLabel}>Sets:</Text>
+          <View style={styles.inputWrapper}>
+            <Text style={styles.text}>{item.sets}</Text>
+          </View>
         </View>
-  
-        {item.sets.map((setItem, setIndex) => (
-  <View style={styles.itemContainer} key={`set-${index}-${setIndex}`}>
-    <View style={styles.inputContainer}>
-      <Text style={styles.label}>Sets:</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput 
-          style={styles.smallInput} 
-          value={setItem.sets}
-          onChangeText={(text) => {
-            const newExercises = [...exercises];
-            newExercises[index].sets[setIndex].sets = text;
-            setExercises(newExercises);
-          }}
-        />
-      </View>
-    </View>
 
-    <View style={styles.inputContainer}>
-      <Text style={styles.label}>Reps:</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput 
-          style={styles.smallInput} 
-          value={setItem.reps}
-          onChangeText={(text) => {
-            const newExercises = [...exercises];
-            newExercises[index].sets[setIndex].reps = text;
-            setExercises(newExercises);
-          }}
-        />
-      </View>
-    </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Reps:</Text>
+          <View style={styles.inputWrapper}>
+            <Text style={styles.text}>{item.reps}</Text>
+          </View>
+        </View>
 
-    <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
-        {checkboxChecked ? (
-          <Text style={styles.checkboxText}>✓</Text>
-        ) : (
-          <Text style={styles.checkboxText}>☐</Text>
-        )}
-      </TouchableOpacity>
-      <TimerModal
-        isVisible={modalVisible}
-        onClose={closeModal}
-        duration={60}
-        onReset={resetTimer}
-      />
-    </View>
-
-    <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={() => handleDeleteSet(index, setIndex)}>
-        <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
-      </TouchableOpacity>
-    </View>
-  </View>
-))}
-
-  
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => addSetHandler(index)}
-          >
-            <Text style={styles.buttonText}>Add Set</Text>
+        <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={() => deleteExerciseHandler(item.id)}>
+            <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
-  // ------------------------------------------------------------------------------------
+  
 
   return (
     <View style={styles.container}>
       {isEditing ? (
         <>
-          <View style={styles.container1}>
+          <View style={styles.container1}>  
             <View style={styles.headerContainer1}>
               <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
-                <Text style={styles.headerButtonText1}>X</Text>
+              <Ionicons name="arrow-back" size={28} style={styles.goBackIcon} />
               </TouchableOpacity>
-              {/*<View style={styles.headerSpace1} />*/}
-              <TouchableOpacity style={styles.headerButton1} onPress={() => handleSave()}>
-                <Text style={styles.headerButtonText1}>Save</Text>
+              
+              <TouchableOpacity style={styles.headerButton1} onPress={deleteHandler}>
+                <Text style={styles.headerButtonText1}>Delete Workout</Text>
               </TouchableOpacity>
+
             </View>
 
             <TextInput 
@@ -318,16 +272,25 @@ function ManageWorkout({ route }) {
 
             <FlatList 
               data={exercises}
+
               renderItem={renderExerciseItem}
               keyExtractor={(item) => item.id}
             />
+          )}
+
+            {formIsInvalid && (
+              <Text style={styles.errorText}>
+                Invalid input values - please check your entered data!
+              </Text>
+            )}         
 
             <TouchableOpacity 
               style={styles.button1} 
-              onPress={addExerciseHandler}
+              onPress={addHandler}
             >
               <Text style={styles.buttonText1}>Add Exercise</Text>
             </TouchableOpacity>
+
           </View>
         </>
       ) : (
@@ -341,18 +304,32 @@ function ManageWorkout({ route }) {
 
             <View style={styles.center2}>
               <Text style={styles.question2}>Workout Name</Text>
-              <TextInput style={styles.inputBox2}/>
+              <TextInput 
+                style={[styles.input, !inputs.workoutName.isValid && styles.invalidInput]}
+                onChangeText={inputChangedHandler.bind(this, 'workoutName')}
+                value={inputs.workoutName.value}
+              />
             </View>
 
-            <TouchableOpacity
-              style={styles.save2}
-              onPress={() => {navigation.goBack()}}
-            >
-              <Text style={styles.buttonText2}>Save</Text>
+            {formIsInvalid && (
+              <Text style={styles.errorText}>
+                Invalid input values - please check your entered data!
+              </Text>
+            )}
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={submitHandler}>
+              <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
+  
+            <TouchableOpacity style={styles.button} onPress={cancelHandler}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
 
           </View>
          </TouchableWithoutFeedback>
+
         </>
       )}
     </View>
@@ -361,6 +338,7 @@ function ManageWorkout({ route }) {
 }
 
 export default ManageWorkout;
+
 
 const styles = StyleSheet.create({
   exerciseInput: {
@@ -373,7 +351,10 @@ const styles = StyleSheet.create({
   exerciseLabel: {
     marginLeft: 0,
     marginRight: 5,
+    fontSize: 16, 
+    fontFamily: 'Arial', 
   },
+  
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -397,7 +378,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 0, // Add padding on the right side
+    paddingRight: 0,
   },
   checkbox: {
     borderWidth: 1,
@@ -422,10 +403,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20, // Add horizontal padding for space on the sides
+    paddingHorizontal: 10,
   },
   text: {
-    marginLeft: 40, // Adjust the left margin as per your preference
+    marginLeft: 40,
   },
   inputText: {
     flex: 1,
@@ -440,7 +421,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   buttonContainer: {
-    alignItems: 'center', // Align buttons in the center horizontally
+    alignItems: 'center',
   },
   button: {
     backgroundColor: 'black',
@@ -451,7 +432,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '40%',
     height: 36,
-    marginBottom: 10, // Add bottom margin for spacing between buttons
+    marginBottom: 10,
   },
   buttonText : {
     color: 'white',
@@ -491,8 +472,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-
-  /*BELOW ARE STYLES FROM EDITWORKOUT.js */
   wrapper1: {
     flex: 1,
     backgroundColor: 'white',
@@ -510,7 +489,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerButton1: {
-    padding: 10,
+    padding: 5,
   },
   headerButtonText1: {
     fontSize: 18,
@@ -519,12 +498,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input1: {
-    height: 40,
-    borderColor: 'gray',
+    height: 60,
+    borderColor: 'transparent',
     borderWidth: 1,
     marginBottom: 30,
     padding: 10,
     width: '100%',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
   smallInput1: {
     height: 40,
@@ -536,10 +517,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   itemContainer1: {
+    padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 25,
     justifyContent: 'space-between',
+  },
+  itemContainer2: {
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 25,
+    justifyContent: 'flex-start',
   },
   text1: {
     marginRight: 5,
@@ -571,8 +560,6 @@ const styles = StyleSheet.create({
   checkboxText1: {
     fontSize: 18,
   },
-
-  //AGE EDIT STYLES for ):(
   container2: {
     flex: 1,
     justifyContent: "center",
@@ -613,6 +600,12 @@ const styles = StyleSheet.create({
     width: "30%",
     alignSelf: "center",
   },
+  infoText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 'auto', 
+    marginBottom: 'auto', 
+  },
 });
-
 

@@ -1,54 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import Modal from 'react-native-modal';
 import { Svg, Circle, Text as SvgText } from 'react-native-svg';
 
-const TimerModal = ({ isVisible, onClose, duration, onReset }) => {
-  const [progress, setProgress] = useState(1);
-  const [timerCompleted, setTimerCompleted] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(duration);
+const TimerModal = ({ isVisible, onClose }) => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [inputTime, setInputTime] = useState('');
 
   const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => prevProgress - 1 / duration);
-      setRemainingTime((prevRemainingTime) => prevRemainingTime - 1);
-    }, 1000);
+    let timer;
+    if (isRunning) {
+      timer = setInterval(() => {
+        setRemainingTime((prevRemainingTime) => prevRemainingTime - 1);
+      }, 1000);
+    }
 
     return () => {
       clearInterval(timer);
     };
-  }, [duration]);
+  }, [isRunning]);
 
-  useEffect(() => {
-    if (progress <= 0) {
-      setProgress(0);
-      setTimerCompleted(true);
+  const startTimer = () => {
+    const newTime = parseInt(inputTime, 10);
+    if (!isNaN(newTime) && newTime > 0) {
+      setRemainingTime(newTime);
+      setIsRunning(true);
     }
-  }, [progress]);
+  };
 
   const resetTimer = () => {
-    setProgress(1);
-    setRemainingTime(duration);
-    setTimerCompleted(false);
-    onReset();
-  };
-
-  const skipTimer = () => {
-    setProgress(0);
+    setIsRunning(false);
+    setInputTime('');
     setRemainingTime(0);
-    setTimerCompleted(true);
   };
 
-  const addTime = () => {
-    setRemainingTime((prevRemainingTime) => prevRemainingTime + 10);
-  };
-
-  const subtractTime = () => {
-    if (remainingTime >= 10) {
-      setRemainingTime((prevRemainingTime) => prevRemainingTime - 10);
-    }
+  const closeTimer = () => {
+    setIsRunning(false);
+    setInputTime('');
+    onClose();
   };
 
   const circleSize = Math.min(deviceWidth, deviceHeight) * 0.6;
@@ -58,7 +50,7 @@ const TimerModal = ({ isVisible, onClose, duration, onReset }) => {
   const radius = (circleSize - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  const progressValue = progress * circumference;
+  const progressValue = ((remainingTime > 0 ? remainingTime : 0) / parseInt(inputTime, 10)) * circumference;
 
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
@@ -78,7 +70,7 @@ const TimerModal = ({ isVisible, onClose, duration, onReset }) => {
   return (
     <Modal
       isVisible={isVisible}
-      onBackdropPress={timerCompleted ? onClose : undefined}
+      onBackdropPress={closeTimer}
       deviceHeight={deviceHeight}
       deviceWidth={deviceWidth}
       style={{
@@ -105,7 +97,7 @@ const TimerModal = ({ isVisible, onClose, duration, onReset }) => {
             r={radius}
           />
           <Circle
-            stroke={timerCompleted ? '#000000' : '#FF0000'}
+            stroke={remainingTime > 0 ? '#FF0000' : '#000000'}
             fill="transparent"
             strokeWidth={strokeWidth}
             strokeDasharray={circumference}
@@ -125,26 +117,28 @@ const TimerModal = ({ isVisible, onClose, duration, onReset }) => {
             {remainingTime > 0 ? formattedTime : 'Time is up!'}
           </SvgText>
         </Svg>
-        {timerCompleted ? (
-          <TouchableOpacity onPress={resetTimer} style={[buttonStyle, { marginTop: 20 }]}>
-            <Text style={textStyle}>Reset</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={{ flexDirection: 'row', marginTop: 20 }}>
-            <TouchableOpacity onPress={subtractTime} style={buttonStyle}>
-              <Text style={textStyle}>-10s</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={addTime} style={[buttonStyle, { marginLeft: 10 }]}>
-              <Text style={textStyle}>+10s</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={skipTimer} style={[buttonStyle, { marginLeft: 10 }]}>
-              <Text style={textStyle}>Skip</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onClose} style={[buttonStyle, { marginLeft: 10 }]}>
-              <Text style={textStyle}>Close</Text>
+        {!isRunning && remainingTime <= 0 && (
+          <View style={{ alignItems: 'center', marginTop: 20 }}>
+            <TextInput
+              style={{ ...buttonStyle, width: '80%', marginBottom: 10, textAlign: 'center' }}
+              value={inputTime}
+              onChangeText={setInputTime}
+              keyboardType="numeric"
+              placeholder="Time (seconds)"
+            />
+            <TouchableOpacity onPress={startTimer} style={buttonStyle}>
+              <Text style={textStyle}>Start</Text>
             </TouchableOpacity>
           </View>
         )}
+        {isRunning && (
+          <TouchableOpacity onPress={resetTimer} style={[buttonStyle, { marginTop: 20 }]}>
+            <Text style={textStyle}>Reset</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity onPress={closeTimer} style={[buttonStyle, { marginTop: 20 }]}>
+          <Text style={textStyle}>Close</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );

@@ -1,11 +1,12 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useState } from "react";
 
 export const WorkoutsContext = createContext({
   workouts: [],
-  addWorkout: ({ workoutname, record, date }) => {},
+  addWorkout: ({ workoutName }) => {},
   setWorkouts: (workouts) => {},
   deleteWorkout: (id) => {},
-  updateWorkout: (id, { exercise, record, date }) => {}
+  updateWorkout: (id, { workoutName }) => {},
+  addExercise: (workoutId, { exerciseName, sets, reps}, id) => {},
 });
 
 function workoutsReducer(state, action) {
@@ -50,15 +51,36 @@ function WorkoutsContextProvider({ children }) {
     dispatch({ type: 'DELETE', payload: id });
   }
 
+  function addExercise(workoutId, exerciseData, id) {
+    const updatedWorkouts = workoutsState.map((workout) => {
+      if (workout.id === workoutId) {
+        return {
+          ...workout,
+          exercises: [
+            ...workout.exercises,
+            {
+              ...exerciseData,
+              id: id,
+            },
+          ],
+        };
+      }
+      return workout;
+    });
+    dispatch({ type: 'SET', payload: updatedWorkouts });
+  }
+  
   const value = {
     workouts: workoutsState,
     addWorkout: addWorkout,
     setWorkouts: setWorkouts,
     updateWorkout: updateWorkout,
-    deleteWorkout: deleteWorkout
+    deleteWorkout: deleteWorkout,
+    addExercise: addExercise,
   };
 
   return <WorkoutsContext.Provider value={value}>{children}</WorkoutsContext.Provider>;
 }
 
 export { WorkoutsContextProvider };
+

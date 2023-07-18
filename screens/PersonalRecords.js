@@ -75,7 +75,7 @@ const PersonalRecords = () => {
 
   async function fetchRecords() {
     const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/personalrecords.json');
-  
+    console.log(response);
     const records = [];
 
     for (const key in response.data) {

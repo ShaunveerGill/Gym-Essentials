@@ -7,7 +7,6 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import { set } from 'firebase/database';
 
-
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }
@@ -17,7 +16,7 @@ function renderWorkoutItem(itemData) {
     <WorkoutItem {...itemData.item} />);  
 }
 
-function WorkoutItem({ id, exercise, record, date }) {
+function WorkoutItem({ id, workoutName }) {
   const navigation = useNavigation();
   
   function workoutPressHandler() {
@@ -34,13 +33,8 @@ function WorkoutItem({ id, exercise, record, date }) {
       <View style={styles.workoutItem}>
         <View>
           <Text style={[styles.textBase, styles.exercise]}>
-            {exercise}
+            {workoutName}
           </Text>
-          {/*<Text style={styles.textBase}>{getFormattedDate(date)}</Text> */}
-        </View>
-        <View style={styles.recordContainer}>
-          {/*<Text style={styles.workout}>{record}</Text>*/}
-          <Ionicons name="trash-outline" size={28} style={styles.workout} />
         </View>
       </View>
     </Pressable>
@@ -55,9 +49,7 @@ const Workouts = () => {
   const workoutsCtx = useContext(WorkoutsContext);
 
   const handleAddWorkout = () => {
-    navigation.navigate('ManageWorkout', {
-      workoutId: 'w1'
-    });
+    navigation.navigate('ManageWorkout');
   };
 
   const user = auth.currentUser;
@@ -69,30 +61,68 @@ const Workouts = () => {
       try {
         const workouts = await fetchWorkouts();
         workoutsCtx.setWorkouts(workouts);
+        (workouts);
       } catch (error) {
+        console.log(error);
         setError('Could not fetch workouts!');
       }
       setIsFetching(false);
     }
     getWorkouts();
   }, []);
-
   async function fetchWorkouts() {
-    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/workouts/.json');
+    try {
+      const response = await axios.get(
+        BACKEND_URL + '/users/' + user.uid + '/workouts.json'
+      );
   
-    const workouts = [];
-
-    for (const key in response.data) {
-      const workoutObj = {
-        id: key,
-        exercise: response.data[key].exercise,
-        record: response.data[key].record,
-        date: new Date(response.data[key].date)
-      };
-      workouts.push(workoutObj);
+      const workouts = [];
+  
+      for (const workoutId in response.data) {
+        const workoutData = response.data[workoutId];
+        const exercises = await fetchExercises(workoutId); // Fetch exercises for the current workout
+  
+        const workoutObj = {
+          id: workoutId,
+          workoutName: workoutData.workoutName,
+          exercises: exercises,
+        };
+        workouts.push(workoutObj);
+      }
+      console.log(workouts);
+      return workouts;
+    } catch (error) {
+      console.log('Error fetching workouts:', error);
+      throw error;
     }
+  }
   
-    return workouts;
+  async function fetchExercises(workoutId) {
+    try {
+      const response = await axios.get(
+        BACKEND_URL + '/users/' + user.uid + '/workouts/' + workoutId + '/exercises.json'
+      );
+  
+      const exercises = [];
+  
+      for (const exerciseId in response.data) {
+        const exerciseData = response.data[exerciseId];
+  
+        const exerciseObj = {
+          id: exerciseId,
+          exerciseName: exerciseData.exerciseName,
+          sets: exerciseData.sets,
+          reps: exerciseData.reps,
+        };
+        exercises.push(exerciseObj);
+      }
+      console.log("exercises:");
+      console.log(exercises);
+      return exercises;
+    } catch (error) {
+      console.log('Error fetching exercises for workout', workoutId, ':', error);
+      throw error;
+    }
   }
 
   React.useLayoutEffect(() => {
@@ -112,6 +142,7 @@ const Workouts = () => {
   let content = <Text style={styles.infoText}>No Workouts Added</Text>;
 
   if (workoutsCtx.workouts.length > 0) {
+    console.log(workoutsCtx.workouts);
     content = (
       <FlatList
         data={workoutsCtx.workouts}
@@ -119,6 +150,8 @@ const Workouts = () => {
         keyExtractor={(item) => item.id}
       />
     );
+  } else {
+    console.log(workoutsCtx.workouts);
   }
 
   if (error && !isFetching) {
@@ -149,14 +182,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    justifyContent: 'center', // Center content vertically
+    justifyContent: 'center', 
   },
   infoText: {
     color: 'black',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 'auto', // Pushes the text to the top edge of the centered container
-    marginBottom: 'auto', // Pushes the text to the bottom edge of the centered container
+    marginTop: 'auto', 
+    marginBottom: 'auto', 
   },
 
   workoutItem: {
