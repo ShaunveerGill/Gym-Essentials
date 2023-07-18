@@ -202,9 +202,10 @@ function ManageWorkout({ route }) {
                 <Text style={styles.headerButtonText1}>X</Text>
               </TouchableOpacity>
               
-              <TouchableOpacity style={styles.headerButton1} onPress={submitHandler}>
-                <Text style={styles.headerButtonText1}>Save Workout Name</Text>
+              <TouchableOpacity style={styles.button} onPress={deleteHandler}>
+                <Ionicons name="trash" color="white" size={20} />
               </TouchableOpacity>
+
             </View>
             <TextInput 
               style={[styles.input1, !inputs.workoutName.isValid && styles.invalidInput]} 
@@ -234,9 +235,9 @@ function ManageWorkout({ route }) {
               <Text style={styles.buttonText1}>Add Exercise</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={deleteHandler}>
+            {/* <TouchableOpacity style={styles.button} onPress={deleteHandler}>
               <Ionicons name="trash" color="white" size={20} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
           </View>
         </>
