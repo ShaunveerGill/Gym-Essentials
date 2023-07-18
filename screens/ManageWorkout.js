@@ -6,6 +6,7 @@ import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
 
+
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
   const navigation = useNavigation();
@@ -150,41 +151,48 @@ function ManageWorkout({ route }) {
     );
   }
 
-
-  // const renderExerciseItem = ({ item }) => (
-  //   <View style={styles.wrapper1}>
-  //     <View style={styles.container}>
-  //       <View style={styles.header2}>
-  //         <Text style={styles.text}>{item.exerciseName}</Text>
-  //       </View>
-  //       <View style={styles.header2}>
-  //         <Text style={styles.text}>{item.reps}</Text>
-  //         <Text style={styles.text}>{item.sets}</Text>
-  //       </View>
-  //       <View>
-  //         <TouchableOpacity style={styles.button} onPress={() => deleteExerciseHandler(item.id)}>
-  //           <Ionicons name="trash" color="white" size={20} />
-  //         </TouchableOpacity>
-  //       </View>
-  //     </View>
-  //   </View>
-  // );
   const renderExerciseItem = ({ item }) => (
-    <View style={styles.wrapper1}>
-      <View style={styles.container}>
-        <View style={styles.header2}>
+    <View style={styles.exerciseContainer}>
+    <View style={styles.itemContainer}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.exerciseLabel}>Exercise:</Text>
+        <Text style={styles.text}>{item.exerciseName}</Text>
+      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { exerciseId: item.id })}>
+        <Ionicons name="ellipsis-vertical" size={24} color="black" />
+      </TouchableOpacity>
+    </View>
+
+      {/* <View style={styles.exerciseContainer}>
+    <View style={styles.itemContainer}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={styles.exerciseLabel}>Exercise:</Text>
           <Text style={styles.text}>{item.exerciseName}</Text>
         </View>
-        <View style={styles.header2}>
-          <Text style={styles.text}>{item.reps}</Text>
-          <Text style={styles.text}>{item.sets}</Text>
+        <TouchableOpacity onPress={() => console.log("Edit button pressed")}>
+          <Ionicons name="ellipsis-vertical" size={20} color="black" />
+        </TouchableOpacity>
+      </View>
+      </View> */}
+      <View style={styles.itemContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.exerciseLabel}>Sets:</Text>
+          <View style={styles.inputWrapper}>
+            <Text style={styles.text}>{item.sets}</Text>
+          </View>
         </View>
-        <View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => deleteExerciseHandler(item.id)}
-          >
-            <Ionicons name="trash" color="white" size={20} />
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Reps:</Text>
+          <View style={styles.inputWrapper}>
+            <Text style={styles.text}>{item.reps}</Text>
+          </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={() => deleteExerciseHandler(item.id)}>
+            <Ionicons name="trash-outline" size={28} style={styles.trashIcon} />
           </TouchableOpacity>
         </View>
       </View>
@@ -199,11 +207,11 @@ function ManageWorkout({ route }) {
           <View style={styles.container1}>  
             <View style={styles.headerContainer1}>
               <TouchableOpacity style={styles.headerButton1} onPress={() => navigation.goBack()}>
-                <Text style={styles.headerButtonText1}>X</Text>
+              <Ionicons name="arrow-back" size={28} style={styles.goBackIcon} />
               </TouchableOpacity>
               
-              <TouchableOpacity style={styles.button} onPress={deleteHandler}>
-                <Ionicons name="trash" color="white" size={20} />
+              <TouchableOpacity style={styles.headerButton1} onPress={deleteHandler}>
+                <Text style={styles.headerButtonText1}>Delete Workout</Text>
               </TouchableOpacity>
 
             </View>
@@ -234,10 +242,6 @@ function ManageWorkout({ route }) {
             >
               <Text style={styles.buttonText1}>Add Exercise</Text>
             </TouchableOpacity>
-
-            {/* <TouchableOpacity style={styles.button} onPress={deleteHandler}>
-              <Ionicons name="trash" color="white" size={20} />
-            </TouchableOpacity> */}
 
           </View>
         </>
@@ -277,6 +281,7 @@ function ManageWorkout({ route }) {
 
           </View>
          </TouchableWithoutFeedback>
+
         </>
       )}
     </View>
@@ -298,7 +303,10 @@ const styles = StyleSheet.create({
   exerciseLabel: {
     marginLeft: 0,
     marginRight: 5,
+    fontSize: 16, 
+    fontFamily: 'Arial', 
   },
+  
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -463,10 +471,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   itemContainer1: {
+    padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 25,
     justifyContent: 'space-between',
+  },
+  itemContainer2: {
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 25,
+    justifyContent: 'flex-start',
   },
   text1: {
     marginRight: 5,
