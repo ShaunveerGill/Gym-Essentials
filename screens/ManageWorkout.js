@@ -57,7 +57,7 @@ function ManageWorkout({ route }) {
     }
   });
 
-  async function deleteExerciseHandler(exerciseId) {
+  async function confirmDeleteExercise(exerciseId) {
     try {
       await axios.delete(
         BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises/' + exerciseId + '.json'
@@ -70,6 +70,24 @@ function ManageWorkout({ route }) {
     } catch (error) {
       setError('Could not delete exercise - please try again later!');
     }
+  }
+  
+  function deleteExerciseHandler(exerciseId) {
+    Alert.alert(
+      'Delete Exercise',
+      'Are you sure you want to delete this exercise?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => confirmDeleteExercise(exerciseId),
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
   }
   
 
@@ -102,7 +120,7 @@ function ManageWorkout({ route }) {
       { cancelable: false }
     );
   }
-  
+
   function cancelHandler() {
     navigation.navigate('Workouts');
   }
