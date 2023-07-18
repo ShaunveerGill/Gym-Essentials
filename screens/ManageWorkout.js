@@ -6,6 +6,7 @@ import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
 import TimerModal from './TimerModal';
+import { Alert } from 'react-native';
 
 
 function ManageWorkout({ route }) {
@@ -72,7 +73,7 @@ function ManageWorkout({ route }) {
   }
   
 
-  async function deleteHandler() {
+  async function confirmDelete() {
     setIsSubmitting(true);
     try {
       await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json');
@@ -83,6 +84,25 @@ function ManageWorkout({ route }) {
       setIsSubmitting(false);
     }
   }
+  
+  function deleteHandler() {
+    Alert.alert(
+      'Delete Workout',
+      'Are you sure you want to delete?',
+      [
+        {
+          text: 'Yes',
+          onPress: confirmDelete,
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+  
   function cancelHandler() {
     navigation.navigate('Workouts');
   }
