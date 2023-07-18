@@ -1,109 +1,195 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Pressable, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { WorkoutsContext } from '../WorkoutsContext';
+import { auth } from "../firebase";
+import axios from 'axios';
+import { set } from 'firebase/database';
 
-const DUMMY_WORKOUTS = [
-  {
-    id: 'w1',
-    workoutName: 'Workout 1',
-  },
-  {
-    id: 'w2',
-    workoutName: 'Workout 2',
-  },
-];
+function getFormattedDate(date) {
+  return date.toISOString().slice(0, 10);
+}
 
-function WorkoutItem({ id, workoutName, onWorkoutNameChange }) {
+function renderWorkoutItem(itemData) {
+  return (
+    <WorkoutItem {...itemData.item} />);  
+}
+
+function WorkoutItem({ id, workoutName }) {
   const navigation = useNavigation();
   
   function workoutPressHandler() {
     navigation.navigate('ManageWorkout', {
       workoutId: id
     });
-  }
-
+  }  
+  
   return (
     <Pressable 
       onPress={workoutPressHandler} 
       style={({pressed}) => pressed && styles.pressed}
     >
       <View style={styles.workoutItem}>
-        <TextInput 
-          value={workoutName} 
-          onChangeText={newName => onWorkoutNameChange(id, newName)}
-          style={[styles.textBase, styles.workoutName]}
-        />
+        <View>
+          <Text style={[styles.textBase, styles.exercise]}>
+            {workoutName}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
 }
 
-function renderWorkoutItem({ item, index }, changeWorkoutName) {
-  return (
-    <WorkoutItem 
-      {...item} 
-      onWorkoutNameChange={changeWorkoutName}
-    />
-  );
-}
-
-function Workouts() {
+const Workouts = () => {
   const navigation = useNavigation();
-  const [workouts, setWorkouts] = useState(DUMMY_WORKOUTS);
+
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState();
+  const workoutsCtx = useContext(WorkoutsContext);
 
   const handleAddWorkout = () => {
-    const newId = 'w' + (workouts.length + 1);
-    const newWorkout = {id: newId, workoutName: 'Workout ' + (workouts.length + 1)};
-    setWorkouts(currentWorkouts => [...currentWorkouts, newWorkout]);
+    navigation.navigate('ManageWorkout');
   };
 
-  const changeWorkoutName = (id, newName) => {
-    setWorkouts(currentWorkouts => {
-      const workoutIndex = currentWorkouts.findIndex(workout => workout.id === id);
-      const newWorkouts = [...currentWorkouts];
-      newWorkouts[workoutIndex] = {...newWorkouts[workoutIndex], workoutName: newName};
-      return newWorkouts;
-    });
-  };
+  const user = auth.currentUser;
+  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
+
+  useEffect(() => {
+    async function getWorkouts() {
+      setIsFetching(true);
+      try {
+        const workouts = await fetchWorkouts();
+        workoutsCtx.setWorkouts(workouts);
+        (workouts);
+      } catch (error) {
+        console.log(error);
+        setError('Could not fetch workouts!');
+      }
+      setIsFetching(false);
+    }
+    getWorkouts();
+  }, []);
+  async function fetchWorkouts() {
+    try {
+      const response = await axios.get(
+        BACKEND_URL + '/users/' + user.uid + '/workouts.json'
+      );
+  
+      const workouts = [];
+  
+      for (const workoutId in response.data) {
+        const workoutData = response.data[workoutId];
+        const exercises = await fetchExercises(workoutId); // Fetch exercises for the current workout
+  
+        const workoutObj = {
+          id: workoutId,
+          workoutName: workoutData.workoutName,
+          exercises: exercises,
+        };
+        workouts.push(workoutObj);
+      }
+      console.log(workouts);
+      return workouts;
+    } catch (error) {
+      console.log('Error fetching workouts:', error);
+      throw error;
+    }
+  }
+  
+  async function fetchExercises(workoutId) {
+    try {
+      const response = await axios.get(
+        BACKEND_URL + '/users/' + user.uid + '/workouts/' + workoutId + '/exercises.json'
+      );
+  
+      const exercises = [];
+  
+      for (const exerciseId in response.data) {
+        const exerciseData = response.data[exerciseId];
+  
+        const exerciseObj = {
+          id: exerciseId,
+          exerciseName: exerciseData.exerciseName,
+          sets: exerciseData.sets,
+          reps: exerciseData.reps,
+        };
+        exercises.push(exerciseObj);
+      }
+      console.log("exercises:");
+      console.log(exercises);
+      return exercises;
+    } catch (error) {
+      console.log('Error fetching exercises for workout', workoutId, ':', error);
+      throw error;
+    }
+  }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: 'Workouts',
       headerRight: () => (
-        <TouchableOpacity 
-          onPress={handleAddWorkout} 
-          style={({pressed}) => pressed && styles.pressed}
+        <TouchableOpacity
+          onPress={handleAddWorkout}
+          style={({ pressed }) => pressed && styles.pressed}
         >
           <Ionicons name="add" size={24} color="black" style={styles.addButton} />
         </TouchableOpacity>
       ),
     });
-  }, [navigation, workouts]);
+  }, [navigation]);
 
-  return (
-    <View style={styles.container}>
-        <FlatList
-          data={workouts}
-          renderItem={itemData => renderWorkoutItem(itemData, changeWorkoutName)}
-          keyExtractor={(item) => item.id}
-        />
-    </View>
-  );
-}
+  let content = <Text style={styles.infoText}>No Workouts Added</Text>;
 
-export default Workouts;
+  if (workoutsCtx.workouts.length > 0) {
+    console.log(workoutsCtx.workouts);
+    content = (
+      <FlatList
+        data={workoutsCtx.workouts}
+        renderItem={renderWorkoutItem}
+        keyExtractor={(item) => item.id}
+      />
+    );
+  } else {
+    console.log(workoutsCtx.workouts);
+  }
+
+  if (error && !isFetching) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={[styles.errorText, styles.errorTitle]}>An error occurred!</Text>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  if(isFetching) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="black" />
+      </View>      
+    );
+  }
+
+  return <View style={styles.container}>{content}</View>;
+};
 
 const styles = StyleSheet.create({
   pressed: {
-    opacity: 0.75
+    opacity: 0.75,
   },
 
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 0,
+    justifyContent: 'center', 
+  },
+  infoText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 'auto', 
+    marginBottom: 'auto', 
   },
 
   workoutItem: {
@@ -115,19 +201,58 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     elevation: 3,
   },
-  
+
   textBase: {
     color: 'white',
   },
 
-  workoutName: {
+  exercise: {
     fontSize: 16,
     marginBottom: 4,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
+  recordContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: '#cccccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    minWidth: 20,
+  },
+
+  record: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
   addButton: {
     marginRight: 20,
   },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'white',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'white',
+  },
+  errorText: {
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  
 });
 
+export default Workouts

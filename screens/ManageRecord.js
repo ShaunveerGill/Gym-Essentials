@@ -36,7 +36,7 @@ function ManageRecord({ route }) {
     }
   });
 
-  async function deleteExpenseHandler() {
+  async function deleteHandler() {
     setIsSubmitting(true);
     try {
       await axios.delete(BACKEND_URL + '/users/' + user.uid + '/personalrecords/' + editedRecordId + '.json');
@@ -180,7 +180,7 @@ function ManageRecord({ route }) {
               <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
   
-            <TouchableOpacity style={styles.button} onPress={deleteExpenseHandler}>
+            <TouchableOpacity style={styles.button} onPress={deleteHandler}>
               <Ionicons name="trash" color="white" size={20} />
             </TouchableOpacity>
   

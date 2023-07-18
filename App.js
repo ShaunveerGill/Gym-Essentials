@@ -22,8 +22,10 @@ import AgeEdit from "./screens/AgeEdit"
 import HeightEdit from "./screens/HeightEdit"
 import WeightEdit from "./screens/WeightEdit"
 import ManageWorkout from "./screens/ManageWorkout";
-import EditWorkout from "./screens/EditWorkout";
+import EditExercise from "./screens/EditExercise";
 import { RecordsContextProvider } from "./RecordsContext";
+import { WorkoutsContextProvider } from "./WorkoutsContext";
+
 import TimerModal from "./screens/TimerModal";
 
 const Stack = createStackNavigator();
@@ -108,50 +110,52 @@ export default function App() {
   return (
     <UserContextProvider>
       <RecordsContextProvider>
-      <>
-        <StatusBar style="auto" />
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-              gestureEnabled: false,
-              cardStyleInterpolator: ({ current, layouts }) => ({
-                cardStyle: {
-                  transform: [
-                    {
-                      translateX: current.progress.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [layouts.screen.width, 0],
-                      }),
-                    },
-                  ],
-                },
-              }),
-            }}
-            initialRouteName="Welcome"
-          >
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen
-              name="FeaturesOverview"
-              component={FeaturesOverview}
-            />
-            <Stack.Screen name="signup" component={signup} />
-            <Stack.Screen name="AgeEdit" component={AgeEdit} />
-            <Stack.Screen name="HeightEdit" component={HeightEdit} />
-            <Stack.Screen name="WeightEdit" component={WeightEdit} />
-            <Stack.Screen name="GenderEdit" component={GenderEdit} />
-            <Stack.Screen name="GoalEdit" component={GoalEdit} />
-            <Stack.Screen name="ActivityEdit" component={ActivityEdit} />
-            <Stack.Screen name="ManageRecord" component={ManageRecord} />
-            <Stack.Screen name="AboutYou" component={AboutYou} />
-            <Stack.Screen name="AccountScreen" component={AccountScreen} />
-            <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
-            <Stack.Screen name="EditWorkout"component={EditWorkout}/>
-            <Stack.Screen name="TimerModal"component={TimerModal}/>
-          </Stack.Navigator>
-        </NavigationContainer>
-      </>
+      <WorkoutsContextProvider>
+        <>
+          <StatusBar style="auto" />
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+                gestureEnabled: false,
+                cardStyleInterpolator: ({ current, layouts }) => ({
+                  cardStyle: {
+                    transform: [
+                      {
+                        translateX: current.progress.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [layouts.screen.width, 0],
+                        }),
+                      },
+                    ],
+                  },
+                }),
+              }}
+              initialRouteName="Welcome"
+            >
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen
+                name="FeaturesOverview"
+                component={FeaturesOverview}
+              />
+              <Stack.Screen name="signup" component={signup} />
+              <Stack.Screen name="AgeEdit" component={AgeEdit} />
+              <Stack.Screen name="HeightEdit" component={HeightEdit} />
+              <Stack.Screen name="WeightEdit" component={WeightEdit} />
+              <Stack.Screen name="GenderEdit" component={GenderEdit} />
+              <Stack.Screen name="GoalEdit" component={GoalEdit} />
+              <Stack.Screen name="ActivityEdit" component={ActivityEdit} />
+              <Stack.Screen name="EditExercise" component={EditExercise} />
+              <Stack.Screen name="ManageRecord" component={ManageRecord} />
+              <Stack.Screen name="AboutYou" component={AboutYou} />
+              <Stack.Screen name="AccountScreen" component={AccountScreen} />
+              <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
+              <Stack.Screen name="TimerModal"component={TimerModal}/>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </>
+        </WorkoutsContextProvider>
       </RecordsContextProvider>
     </UserContextProvider>
   );
