@@ -44,7 +44,7 @@ function ManageWorkout({ route }) {
       setTimerReset(false);
     }
   };
-  
+
   const selectedWorkout = workoutsCtx.workouts.find(
     (workout) => workout.id === editedWorkoutId
   );
@@ -195,7 +195,7 @@ function ManageWorkout({ route }) {
             {checkboxChecked ? (
               <Text style={styles.checkboxText}>✓</Text>
             ) : (
-              <Text style={styles.checkboxText}>☐</Text>
+              <Text style={styles.checkboxText}> </Text>
             )}
           </TouchableOpacity>
           <TimerModal isVisible={modalVisible} onClose={closeModal} duration={60} onReset={resetTimer} />
@@ -336,8 +336,8 @@ const styles = StyleSheet.create({
   checkbox: {
     borderWidth: 1,
     borderColor: 'black',
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -351,6 +351,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '98%',
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 5,       
   },
   exerciseContent: {
     alignItems: 'center',
@@ -358,7 +367,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 10,
   },
   text: {
     fontSize: 18,
@@ -369,26 +377,36 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
+    backgroundColor: 'white',
+    borderRadius: 10,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
     minWidth: 200,
-    width: '80%',
+    width: '100%',
   },
   buttonContainer: {
     alignItems: 'center',
   },
   button: {
     backgroundColor: 'black',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 0,
+    paddingHorizontal: 40,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '40%',
-    height: 36,
+    height: 40,
     marginBottom: 10,
+    width: '70%',
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 5,       
   },
   buttonText : {
     color: 'white',
@@ -436,7 +454,7 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
     paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingBottom: 60,
   },
   headerContainer1: {
@@ -499,6 +517,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginTop: 30,
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 2,       
   },
   buttonText1: {
     color: 'black',

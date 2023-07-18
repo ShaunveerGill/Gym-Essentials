@@ -81,8 +81,9 @@ const TimerModal = ({ isVisible, onClose }) => {
       <View
         style={{
           backgroundColor: 'white',
-          width: squareSize,
-          height: squareSize,
+          borderRadius: 40,
+          width: 350,
+          height: 500,
           justifyContent: 'center',
           alignItems: 'center',
         }}
