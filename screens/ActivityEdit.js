@@ -54,12 +54,10 @@ function ActivityEdit() {
         console.error("Error updating data:", error);
       });
 
-    console.log("activityLevel: ", activityLevel);
     navigation.navigate("FeaturesOverview");
   };
 
   const handleAccountPress = () => {
-    console.log("Going back to AccountScreen");
     navigation.navigate("AccountScreen");
   };
 

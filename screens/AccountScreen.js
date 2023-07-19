@@ -58,8 +58,6 @@ const AccountScreen = ({ navigation }) => {
       })
       .catch((error) => console.log(error));
   };
-  console.log(gender);
-  console.log(activityLevel);
 
   const nav = useNavigation();
 
@@ -68,7 +66,7 @@ const AccountScreen = ({ navigation }) => {
       <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
-            <Image source={require("../assets/logo.png")} style={styles.logo} />
+            <Image source={require("../assets/logoblack.png")} style={styles.logo} />
 
             <View style={styles.infoBoxes}>
               <View style={styles.scrollViewContainer}>
@@ -105,7 +103,7 @@ const AccountScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Weight (lb): {weight}</Text>
               <TouchableOpacity

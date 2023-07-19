@@ -227,6 +227,7 @@ function ManageWorkout({ route }) {
 
 
   const renderExerciseItem = ({ item }) => (
+
     <View style={styles.exerciseContainer}>
       <View style={styles.itemContainer}>
         <View style={styles.exerciseLabelContainer}>
@@ -297,16 +298,18 @@ function ManageWorkout({ route }) {
               </TouchableOpacity>
 
             </View>
+
             <TextInput 
-              style={[styles.input1, !inputs.workoutName.isValid && styles.invalidInput]} 
-              placeholder="Workout Name" 
-              value={inputs.workoutName.value}
-              onChangeText={inputChangedHandler.bind(this, 'workoutName')}
+            style={styles.input1} 
+            placeholder="Workout Name" 
+            value={workoutName}
+            onChangeText={(text) => setWorkoutName(text)}
             />
 
-          {selectedWorkout?.exercises && selectedWorkout.exercises.length > 0 && (
-            <FlatList
-              data={selectedWorkout.exercises}
+
+            <FlatList 
+              data={exercises}
+
               renderItem={renderExerciseItem}
               keyExtractor={(item) => item.id}
             />

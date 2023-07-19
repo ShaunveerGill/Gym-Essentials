@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../UserContext";
@@ -37,7 +37,8 @@ function WeightEdit() {
 
   const [validWeightInput, setValidWeightInput] = useState(true);
   const handleWeight = (selectedWeight) => {
-    const amountIsValid = !isNaN(selectedWeight) && selectedWeight > 0 && selectedWeight < 1000;
+    const amountIsValid =
+      !isNaN(selectedWeight) && selectedWeight > 0 && selectedWeight < 1000;
     setValidWeightInput(amountIsValid);
     if (amountIsValid) {
       setWeight(selectedWeight);
@@ -46,7 +47,7 @@ function WeightEdit() {
 
   const saveAndNavigate = () => {
     if (!validWeightInput) {
-      Alert.alert('Input invalid', 'Please check your input values');
+      Alert.alert("Input invalid", "Please check your input values");
       return;
     }
 
@@ -64,12 +65,10 @@ function WeightEdit() {
         console.error("Error updating data:", error);
       });
 
-    console.log("weight: ", weight);
     navigation.navigate("FeaturesOverview");
   };
 
   const handleAccountPress = () => {
-    console.log("Going back to AccountScreen");
     navigation.navigate("AccountScreen");
   };
 
@@ -83,20 +82,20 @@ function WeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validWeightInput && styles.invalidLabel]}>What is your weight(lb)?</Text>
+          <Text
+            style={[styles.question, !validWeightInput && styles.invalidLabel]}
+          >
+            What is your weight(lb)?
+          </Text>
           <TextInput
-            style={[
-              styles.inputBox,
-              !validWeightInput && styles.invalidInput,
-            ]}
+            style={[styles.inputBox, !validWeightInput && styles.invalidInput]}
             onChangeText={handleWeight}
+            keyboardType="numeric"
           />
         </View>
 
         {formIsInvalid && (
-          <Text style={styles.errorText}>
-            Please Enter A Valid Weight
-          </Text>
+          <Text style={styles.errorText}>Please Enter A Valid Weight</Text>
         )}
 
         <TouchableOpacity
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   invalidLabel: {
-    color: 'red'
+    color: "red",
   },
   invalidInput: {
     borderColor: "red",
@@ -168,4 +167,3 @@ const styles = StyleSheet.create({
 });
 
 export default WeightEdit;
-

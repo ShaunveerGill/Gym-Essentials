@@ -31,6 +31,16 @@
         "projectId": "18dc247b-b32a-4917-9b56-bdffec367bfc"
       }
     },
-    "owner": "sanning"
+    "owner": "sanning", 
+
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/assets/1024.png", 
+          "color": "#ffffff"
+        }
+      ]
+    ]
   }
 }
