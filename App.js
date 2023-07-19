@@ -188,8 +188,8 @@ export default function App() {
       subscription2.remove();
     };
   }, []);
-   
-  
+
+
   //Generates ONCE A DAY (not broken, just change the time lol)
   const randomHour = Math.floor(Math.random() * 13) + 8; // Random hour between 8 and 20
   const randomMinute = Math.floor(Math.random() * 60); // Random minute between 0 and 59
@@ -220,7 +220,7 @@ export default function App() {
         body: quote,
       },
       trigger: {
-        hour: randomHour, 
+        hour: randomHour,
         minute: randomMinute,
         repeats: true,
       },
@@ -262,17 +262,18 @@ export default function App() {
                   component={FeaturesOverview}
                 />
                 <Stack.Screen name="signup" component={signup} />
-                <Stack.Screen name="AgeEdit" component={AgeEdit} />
-                <Stack.Screen name="HeightEdit" component={HeightEdit} />
-                <Stack.Screen name="WeightEdit" component={WeightEdit} />
-                <Stack.Screen name="GenderEdit" component={GenderEdit} />
-                <Stack.Screen name="GoalEdit" component={GoalEdit} />
-                <Stack.Screen name="ActivityEdit" component={ActivityEdit} />
-                <Stack.Screen name="ManageRecord" component={ManageRecord} />
-                <Stack.Screen name="AboutYou" component={AboutYou} />
-                <Stack.Screen name="AccountScreen" component={AccountScreen} />
-                <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
-                <Stack.Screen name="TimerModal"component={TimerModal}/>
+              <Stack.Screen name="AgeEdit" component={AgeEdit} />
+              <Stack.Screen name="HeightEdit" component={HeightEdit} />
+              <Stack.Screen name="WeightEdit" component={WeightEdit} />
+              <Stack.Screen name="GenderEdit" component={GenderEdit} />
+              <Stack.Screen name="GoalEdit" component={GoalEdit} />
+              <Stack.Screen name="ActivityEdit" component={ActivityEdit} />
+              <Stack.Screen name="EditExercise" component={EditExercise} />
+              <Stack.Screen name="ManageRecord" component={ManageRecord} />
+              <Stack.Screen name="AboutYou" component={AboutYou} />
+              <Stack.Screen name="AccountScreen" component={AccountScreen} />
+              <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
+              <Stack.Screen name="TimerModal"component={TimerModal}/>
               </Stack.Navigator>
             </NavigationContainer>
           </>
