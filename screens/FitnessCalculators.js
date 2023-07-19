@@ -64,22 +64,30 @@ function FitnessCalculators() {
       <Image source={require("../assets/logoblack.png")} style={styles.logo} />
       <Text style={styles.title}>Fitness Calculators</Text>
       <View style={styles.button}>
+      <Text style={styles.buttonText2}>
+        Daily Caloric Intake 
+        {"\n"}
+        </Text>
         <Text style={styles.buttonText}>
           Based on your fitness goals, your calculated
-          <Text style={styles.boldText}> daily caloric intake </Text>
+          <Text style={styles.boldText}> Daily Caloric Intake </Text>
           is:
           {"\n"}
         </Text>
         <Text style={styles.intakeText}>{calories} calories</Text>
       </View>
       <View style={styles.button}>
+      <Text style={styles.buttonText2}>
+        Daily Protein Intake 
+        {"\n"}
+        </Text>
         <Text style={styles.buttonText}>
           Based on your fitness goals, your calculated
-          <Text style={styles.boldText}> daily protein intake </Text>
+          <Text style={styles.boldText}> Daily Protein Intake </Text>
           is:
           {"\n"}
         </Text>
-        <Text style={styles.intakeText}>{protein}g</Text>
+        <Text style={styles.intakeText}>{protein} g</Text>
       </View>
     </View>
   );
@@ -105,6 +113,14 @@ const styles = StyleSheet.create({
     width: "90%",
     marginBottom: 20,
     marginTop: 20,
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 2,       
   },
   logo: {
     width: 200,
@@ -115,8 +131,12 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 18,
   },
-  boldText: {
+  buttonText2: {
     fontWeight: "bold",
+    color: "black",
+    fontSize: 20,
+  },
+  boldText: {
   },
   intakeText: {
     alignItems: "center",

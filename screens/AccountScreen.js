@@ -219,8 +219,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
+    borderColor: "white",
+    backgroundColor: "white",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 2,       
+  },
+  infoBoxes2: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 20,
     paddingHorizontal: 10,
     marginBottom: 10,
   },
@@ -235,3 +254,4 @@ const styles = StyleSheet.create({
 });
 
 export default AccountScreen;
+

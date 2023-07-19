@@ -7,6 +7,7 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import { set } from 'firebase/database';
 
+
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }
@@ -182,6 +183,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
+    paddingVertical: 30,
     justifyContent: 'center', 
   },
   infoText: {
@@ -193,17 +195,28 @@ const styles = StyleSheet.create({
   },
 
   workoutItem: {
-    padding: 12,
-    marginVertical: 8,
+    padding: 15,
+    marginVertical: 15,
     flexDirection: 'row',
     backgroundColor: 'black',
     justifyContent: 'space-between',
-    borderRadius: 6,
+    borderRadius: 15,
     elevation: 3,
+    width: '97%',
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.35, 
+    shadowRadius: 3.84,  
+    
   },
 
   textBase: {
     color: 'white',
+    paddingHorizontal: 6,
+    letterSpacing: 1.25,
   },
 
   exercise: {

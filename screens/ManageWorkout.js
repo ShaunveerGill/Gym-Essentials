@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
+import TimerModal from './TimerModal';
+import { Alert } from 'react-native';
 
 
 function ManageWorkout({ route }) {
@@ -18,6 +20,57 @@ function ManageWorkout({ route }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [timerReset, setTimerReset] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  // const openModal = () => {
+  //   setModalVisible(true);
+  //   setTimerReset(false);
+  // };
+  
+  // const closeModal = () => {
+  //   setModalVisible(false);
+  // };
+
+  const resetTimer = () => {
+    setModalVisible(true);
+    setTimerReset(true);
+  };
+
+  // const toggleCheckbox = () => {
+  //   setCheckboxChecked(!checkboxChecked);
+  //   if (!checkboxChecked) {
+  //     setModalVisible(true);
+  //     setTimerReset(false);
+  //   }
+  // };
+
+  const [exerciseModalVisible, setExerciseModalVisible] = useState({});
+
+  const openModal = (exerciseId) => {
+    setExerciseModalVisible((prevState) => ({
+      ...prevState,
+      [exerciseId]: true,
+    }));
+  };
+
+  const closeModal = (exerciseId) => {
+    setExerciseModalVisible((prevState) => ({
+      ...prevState,
+      [exerciseId]: false,
+    }));
+  };
+
+  const toggleCheckbox = (exerciseId) => {
+    setCheckboxChecked((prevState) => !prevState);
+    if (!checkboxChecked) {
+      openModal(exerciseId);
+    } else {
+      closeModal(exerciseId);
+    }
+  };
+
   const selectedWorkout = workoutsCtx.workouts.find(
     (workout) => workout.id === editedWorkoutId
   );
@@ -29,7 +82,7 @@ function ManageWorkout({ route }) {
     }
   });
 
-  async function deleteExerciseHandler(exerciseId) {
+  async function confirmDeleteExercise(exerciseId) {
     try {
       await axios.delete(
         BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises/' + exerciseId + '.json'
@@ -44,8 +97,26 @@ function ManageWorkout({ route }) {
     }
   }
   
+  function deleteExerciseHandler(exerciseId) {
+    Alert.alert(
+      'Delete Exercise',
+      'Are you sure you want to delete this exercise?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => confirmDeleteExercise(exerciseId),
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+  
 
-  async function deleteHandler() {
+  async function confirmDelete() {
     setIsSubmitting(true);
     try {
       await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json');
@@ -56,6 +127,25 @@ function ManageWorkout({ route }) {
       setIsSubmitting(false);
     }
   }
+  
+  function deleteHandler() {
+    Alert.alert(
+      'Delete Workout',
+      'Are you sure you want to delete?',
+      [
+        {
+          text: 'Yes',
+          onPress: confirmDelete,
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+
   function cancelHandler() {
     navigation.navigate('Workouts');
   }
@@ -135,91 +225,19 @@ function ManageWorkout({ route }) {
   }
 
 
-  // ------------------------------------------------------------------------------------
 
-  const { workoutId } = route.params;
+  const renderExerciseItem = ({ item }) => (
 
-  const [workoutName, setWorkoutName] = useState('');
-  const [exercises, setExercises] = useState([]);
-  const dropAnim = useRef(new Animated.Value(-100)).current;
-
-  const dropDown = () => {
-    Animated.timing(dropAnim, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const addExerciseHandler = () => {
-    dropDown();
-    setExercises((currentExercises) => [
-      ...currentExercises,
-      { id: Math.random().toString(), name: '', sets: [{ sets: '', reps: '', done: false }] },
-    ]);
-  };
-
-  const addSetHandler = (index) => {
-    const newExercises = [...exercises];
-    newExercises[index].sets.push({ sets: '', reps: '', done: false });
-    setExercises(newExercises);
-  };
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [timerReset, setTimerReset] = useState(false);
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
-
-  const openModal = () => {
-    setModalVisible(true);
-    setTimerReset(false);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  const resetTimer = () => {
-    setModalVisible(true);
-    setTimerReset(true);
-  };
-
-  const toggleCheckbox = () => {
-    setCheckboxChecked(!checkboxChecked);
-    if (!checkboxChecked) {
-      setModalVisible(true);
-      setTimerReset(false);
-    }
-  };
-
-  const handleSave = () => {
-    navigation.goBack();
-  };
-
-  const handleDeleteSet = (exerciseIndex, setIndex) => {
-    const newExercises = [...exercises];
-    newExercises[exerciseIndex].sets.splice(setIndex, 1);
-  
-    // Check if there are no sets left in the exercise.
-    if (newExercises[exerciseIndex].sets.length === 0) {
-      // Remove the exercise.
-      newExercises.splice(exerciseIndex, 1);
-    }
-  
-    setExercises(newExercises);
-  };
-
-  // ------------------------------------------------------------------------------------
-  const renderExerciseItem = ({ item, index }) => (
     <View style={styles.exerciseContainer}>
-    <View style={styles.itemContainer}>
       <View style={styles.itemContainer}>
-        <Text style={styles.exerciseLabel}>Exercise:</Text>
-        <Text style={styles.text}>{item.exerciseName}</Text>
+        <View style={styles.exerciseLabelContainer}>
+          <Text style={styles.exerciseLabel}>Exercise:</Text>
+          <Text style={styles.text}>{item.exerciseName}</Text>
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId, exerciseId: item.id })}>
+          <Ionicons name="ellipsis-vertical" size={24} color="black" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('EditExercise', { currentEditId: editedWorkoutId, exerciseId: item.id })}>
-        <Ionicons name="ellipsis-vertical" size={24} color="black" />
-      </TouchableOpacity>
-    </View>
 
       <View style={styles.itemContainer}>
         <View style={styles.inputContainer}>
@@ -230,10 +248,28 @@ function ManageWorkout({ route }) {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Reps:</Text>
+          <Text style={styles.exerciseLabel}>Reps:</Text>
           <View style={styles.inputWrapper}>
             <Text style={styles.text}>{item.reps}</Text>
           </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+
+          <TouchableOpacity onPress={() => toggleCheckbox(item.id)} style={styles.c}>
+          {checkboxChecked ? (
+            <Ionicons name="timer-outline" size={25} style={styles.trashIcon} />
+          ) : (
+            <Ionicons name="timer-outline" size={25} style={styles.trashIcon} />
+          )}
+        </TouchableOpacity>
+        <TimerModal
+          isVisible={exerciseModalVisible[item.id]}
+          onClose={() => closeModal(item.id)}
+          duration={60}
+          onReset={resetTimer}
+        />
+
         </View>
 
         <View style={styles.inputContainer}>
@@ -244,6 +280,7 @@ function ManageWorkout({ route }) {
       </View>
     </View>
   );
+
   
 
   return (
@@ -341,18 +378,16 @@ export default ManageWorkout;
 
 
 const styles = StyleSheet.create({
-  exerciseInput: {
-    flex: 1,
-    height: 30,
-    borderColor: 'black',
-    borderWidth: 1,
-    paddingLeft: 10,
+  exerciseLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   exerciseLabel: {
     marginLeft: 0,
     marginRight: 5,
-    fontSize: 16, 
+    fontSize: 18, 
     fontFamily: 'Arial', 
+    fontWeight: 'bold',
   },
   
   itemContainer: {
@@ -360,20 +395,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 25,
     justifyContent: 'space-between',
-  },
-  label: {
-    marginRight: 10,
+    width: '100%',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  smallInput: {
-    height: 24,
-    borderColor: 'black',
-    borderWidth: 1,
-    paddingLeft: 10,
-    width: 40,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -383,8 +409,8 @@ const styles = StyleSheet.create({
   checkbox: {
     borderWidth: 1,
     borderColor: 'black',
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -393,9 +419,20 @@ const styles = StyleSheet.create({
   },
   exerciseContainer: {
     backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    borderRadius: 30,
+    padding: 20,
+    marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '98%',
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 5,       
   },
   exerciseContent: {
     alignItems: 'center',
@@ -403,36 +440,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 10,
   },
   text: {
-    marginLeft: 40,
+    fontSize: 18,
+    marginLeft: 10,
   },
   inputText: {
     flex: 1,
   },
   input: {
     height: 40,
+    backgroundColor: 'white',
+    borderRadius: 10,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
     minWidth: 200,
-    width: '80%',
+    width: '100%',
   },
   buttonContainer: {
     alignItems: 'center',
   },
   button: {
     backgroundColor: 'black',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 0,
+    paddingHorizontal: 40,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '40%',
-    height: 36,
+    height: 40,
     marginBottom: 10,
+    width: '70%',
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 5,       
   },
   buttonText : {
     color: 'white',
@@ -480,7 +527,7 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
     paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingBottom: 60,
   },
   headerContainer1: {
@@ -543,6 +590,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginTop: 30,
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 2,       
   },
   buttonText1: {
     color: 'black',

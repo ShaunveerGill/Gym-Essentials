@@ -156,13 +156,21 @@ const styles = StyleSheet.create({
   },
 
   recordItem: {
-    padding: 12,
-    marginVertical: 8,
+    padding: 15,
+    marginVertical: 40,
     flexDirection: 'row',
     backgroundColor: 'black',
     justifyContent: 'space-between',
-    borderRadius: 6,
+    borderRadius: 10,
     elevation: 3,
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 3,   
+      height: 5,  
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,  
+    elevation: 2,       
   },
 
   textBase: {

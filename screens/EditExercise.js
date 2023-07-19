@@ -109,10 +109,8 @@ function EditExercise({ route }) {
       {isEditing ? (
         <>
         <View style={styles.wrapper1}>
-          <View style={styles.container}>
-            <View style={styles.header2}>
+          <View style={styles.container}> 
               <Text style={styles.title2}>Editing Exercise</Text>
-            </View>
             <View style={styles.itemContainer1}>
               <Text style={[styles.text1, !inputs.exerciseName.isValid && styles.invalidLabel]}>Exercise:</Text>
               <TextInput  
@@ -224,12 +222,15 @@ function EditExercise({ route }) {
 
 const styles = StyleSheet.create({
   exerciseInput: {
-    flex: 1,
-    height: 30,
-    borderColor: 'black',
-    borderWidth: 1,
-    paddingLeft: 10,
-  },
+      height: 40,
+      backgroundColor: 'white',
+      borderRadius: 10,
+      borderColor: 'gray',
+      borderWidth: 1,
+      marginBottom: 20,
+      padding: 10,
+      width: '80%',
+    },
   exerciseLabel: {
     marginLeft: 0,
     marginRight: 5,
@@ -248,16 +249,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   smallInput: {
-    height: 24,
-    borderColor: 'black',
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 10,
-    width: 40,
+    width: 60,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 0, 
+    paddingRight: 40, 
   },
   checkbox: {
     borderWidth: 1,
@@ -282,7 +285,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20, 
+    paddingHorizontal: 0, 
   },
   text: {
     marginLeft: 40, 
@@ -354,7 +357,6 @@ const styles = StyleSheet.create({
 
   wrapper1: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   container1: {
@@ -413,6 +415,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginTop: 30,
+    shadowColor: "#000", // Shadow color
+    shadowOffset: {
+      width: 2,   // These are the shadow offsets for X and Y axis
+      height: 5,  // Ideally keep Y Offset a positive number for a drop down shadow
+    },
+    shadowOpacity: 0.45, // Shadow opacity
+    shadowRadius: 3.84,  // Shadow blurring effect
+    elevation: 5,        // This adds a drop shadow to the item and a shadow to the border
   },
   buttonText1: {
     color: 'white',
