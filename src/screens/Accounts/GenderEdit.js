@@ -9,25 +9,41 @@ import {
   Keyboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 
-function GoalEdit() {
+function GenderEdit() {
   const navigation = useNavigation();
-  const { setGoal, goal } = useContext(UserContext);
 
-  const handleGoal = (selectedGoal) => {
-    setGoal(selectedGoal);
+  const {
+    userEmail,
+    setUserEmail,
+    userName,
+    setUserName,
+    gender,
+    setGender,
+    setAge,
+    age,
+    setHeight,
+    height,
+    setWeight,
+    weight,
+    setGoal,
+    goal,
+  } = useContext(UserContext);
+
+  const handleGender = (selectedGender) => {
+    setGender(selectedGender);
   };
 
-  const updateDatabase = () => {
+  const saveAndNavigate = () => {
     const user = firebase.auth().currentUser;
     const uid = user.uid;
     const databaseRef = firebase.database().ref("users/" + uid);
     databaseRef
       .update({
-        goal: goal,
+        gender: gender,
       })
       .then(() => {
         console.log("Data updated successfully");
@@ -35,7 +51,12 @@ function GoalEdit() {
       .catch((error) => {
         console.error("Error updating data:", error);
       });
+
     navigation.navigate("FeaturesOverview");
+  };
+
+  const handleAccountPress = () => {
+    navigation.navigate("AccountScreen");
   };
 
   return (
@@ -46,21 +67,20 @@ function GoalEdit() {
             <Text style={styles.title}>Editing</Text>
           </View>
           <View>
-            <Text style={styles.questions}>What are your gym goals ?</Text>
+            <Text style={styles.questions}>
+              What is your gender to calculate your calorie?
+            </Text>
           </View>
-
+          {/*Changed code for when you want change the gender selections*/}
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[
                 styles.button,
-                {
-                  backgroundColor:
-                    goal === "Lose Weight" ? "#ffffff" : "#cccccc",
-                },
+                { backgroundColor: gender === "Male" ? "#ffffff" : "#cccccc" },
               ]}
-              onPress={() => handleGoal("Lose Weight")}
+              onPress={() => handleGender("Male")}
             >
-              <Text style={styles.buttonText}>Lose Weight</Text>
+              <Text style={styles.buttonText}>Male</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
@@ -68,30 +88,15 @@ function GoalEdit() {
               style={[
                 styles.button,
                 {
-                  backgroundColor:
-                    goal === "Gain Weight" ? "#ffffff" : "#cccccc",
+                  backgroundColor: gender === "Female" ? "#ffffff" : "#cccccc",
                 },
               ]}
-              onPress={() => handleGoal("Gain Weight")}
+              onPress={() => handleGender("Female")}
             >
-              <Text style={styles.buttonText}>Gain Weight</Text>
+              <Text style={styles.buttonText}>Female</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  backgroundColor:
-                    goal === "Maintain Weight" ? "#ffffff" : "#cccccc",
-                },
-              ]}
-              onPress={() => handleGoal("Maintain Weight")}
-            >
-              <Text style={styles.buttonText}>Maintain Weight</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.save} onPress={updateDatabase}>
+          <TouchableOpacity style={styles.save} onPress={saveAndNavigate}>
             <View>
               <Text style={styles.buttonText}> Save </Text>
             </View>
@@ -158,7 +163,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 30,
+    marginBottom: 20,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
@@ -198,4 +203,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GoalEdit;
+export default GenderEdit;

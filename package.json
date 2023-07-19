@@ -9,14 +9,16 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^18.0.1",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "@react-navigation/stack": "^6.3.17",
     "axios": "^1.4.0",
-    "expo": "~48.0.18",
-    "expo-notifications": "~0.18.1",
+    "expo": "^49.0.3",
+    "expo-font": "^11.4.0",
+    "expo-notifications": "^0.18.1",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.23.0",
     "react": "18.2.0",
@@ -31,7 +33,10 @@
     "react-native-web": "~0.18.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@babel/plugin-transform-runtime": "^7.22.9",
+    "@babel/runtime": "^7.22.6",
+    "webpack-cli": "^5.1.4"
   },
   "private": true
 }

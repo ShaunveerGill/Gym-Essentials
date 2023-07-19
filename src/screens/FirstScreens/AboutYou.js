@@ -10,11 +10,11 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { auth } from "../firebase";
-import { getDatabase, ref, push, set } from "firebase/database";
+import { useNavigation } from "@react-navigation/native";
+import { auth } from "../../../firebase";
+import { getDatabase, ref, set } from "firebase/database";
 import React, { useContext } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 
 function AboutYou() {
   const navigation = useNavigation();

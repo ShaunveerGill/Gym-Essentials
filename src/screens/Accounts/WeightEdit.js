@@ -5,17 +5,16 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 
-function AgeEdit() {
+function WeightEdit() {
   const navigation = useNavigation();
 
   const {
@@ -35,18 +34,19 @@ function AgeEdit() {
     goal,
   } = useContext(UserContext);
 
-  const [validAgeInput, setValidAgeInput] = useState(true);
-  const handleAge = (selectedAge) => {
-    const amountIsValid = !isNaN(selectedAge) && selectedAge > 0 && selectedAge < 130;
-    setValidAgeInput(amountIsValid);
+  const [validWeightInput, setValidWeightInput] = useState(true);
+  const handleWeight = (selectedWeight) => {
+    const amountIsValid =
+      !isNaN(selectedWeight) && selectedWeight > 0 && selectedWeight < 1000;
+    setValidWeightInput(amountIsValid);
     if (amountIsValid) {
-      setAge(selectedAge);
+      setWeight(selectedWeight);
     }
   };
 
   const saveAndNavigate = () => {
-    if (!validAgeInput) {
-      Alert.alert('Input invalid', 'Please check your input values');
+    if (!validWeightInput) {
+      Alert.alert("Input invalid", "Please check your input values");
       return;
     }
 
@@ -55,7 +55,7 @@ function AgeEdit() {
     const databaseRef = firebase.database().ref("users/" + uid);
     databaseRef
       .update({
-        age: age,
+        weight: weight,
       })
       .then(() => {
         console.log("Data updated successfully");
@@ -71,7 +71,7 @@ function AgeEdit() {
     navigation.navigate("AccountScreen");
   };
 
-  const formIsInvalid = !validAgeInput;
+  const formIsInvalid = !validWeightInput;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -81,27 +81,26 @@ function AgeEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validAgeInput && styles.invalidLabel]}>What is your age?</Text>
+          <Text
+            style={[styles.question, !validWeightInput && styles.invalidLabel]}
+          >
+            What is your weight(lb)?
+          </Text>
           <TextInput
-            style={[
-              styles.inputBox,
-              !validAgeInput && styles.invalidInput,
-            ]}
-            onChangeText={handleAge}
+            style={[styles.inputBox, !validWeightInput && styles.invalidInput]}
+            onChangeText={handleWeight}
             keyboardType="numeric"
           />
         </View>
 
         {formIsInvalid && (
-          <Text style={styles.errorText}>
-            Please Enter A Valid Age
-          </Text>
+          <Text style={styles.errorText}>Please Enter A Valid Weight</Text>
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validAgeInput && { opacity: 0.5 }]}
+          style={[styles.save, !validWeightInput && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validAgeInput}
+          disabled={!validWeightInput}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   invalidLabel: {
-    color: 'red'
+    color: "red",
   },
   invalidInput: {
     borderColor: "red",
@@ -166,5 +165,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AgeEdit;
-
+export default WeightEdit;

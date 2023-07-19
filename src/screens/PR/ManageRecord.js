@@ -1,9 +1,9 @@
-import React, { isValidElement, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { RecordsContext } from '../RecordsContext';
-import { auth } from "../firebase";
+import { RecordsContext } from '../../context/RecordsContext';
+import { auth } from "../../../firebase";
 import axios from 'axios';
 
 function ManageRecord({ route }) {

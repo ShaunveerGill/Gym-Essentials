@@ -5,17 +5,16 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
+  Alert
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 
-function WeightEdit() {
+function HeightEdit() {
   const navigation = useNavigation();
 
   const {
@@ -35,19 +34,18 @@ function WeightEdit() {
     goal,
   } = useContext(UserContext);
 
-  const [validWeightInput, setValidWeightInput] = useState(true);
-  const handleWeight = (selectedWeight) => {
-    const amountIsValid =
-      !isNaN(selectedWeight) && selectedWeight > 0 && selectedWeight < 1000;
-    setValidWeightInput(amountIsValid);
+  const [validHeightInput, setValidHeightInput] = useState(true);
+  const handleHeight = (selectedHeight) => {
+    const amountIsValid = !isNaN(selectedHeight) && selectedHeight > 0 && selectedHeight < 274.32;
+    setValidHeightInput(amountIsValid);
     if (amountIsValid) {
-      setWeight(selectedWeight);
+      setHeight(selectedHeight);
     }
   };
 
   const saveAndNavigate = () => {
-    if (!validWeightInput) {
-      Alert.alert("Input invalid", "Please check your input values");
+    if (!validHeightInput) {
+      Alert.alert('Input invalid', 'Please check your input values');
       return;
     }
 
@@ -56,7 +54,7 @@ function WeightEdit() {
     const databaseRef = firebase.database().ref("users/" + uid);
     databaseRef
       .update({
-        weight: weight,
+        height: height,
       })
       .then(() => {
         console.log("Data updated successfully");
@@ -72,7 +70,7 @@ function WeightEdit() {
     navigation.navigate("AccountScreen");
   };
 
-  const formIsInvalid = !validWeightInput;
+  const formIsInvalid = !validHeightInput;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -82,26 +80,27 @@ function WeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text
-            style={[styles.question, !validWeightInput && styles.invalidLabel]}
-          >
-            What is your weight(lb)?
-          </Text>
+          <Text style={[styles.question, !validHeightInput && styles.invalidLabel]}>What is your height(cm)?</Text>
           <TextInput
-            style={[styles.inputBox, !validWeightInput && styles.invalidInput]}
-            onChangeText={handleWeight}
+            style={[
+              styles.inputBox,
+              !validHeightInput && styles.invalidInput,
+            ]}
+            onChangeText={handleHeight}
             keyboardType="numeric"
           />
         </View>
 
         {formIsInvalid && (
-          <Text style={styles.errorText}>Please Enter A Valid Weight</Text>
+          <Text style={styles.errorText}>
+            Please Enter A Valid Height
+          </Text>
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validWeightInput && { opacity: 0.5 }]}
+          style={[styles.save, !validHeightInput && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validWeightInput}
+          disabled={!validHeightInput}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   invalidLabel: {
-    color: "red",
+    color: 'red'
   },
   invalidInput: {
     borderColor: "red",
@@ -166,4 +165,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WeightEdit;
+export default HeightEdit;
+

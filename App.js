@@ -1,34 +1,33 @@
 import React from "react";
 import { useEffect } from 'react';
-import { Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import WelcomeScreen from "./screens/WelcomeScreen";
-import LoginScreen from "./screens/LoginScreen";
-import Workouts from "./screens/Workouts";
-import PersonalRecords from "./screens/PersonalRecords";
-import FitnessCalculators from "./screens/FitnessCalculators";
-import signup from "./screens/signup";
-import AboutYou from "./screens/AboutYou";
-import AccountScreen from "./screens/AccountScreen";
-import { UserProvider, UserContextProvider } from "./UserContext";
-import ManageRecord from "./screens/ManageRecord";
+import WelcomeScreen from "./src/screens/FirstScreens/WelcomeScreen";
+import LoginScreen from "./src/screens/FirstScreens/LoginScreen";
+import Workouts from "./src/screens/Workouts/Workouts";
+import PersonalRecords from "./src/screens/PR/PersonalRecords";
+import FitnessCalculators from "./src/screens/Calculator/FitnessCalculators";
+import signup from "./src/screens/FirstScreens/signup";
+import AboutYou from "./src/screens/FirstScreens/AboutYou";
+import AccountScreen from "./src/screens/Accounts/AccountScreen";
+import { UserContextProvider } from "./src/context/UserContext";
+import ManageRecord from "./src/screens/PR/ManageRecord";
 import { Ionicons } from "@expo/vector-icons";
-import GenderEdit from "./screens/GenderEdit";
-import GoalEdit from "./screens/GoalEdit";
-import ActivityEdit from "./screens/ActivityEdit";
-import AgeEdit from "./screens/AgeEdit";
-import HeightEdit from "./screens/HeightEdit";
-import WeightEdit from "./screens/WeightEdit";
-import ManageWorkout from "./screens/ManageWorkout";
-import EditExercise from "./screens/EditExercise";
-import { RecordsContextProvider } from "./RecordsContext";
-import { WorkoutsContextProvider } from "./WorkoutsContext";
-import { StyleSheet, Button, View, Alert, Platform } from 'react-native';
+import GenderEdit from "./src/screens/Accounts/GenderEdit";
+import GoalEdit from "./src/screens/Accounts/GoalEdit";
+import ActivityEdit from "./src/screens/Accounts/ActivityEdit";
+import AgeEdit from "./src/screens/Accounts/AgeEdit";
+import HeightEdit from "./src/screens/Accounts/HeightEdit";
+import WeightEdit from "./src/screens/Accounts/WeightEdit";
+import ManageWorkout from "./src/screens/Workouts/ManageWorkout";
+import EditExercise from "./src/screens/Workouts/EditExercise";
+import { RecordsContextProvider } from "./src/context/RecordsContext";
+import { WorkoutsContextProvider } from "./src/context/WorkoutsContext";
+import { Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import TimerModal from "./screens/TimerModal";
+import TimerModal from "./src/screens/Workouts/TimerModal";
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -42,18 +41,6 @@ Notifications.setNotificationHandler({
     };
   },
 });
-
-{/*const headerLeftIcon = (navigation) => (
-  <Ionicons
-    name="camera-outline"
-    color="black"
-    size={24}
-    onPress={() => {
-      // handle icon press if needed
-    }}
-    style={{ marginLeft: 25 }}
-  />
-  );*/}
 
 function FeaturesOverview({ navigation }) {
   return (
@@ -79,10 +66,10 @@ function FeaturesOverview({ navigation }) {
               size={30}
             />
           ),
-          //headerLeft: () => headerLeftIcon(BeReal), // Add the headerLeft option
+  
         }}
       />
-      {/* ...Other screens */}
+    
       <BottomTabs.Screen
         name="PersonalRecords"
         component={PersonalRecords}
@@ -96,7 +83,7 @@ function FeaturesOverview({ navigation }) {
               size={30}
             />
           ),
-          //headerLeft: () => headerLeftIcon(BeReal), // Add the headerLeft option
+         
         }}
       />
 
@@ -113,7 +100,7 @@ function FeaturesOverview({ navigation }) {
               size={30}
             />
           ),
-          //headerLeft: () => headerLeftIcon(navigation), // Add the headerLeft option
+          
         }}
       />
 
@@ -130,7 +117,7 @@ function FeaturesOverview({ navigation }) {
               size={30}
             />
           ),
-          //headerLeft: () => headerLeftIcon(navigation), // Add the headerLeft option
+          
         }}
       />
     </BottomTabs.Navigator>

@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Image,
   Text,
   View,
-  Button,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
   ScrollView,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { auth } from "../firebase";
-import { getDatabase, ref, onValue, set } from "firebase/database";
-import InformationScreen from "./InformationScreen";
-import SettingsScreen from "./SettingsScreen";
-import { UserContext, UserContextProvider } from "../UserContext";
+import { auth } from "../../../firebase";
+import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { TextInput } from "react-native-gesture-handler";
 const AccountStack = createNativeStackNavigator();
 
 const AccountScreen = ({ navigation }) => {
@@ -66,7 +59,7 @@ const AccountScreen = ({ navigation }) => {
       <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
-            <Image source={require("../assets/logoblack.png")} style={styles.logo} />
+            <Image source={require("../../assets/TaskBarIcons/logoblack.png")} style={styles.logo} />
 
             <View style={styles.infoBoxes}>
               <View style={styles.scrollViewContainer}>
@@ -152,8 +145,6 @@ const AccountScreen = ({ navigation }) => {
           </View>
         )}
       </AccountStack.Screen>
-      <AccountStack.Screen name="Information" component={InformationScreen} />
-      <AccountStack.Screen name="Settings" component={SettingsScreen} />
     </AccountStack.Navigator>
   );
 };

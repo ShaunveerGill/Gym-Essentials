@@ -5,17 +5,16 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   Alert
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 
-function HeightEdit() {
+function AgeEdit() {
   const navigation = useNavigation();
 
   const {
@@ -35,17 +34,17 @@ function HeightEdit() {
     goal,
   } = useContext(UserContext);
 
-  const [validHeightInput, setValidHeightInput] = useState(true);
-  const handleHeight = (selectedHeight) => {
-    const amountIsValid = !isNaN(selectedHeight) && selectedHeight > 0 && selectedHeight < 274.32;
-    setValidHeightInput(amountIsValid);
+  const [validAgeInput, setValidAgeInput] = useState(true);
+  const handleAge = (selectedAge) => {
+    const amountIsValid = !isNaN(selectedAge) && selectedAge > 0 && selectedAge < 130;
+    setValidAgeInput(amountIsValid);
     if (amountIsValid) {
-      setHeight(selectedHeight);
+      setAge(selectedAge);
     }
   };
 
   const saveAndNavigate = () => {
-    if (!validHeightInput) {
+    if (!validAgeInput) {
       Alert.alert('Input invalid', 'Please check your input values');
       return;
     }
@@ -55,7 +54,7 @@ function HeightEdit() {
     const databaseRef = firebase.database().ref("users/" + uid);
     databaseRef
       .update({
-        height: height,
+        age: age,
       })
       .then(() => {
         console.log("Data updated successfully");
@@ -71,7 +70,7 @@ function HeightEdit() {
     navigation.navigate("AccountScreen");
   };
 
-  const formIsInvalid = !validHeightInput;
+  const formIsInvalid = !validAgeInput;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -81,27 +80,27 @@ function HeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validHeightInput && styles.invalidLabel]}>What is your height(cm)?</Text>
+          <Text style={[styles.question, !validAgeInput && styles.invalidLabel]}>What is your age?</Text>
           <TextInput
             style={[
               styles.inputBox,
-              !validHeightInput && styles.invalidInput,
+              !validAgeInput && styles.invalidInput,
             ]}
-            onChangeText={handleHeight}
+            onChangeText={handleAge}
             keyboardType="numeric"
           />
         </View>
 
         {formIsInvalid && (
           <Text style={styles.errorText}>
-            Please Enter A Valid Height
+            Please Enter A Valid Age
           </Text>
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validHeightInput && { opacity: 0.5 }]}
+          style={[styles.save, !validAgeInput && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validHeightInput}
+          disabled={!validAgeInput}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
@@ -166,5 +165,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeightEdit;
+export default AgeEdit;
 

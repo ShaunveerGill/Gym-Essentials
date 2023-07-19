@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Text, StyleSheet, View, Image } from "react-native";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 
 const LOSE_WEIGHT = -750;
 const GAIN_WEIGHT = 375;
@@ -61,7 +61,7 @@ function FitnessCalculators() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/logoblack.png")} style={styles.logo} />
+      <Image source={require("../../assets/TaskBarIcons/logoblack.png")} style={styles.logo} />
       <Text style={styles.title}>Fitness Calculators</Text>
       <View style={styles.button}>
       <Text style={styles.buttonText2}>
