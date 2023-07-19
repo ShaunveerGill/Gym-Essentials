@@ -58,21 +58,22 @@ function LoginScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+      <Image source={require("../assets/logoblack.png")} style={styles.logo} />
         <View style={styles.header}>
           <Text style={styles.title}>Login</Text>
         </View>
-          <TextInput 
+          <TextInput
             style={styles.input}
             placeholder="Email Address"
             value={userEmail}
-            onChangeText={text => setUserEmail(text)} 
+            onChangeText={text => setUserEmail(text)}
           />
-        <TextInput 
+        <TextInput
           style={styles.input}
           placeholder="Password"
           value={password}
           onChangeText={text => setPassword(text)}
-          secureTextEntry 
+          secureTextEntry
         />
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.createAccountButton} onPress={handleLogin}>
@@ -125,11 +126,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 25,  
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',  
-    marginBottom: 10, 
+    width: '100%',
+    marginBottom: 10,
   },
   buttonText: {
     color: 'black',

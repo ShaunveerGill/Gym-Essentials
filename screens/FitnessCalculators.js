@@ -36,7 +36,7 @@ function FitnessCalculators() {
         activityLevelInt = 1.725;
       } else {
         activityLevelInt = 1.9;
-      } 
+      }
 
       let BMR = gender === 'Male'
         ? 88.362 + (13.397 * (weightInt / 2.2)) + (4.799 * heightInt) - (5.677 * ageInt)
@@ -61,7 +61,7 @@ function FitnessCalculators() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/logo.png")} style={styles.logo} />
+      <Image source={require("../assets/logoblack.png")} style={styles.logo} />
       <Text style={styles.title}>Fitness Calculators</Text>
       <View style={styles.button}>
         <Text style={styles.buttonText}>
