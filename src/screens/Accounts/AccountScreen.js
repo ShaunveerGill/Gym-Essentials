@@ -12,6 +12,7 @@ import { auth } from "../../../firebase";
 import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 const AccountStack = createNativeStackNavigator();
 
@@ -39,13 +40,13 @@ const AccountScreen = ({ navigation }) => {
     auth
       .signOut()
       .then(() => {
-        setUserName('');
-        setGender('');
-        setAge('');
-        setHeight('');
-        setWeight('');
-        setGoal('');
-        setActivityLevel('');
+        setUserName("");
+        setGender("");
+        setAge("");
+        setHeight("");
+        setWeight("");
+        setGoal("");
+        setActivityLevel("");
         console.log("User signed out");
         navigation.navigate("Login");
       })
@@ -59,21 +60,15 @@ const AccountScreen = ({ navigation }) => {
       <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
-            <Image source={require("../../assets/TaskBarIcons/logoblack.png")} style={styles.logo} />
+            <Image
+              source={require("../../assets/TaskBarIcons/logoblack.png")}
+              style={styles.logo}
+            />
 
             <View style={styles.infoBoxes}>
               <View style={styles.scrollViewContainer}>
-                <ScrollView horizontal>
-                  <Text style={styles.infoboxtext}>User Name: {userName}</Text>
-                </ScrollView>
-              </View>
-            </View>
-
-            <View style={styles.infoBoxes}>
-              <View style={styles.scrollViewContainer}>
-                <ScrollView horizontal>
-                  <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
-                </ScrollView>
+                <Text style={styles.infoboxtext}>User Name: {userName}</Text>
+                <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
               </View>
             </View>
 
@@ -83,7 +78,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("AgeEdit")}
               >
-                <Text style={styles.buttonText}>Edit</Text>
+                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -93,7 +88,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("HeightEdit")}
               >
-                <Text style={styles.buttonText}>Edit</Text>
+                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -103,17 +98,17 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("WeightEdit")}
               >
-                <Text style={styles.buttonText}>Edit</Text>
+                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Gender: {gender}</Text>
               <TouchableOpacity
-                style={styles.editButtonGender}
+                style={styles.editButtonGoal}
                 onPress={() => nav.navigate("GenderEdit")}
               >
-                <Text style={styles.buttonText}>Edit</Text>
+                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -123,7 +118,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("GoalEdit")}
               >
-                <Text style={styles.buttonText}>Edit</Text>
+                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -133,7 +128,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("ActivityEdit")}
               >
-                <Text style={styles.buttonText}>Edit</Text>
+                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -153,7 +148,7 @@ const styles = StyleSheet.create({
   editButtonGender: {
     backgroundColor: "white",
     position: "absolute",
-    left: "50%",
+    left: "60%",
     width: "25%",
     borderRadius: 15,
     alignItems: "center",
@@ -204,6 +199,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 100,
     resizeMode: "contain",
+    marginBottom: 20,
   },
   infoBoxes: {
     width: "80%",
@@ -215,14 +211,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     marginBottom: 10,
-    shadowColor: "#000", 
+    shadowColor: "#000",
     shadowOffset: {
-      width: 3,   
-      height: 5,  
+      width: 3,
+      height: 5,
     },
-    shadowOpacity: 0.25, 
-    shadowRadius: 3.84,  
-    elevation: 2,       
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
   infoBoxes2: {
     width: "80%",
@@ -245,4 +241,3 @@ const styles = StyleSheet.create({
 });
 
 export default AccountScreen;
-

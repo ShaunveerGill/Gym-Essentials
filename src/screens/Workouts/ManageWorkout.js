@@ -16,7 +16,7 @@ import { WorkoutsContext } from "../../context/WorkoutsContext";
 import { auth } from "../../../firebase";
 import axios from "axios";
 import TimerModal from "../Workouts/TimerModal";
-import { Alert } from 'react-native';
+import { Alert } from "react-native";
 
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -91,10 +91,18 @@ function ManageWorkout({ route }) {
     },
   });
 
-    async function confirmDeleteExercise(exerciseId) {
+  async function confirmDeleteExercise(exerciseId) {
+    setIsSubmitting(true);
     try {
       await axios.delete(
-        BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '/exercises/' + exerciseId + '.json'
+        BACKEND_URL +
+          "/users/" +
+          user.uid +
+          "/workouts/" +
+          editedWorkoutId +
+          "/exercises/" +
+          exerciseId +
+          ".json"
       );
       const updatedWorkout = { ...selectedWorkout };
       updatedWorkout.exercises = updatedWorkout.exercises.filter(
@@ -102,22 +110,23 @@ function ManageWorkout({ route }) {
       );
       workoutsCtx.updateWorkout(editedWorkoutId, updatedWorkout);
     } catch (error) {
-      setError('Could not delete exercise - please try again later!');
+      setError("Could not delete exercise - please try again later!");
+      setIsSubmitting(false);
     }
   }
 
   function deleteExerciseHandler(exerciseId) {
     Alert.alert(
-      'Delete Exercise',
-      'Are you sure you want to delete this exercise?',
+      "Delete Exercise",
+      "Are you sure you want to delete this exercise?",
       [
         {
-          text: 'Yes',
+          text: "Yes",
           onPress: () => confirmDeleteExercise(exerciseId),
         },
         {
-          text: 'No',
-          style: 'cancel',
+          text: "No",
+          style: "cancel",
         },
       ],
       { cancelable: false }
@@ -127,27 +136,34 @@ function ManageWorkout({ route }) {
   async function confirmDelete() {
     setIsSubmitting(true);
     try {
-      await axios.delete(BACKEND_URL + '/users/' + user.uid + '/workouts/' + editedWorkoutId + '.json');
+      await axios.delete(
+        BACKEND_URL +
+          "/users/" +
+          user.uid +
+          "/workouts/" +
+          editedWorkoutId +
+          ".json"
+      );
       workoutsCtx.deleteWorkout(editedWorkoutId);
-      navigation.navigate('Workouts');
+      navigation.navigate("Workouts");
     } catch (error) {
-      setError('Could not delete workout - please try again later!');
+      setError("Could not delete workout - please try again later!");
       setIsSubmitting(false);
     }
   }
 
   function deleteHandler() {
     Alert.alert(
-      'Delete Workout',
-      'Are you sure you want to delete?',
+      "Delete Workout",
+      "Are you sure you want to delete?",
       [
         {
-          text: 'Yes',
+          text: "Yes",
           onPress: confirmDelete,
         },
         {
-          text: 'No',
-          style: 'cancel',
+          text: "No",
+          style: "cancel",
         },
       ],
       { cancelable: false }

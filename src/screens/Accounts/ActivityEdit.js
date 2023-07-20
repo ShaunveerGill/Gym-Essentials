@@ -28,7 +28,7 @@ function ActivityEdit() {
     updateData("activityLevel",activityLevel)
     navigation.navigate("FeaturesOverview");
   };
-  
+
   return (
     <ScrollView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -52,7 +52,7 @@ function ActivityEdit() {
               onPress={() => handleActivityLevel("Sedentary")}
             >
               <Text style={styles.buttonText}>
-                Sedentary (little to no exercise)
+                Sedentary {'\n'}(little to no exercise)
               </Text>
             </TouchableOpacity>
           </View>
@@ -69,7 +69,7 @@ function ActivityEdit() {
               onPress={() => handleActivityLevel("Lightly active")}
             >
               <Text style={styles.buttonText}>
-                Lightly active (exercise 1-3 days/week)
+                Lightly active {'\n'}(exercise 1-3 days/week)
               </Text>
             </TouchableOpacity>
           </View>
@@ -86,7 +86,7 @@ function ActivityEdit() {
               onPress={() => handleActivityLevel("Moderately active")}
             >
               <Text style={styles.buttonText}>
-                Moderately active (exercise 3-5 days/week)
+                Moderately active {'\n'}(exercise 3-5 days/week)
               </Text>
             </TouchableOpacity>
           </View>
@@ -103,7 +103,7 @@ function ActivityEdit() {
               onPress={() => handleActivityLevel("Very active")}
             >
               <Text style={styles.buttonText}>
-                Very active (exercise 6-7 days/week)
+                Very active {'\n'}(exercise 6-7 days/week)
               </Text>
             </TouchableOpacity>
           </View>
@@ -120,7 +120,7 @@ function ActivityEdit() {
               onPress={() => handleActivityLevel("Extra active")}
             >
               <Text style={styles.buttonText}>
-                Extra active (very active and physical job)
+                Extra active {'\n'}(very active and physical job)
               </Text>
             </TouchableOpacity>
           </View>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
-    width: "100%",
+    width: "180%",
     alignItems: "center",
     justifyContent: "center",
   },
