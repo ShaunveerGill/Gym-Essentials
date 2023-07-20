@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../../firebase'
-import { SvgXml } from 'react-native-svg';
 import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
 import { handleSignUp } from "../../data/userServices";
+import { Ionicons } from '@expo/vector-icons';
 
 function SignUp() {
   const navigation = useNavigation();
@@ -27,10 +27,6 @@ function SignUp() {
       handleSubmit();
     }
   };
-
-  const userSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
-  const mailSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
-  const lockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
 
   const formIsInvalid = !ValidPassword;
 
@@ -69,7 +65,7 @@ function SignUp() {
             onChangeText={text => setUserName(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
-            <SvgXml xml={userSvg} width={20} height={20} />
+            <Ionicons name="mail-outline" size={24} color="black" style={styles.addButton} />
           </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
@@ -80,7 +76,7 @@ function SignUp() {
             onChangeText={text => setUserEmail(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
-            <SvgXml xml={mailSvg} width={20} height={20} />
+            <Ionicons name="person-outline" size={24} color="black" style={styles.addButton} />
           </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
@@ -95,7 +91,7 @@ function SignUp() {
             secureTextEntry
           />
           <TouchableOpacity style={styles.iconContainer}>
-            <SvgXml xml={lockSvg} width={20} height={20} />
+          <Ionicons name="lock-closed-outline" size={24} color="black" style={styles.addButton} />
           </TouchableOpacity>
         </View>
         
@@ -111,7 +107,7 @@ function SignUp() {
             secureTextEntry
           />
           <TouchableOpacity style={styles.iconContainer}>
-            <SvgXml xml={lockSvg} width={20} height={20} />
+            <Ionicons name="lock-closed-outline" size={24} color="black" style={styles.addButton} />
           </TouchableOpacity>
         </View>
         
