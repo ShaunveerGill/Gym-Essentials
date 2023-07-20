@@ -2,11 +2,13 @@ import React, { useState, useContext } from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, onValue } from "firebase/database";
-import { auth } from '../firebase'
-import { UserContext } from "../UserContext";
-
+import { auth } from '../../../firebase'
+import { UserContext } from "../../context/UserContext";
+import { handleLogin } from "../../data/userServices";
 
 function LoginScreen() {
+
+  //remove loginERROr
   const navigation = useNavigation();
   const {
     userEmail,
@@ -20,40 +22,25 @@ function LoginScreen() {
     setActivityLevel,
   } = useContext(UserContext);
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(null); 
 
-  const handleLogin = () => {
-    auth
-      .signInWithEmailAndPassword(userEmail, password)
-      .then(userCredentials => {
-        const user = userCredentials.user;
-        const userData = auth.currentUser;
-        if (userData !== null) {
-          setUserEmail(userData.email);
-          const db = getDatabase();
-          const userRef = ref(db, "users/" + userData.uid);
-          onValue(userRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data !== null) {
-              setUserName(data.name);
-              setGender(data.gender);
-              setAge(data.age);
-              setHeight(data.height);
-              setWeight(data.weight);
-              setGoal(data.goal);
-              setActivityLevel(data.activityLevel);
-            }
-          });
-          setPassword('');
-          navigation.navigate('FeaturesOverview');
-        }
+  const handleSubmit = () => {
+    handleLogin(userEmail, password, setUserEmail, setUserName, setGender, setAge, setHeight, setWeight, setGoal, setActivityLevel)
+      .then(() => {
+        setPassword('');
+        setLoginError(null); 
+        navigation.navigate('FeaturesOverview');
       })
-      .catch(error => alert(error.message))
+      .catch((error) => {
+        setLoginError(error.message);
+      });
   }
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-      <Image source={require("../assets/logoblack.png")} style={styles.logo} />
+      <Image source={require("../../assets/TaskBarIcons/logoblack.png")} style={styles.logo} />
         <View style={styles.header}>
           <Text style={styles.title}>Login</Text>
         </View>
@@ -71,7 +58,7 @@ function LoginScreen() {
           secureTextEntry
         />
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.createAccountButton} onPress={handleLogin}>
+          <TouchableOpacity style={styles.createAccountButton} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
         </View>

@@ -9,7 +9,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 
@@ -95,6 +95,9 @@ function GoalEdit() {
             <View>
               <Text style={styles.buttonText}> Save </Text>
             </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+            <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>

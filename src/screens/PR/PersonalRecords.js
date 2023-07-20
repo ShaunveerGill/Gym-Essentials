@@ -1,135 +1,101 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { WorkoutsContext } from '../WorkoutsContext';
-import { auth } from "../firebase";
+import { RecordsContext } from '../../context/RecordsContext';
+import { auth } from "../../../firebase";
 import axios from 'axios';
 
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }
 
-function renderWorkoutItem(itemData) {
+function renderRecordItem(itemData) {
   return (
-    <WorkoutItem {...itemData.item} />);  
+    <RecordItem {...itemData.item} />);  
 }
 
-function WorkoutItem({ id, workoutName }) {
+function RecordItem({ id, exercise, record, date }) {
   const navigation = useNavigation();
   
-  function workoutPressHandler() {
-    navigation.navigate('ManageWorkout', {
-      workoutId: id
+  function recordPressHandler() {
+    navigation.navigate('ManageRecord', {
+      recordId: id
     });
-  }  
+  }
   
   return (
     <Pressable 
-      onPress={workoutPressHandler} 
+      onPress={recordPressHandler} 
       style={({pressed}) => pressed && styles.pressed}
     >
-      <View style={styles.workoutItem}>
+      <View style={styles.recordItem}>
         <View>
           <Text style={[styles.textBase, styles.exercise]}>
-            {workoutName}
+            {exercise}
           </Text>
+          <Text style={styles.textBase}>{getFormattedDate(date)}</Text> 
+        </View>
+        <View style={styles.recordContainer}>
+          <Text style={styles.record}>{record}</Text>
         </View>
       </View>
     </Pressable>
   );
 }
 
-const Workouts = () => {
+const PersonalRecords = () => {
   const navigation = useNavigation();
 
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState();
-  const workoutsCtx = useContext(WorkoutsContext);
+  const recordsCtx = useContext(RecordsContext);
 
-  const handleAddWorkout = () => {
-    navigation.navigate('ManageWorkout');
+  const handleAddRecord = () => {
+    navigation.navigate('ManageRecord');
   };
 
   const user = auth.currentUser;
   const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
 
   useEffect(() => {
-    async function getWorkouts() {
+    async function getRecords() {
       setIsFetching(true);
       try {
-        const workouts = await fetchWorkouts();
-        workoutsCtx.setWorkouts(workouts);
-        (workouts);
+        const records = await fetchRecords();
+        recordsCtx.setRecords(records);
       } catch (error) {
-        console.log(error);
-        setError('Could not fetch workouts!');
+        setError('Could not fetch personal records!');
       }
       setIsFetching(false);
     }
-    getWorkouts();
+    getRecords();
   }, []);
-  async function fetchWorkouts() {
-    try {
-      const response = await axios.get(
-        BACKEND_URL + '/users/' + user.uid + '/workouts.json'
-      );
-  
-      const workouts = [];
-  
-      for (const workoutId in response.data) {
-        const workoutData = response.data[workoutId];
-        const exercises = await fetchExercises(workoutId); // Fetch exercises for the current workout
-  
-        const workoutObj = {
-          id: workoutId,
-          workoutName: workoutData.workoutName,
-          exercises: exercises,
-        };
-        workouts.push(workoutObj);
-      }
-      console.log(workouts);
-      return workouts;
-    } catch (error) {
-      console.log('Error fetching workouts:', error);
-      throw error;
+
+  async function fetchRecords() {
+    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/personalrecords.json');
+    console.log(response);
+    const records = [];
+
+    for (const key in response.data) {
+      const recordObj = {
+        id: key,
+        exercise: response.data[key].exercise,
+        record: response.data[key].record,
+        date: new Date(response.data[key].date)
+      };
+      records.push(recordObj);
     }
-  }
   
-  async function fetchExercises(workoutId) {
-    try {
-      const response = await axios.get(
-        BACKEND_URL + '/users/' + user.uid + '/workouts/' + workoutId + '/exercises.json'
-      );
-  
-      const exercises = [];
-  
-      for (const exerciseId in response.data) {
-        const exerciseData = response.data[exerciseId];
-  
-        const exerciseObj = {
-          id: exerciseId,
-          exerciseName: exerciseData.exerciseName,
-          sets: exerciseData.sets,
-          reps: exerciseData.reps,
-        };
-        exercises.push(exerciseObj);
-      }
-      console.log("exercises:");
-      console.log(exercises);
-      return exercises;
-    } catch (error) {
-      console.log('Error fetching exercises for workout', workoutId, ':', error);
-      throw error;
-    }
+    return records;
   }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Workouts',
+      title: 'Personal Records',
       headerRight: () => (
         <TouchableOpacity
-          onPress={handleAddWorkout}
+          onPress={handleAddRecord}
           style={({ pressed }) => pressed && styles.pressed}
         >
           <Ionicons name="add" size={24} color="black" style={styles.addButton} />
@@ -138,19 +104,16 @@ const Workouts = () => {
     });
   }, [navigation]);
 
-  let content = <Text style={styles.infoText}>No Workouts Added</Text>;
+  let content = <Text style={styles.infoText}>No Records Added</Text>;
 
-  if (workoutsCtx.workouts.length > 0) {
-    console.log(workoutsCtx.workouts);
+  if (recordsCtx.records.length > 0) {
     content = (
       <FlatList
-        data={workoutsCtx.workouts}
-        renderItem={renderWorkoutItem}
+        data={recordsCtx.records}
+        renderItem={renderRecordItem}
         keyExtractor={(item) => item.id}
       />
     );
-  } else {
-    console.log(workoutsCtx.workouts);
   }
 
   if (error && !isFetching) {
@@ -181,40 +144,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingVertical: 30,
-    justifyContent: 'center', 
+    justifyContent: 'center', // Center content vertically
   },
   infoText: {
     color: 'black',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 'auto', 
-    marginBottom: 'auto', 
+    marginTop: 'auto', // Pushes the text to the top edge of the centered container
+    marginBottom: 'auto', // Pushes the text to the bottom edge of the centered container
   },
 
-  workoutItem: {
+  recordItem: {
     padding: 15,
-    marginVertical: 15,
+    marginVertical: 40,
     flexDirection: 'row',
     backgroundColor: 'black',
     justifyContent: 'space-between',
-    borderRadius: 15,
+    borderRadius: 10,
     elevation: 3,
-    width: '97%',
     shadowColor: "#000", 
     shadowOffset: {
       width: 3,   
       height: 5,  
     },
-    shadowOpacity: 0.35, 
+    shadowOpacity: 0.25, 
     shadowRadius: 3.84,  
-    
+    elevation: 2,       
   },
 
   textBase: {
     color: 'white',
-    paddingHorizontal: 6,
-    letterSpacing: 1.25,
   },
 
   exercise: {
@@ -263,7 +222,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  
 });
 
-export default Workouts
+export default PersonalRecords

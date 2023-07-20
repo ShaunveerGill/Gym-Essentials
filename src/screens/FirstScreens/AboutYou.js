@@ -1,3 +1,4 @@
+//AboutYou.js
 import { useState } from "react";
 import {
   Text,
@@ -10,10 +11,10 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../firebase";
+import { auth } from "../../../firebase";
 import { getDatabase, ref, set } from "firebase/database";
 import React, { useContext } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../context/UserContext";
 
 function AboutYou() {
   const navigation = useNavigation();
@@ -53,6 +54,8 @@ function AboutYou() {
   };
 
   const handleFinishButtonPress = () => {
+    // Check for the current user
+    // if (!Incomplete) {
     setSub(true);
 
     const user = auth.currentUser;

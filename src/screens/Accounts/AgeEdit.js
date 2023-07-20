@@ -7,71 +7,41 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
+  Alert
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { UserContext } from "../../context/UserContext";
+import { updateData } from "../../data/userServices";
 
-function WeightEdit() {
+
+function AgeEdit() {
   const navigation = useNavigation();
 
   const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
     setAge,
     age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
   } = useContext(UserContext);
 
-  const [validWeightInput, setValidWeightInput] = useState(true);
-  const handleWeight = (selectedWeight) => {
-    const amountIsValid =
-      !isNaN(selectedWeight) && selectedWeight > 0 && selectedWeight < 1000;
-    setValidWeightInput(amountIsValid);
+  const [validAgeInput, setValidAgeInput] = useState(true);
+
+  const handleAge = (selectedAge) => {
+    const amountIsValid = !isNaN(selectedAge) && selectedAge > 0 && selectedAge < 130;
+    setValidAgeInput(amountIsValid);
     if (amountIsValid) {
-      setWeight(selectedWeight);
+      setAge(selectedAge);
     }
   };
 
   const saveAndNavigate = () => {
-    if (!validWeightInput) {
-      Alert.alert("Input invalid", "Please check your input values");
+    if (!validAgeInput) {
+      Alert.alert('Input invalid', 'Please check your input values');
       return;
     }
-
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        weight: weight,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
-
+    updateData("age", age);
     navigation.navigate("FeaturesOverview");
-  };
+  }
 
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
-  };
-
-  const formIsInvalid = !validWeightInput;
+  const formIsInvalid = !validAgeInput;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -81,35 +51,43 @@ function WeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text
-            style={[styles.question, !validWeightInput && styles.invalidLabel]}
-          >
-            What is your weight(lb)?
-          </Text>
+          <Text style={[styles.question, !validAgeInput && styles.invalidLabel]}>What is your age?</Text>
           <TextInput
-            style={[styles.inputBox, !validWeightInput && styles.invalidInput]}
-            onChangeText={handleWeight}
+            style={[
+              styles.inputBox,
+              !validAgeInput && styles.invalidInput,
+            ]}
+            onChangeText={handleAge}
             keyboardType="numeric"
+            value={age}
           />
         </View>
 
         {formIsInvalid && (
-          <Text style={styles.errorText}>Please Enter A Valid Weight</Text>
+          <Text style={styles.errorText}>
+            Please Enter A Valid Age
+          </Text>
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validWeightInput && { opacity: 0.5 }]}
+          style={[styles.save, !validAgeInput && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validWeightInput}
+          disabled={!validAgeInput}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
 }
+
+// ... Rest of the styles remain unchanged ...
+
 
 const styles = StyleSheet.create({
   container: {
@@ -153,7 +131,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   invalidLabel: {
-    color: "red",
+    color: 'red'
   },
   invalidInput: {
     borderColor: "red",
@@ -165,4 +143,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WeightEdit;
+export default AgeEdit;
+

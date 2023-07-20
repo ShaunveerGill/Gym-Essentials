@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { WorkoutsContext } from '../WorkoutsContext';
-import { auth } from "../firebase";
+import { WorkoutsContext } from '../../context/WorkoutsContext';
+import { auth } from "../../../firebase";
 import axios from 'axios';
 
 function EditExercise({ route }) {
