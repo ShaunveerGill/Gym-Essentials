@@ -124,11 +124,13 @@ function ActivityEdit() {
               </Text>
             </TouchableOpacity>
           </View>
-
           <TouchableOpacity style={styles.save} onPress={saveAndNavigate}>
             <View>
-              <Text style={styles.buttonText}> Save </Text>
+              <Text style={styles.saveButtonText}> Save </Text>
             </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+            <Text style={styles.saveButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
@@ -157,6 +159,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     fontSize: 40,
     marginRight: 10,
+  },
+  saveButtonText: {
+    color: "white",
+    fontSize: 18,
   },
   input: {
     height: 40,
@@ -221,11 +227,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   save: {
-    backgroundColor: "#cccccc",
+    backgroundColor: "black",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
-
+    marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
     width: "30%",

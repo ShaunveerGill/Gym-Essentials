@@ -65,12 +65,13 @@ const AccountScreen = ({ navigation }) => {
               style={styles.logo}
             />
 
-            <View style={styles.infoBoxes}>
+          <View style={styles.infoBoxes}>
               <View style={styles.scrollViewContainer}>
-                <Text style={styles.infoboxtext}>User Name: {userName}</Text>
-                <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
+              <Text style={styles.infoboxtext}>User Name: {userName}</Text>
+              <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
               </View>
             </View>
+
 
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Age: {age}</Text>
@@ -78,7 +79,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("AgeEdit")}
               >
-                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
+                <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -88,7 +89,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("HeightEdit")}
               >
-                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
+                <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -98,7 +99,7 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("WeightEdit")}
               >
-                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
+                <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -108,17 +109,19 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("GenderEdit")}
               >
-                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
+                <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
+
+            {/* <View style={{...styles.infoBoxes, flexDirection: 'column'}}> */}
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Goal: {goal}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("GoalEdit")}
               >
-                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
+                <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
@@ -128,9 +131,10 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.editButtonGoal}
                 onPress={() => nav.navigate("ActivityEdit")}
               >
-                <Ionicons name="ellipsis-horizontal" size={15} color="black" />
+                <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
+            {/* </View> */}
 
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={handleLogout}>
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
   editButtonGender: {
     backgroundColor: "white",
     position: "absolute",
-    left: "60%",
+    left: "50%",
     width: "25%",
     borderRadius: 15,
     alignItems: "center",
@@ -158,8 +162,7 @@ const styles = StyleSheet.create({
   },
   editButtonGoal: {
     position: "absolute",
-    left: "50%",
-    backgroundColor: "white",
+    left: "65%",
     width: "25%",
     borderRadius: 15,
     alignItems: "center",
@@ -219,6 +222,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 2,
+  },
+  miniBoxes: {
+    width: "105%",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "white",
+    backgroundColor: "white",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
   infoBoxes2: {
     width: "80%",

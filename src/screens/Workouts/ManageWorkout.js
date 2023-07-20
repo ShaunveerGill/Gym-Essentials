@@ -92,7 +92,6 @@ function ManageWorkout({ route }) {
   });
 
   async function confirmDeleteExercise(exerciseId) {
-    setIsSubmitting(true);
     try {
       await axios.delete(
         BACKEND_URL +
@@ -111,7 +110,6 @@ function ManageWorkout({ route }) {
       workoutsCtx.updateWorkout(editedWorkoutId, updatedWorkout);
     } catch (error) {
       setError("Could not delete exercise - please try again later!");
-      setIsSubmitting(false);
     }
   }
 

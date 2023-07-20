@@ -45,7 +45,7 @@ function GenderEdit() {
               What is your gender to calculate your calorie?
             </Text>
           </View>
-          {/*Changed code for when you want change the gender selections*/}
+          
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[
@@ -72,11 +72,11 @@ function GenderEdit() {
           </View>
           <TouchableOpacity style={styles.save} onPress={saveAndNavigate}>
             <View>
-              <Text style={styles.buttonText}> Save </Text>
+              <Text style={styles.saveButtonText}> Save </Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
-            <Text style={styles.buttonText}>Cancel</Text>
+            <Text style={styles.saveButtonText}>Cancel</Text> 
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
@@ -88,7 +88,10 @@ const styles = StyleSheet.create({
   center: {
     alignItems: "center",
   },
-
+  saveButtonText: {
+    color: "white",
+    fontSize: 18,
+  },
   container: {
     flexDirection: "col",
     flex: 1,
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   title: {
-    marginTop: 40,
+    marginTop: 250,
     fontSize: 40,
     marginRight: 10,
   },
@@ -169,11 +172,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   save: {
-    backgroundColor: "#cccccc",
+    backgroundColor: "black",
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginBottom: 20,
     borderRadius: 25,
-
     alignItems: "center",
     justifyContent: "center",
     width: "30%",

@@ -79,9 +79,9 @@ const FitnessCalculators = () => {
     // Update display values
     let interval = null;
     interval = setInterval(() => {
-      setCaloriesDisplay((caloriesDisplay) => caloriesDisplay + 5 < calculatedCalories ? caloriesDisplay + 10 : calculatedCalories);
-      setProteinDisplay((proteinDisplay) => proteinDisplay + 1 < calculatedProtein ? proteinDisplay + 1 : calculatedProtein);
-      setbmiDisplay((bmiDisplay) => bmiDisplay + 1 < calculatedBmi ? bmiDisplay + 1 : calculatedBmi);
+      setCaloriesDisplay((caloriesDisplay) => caloriesDisplay + 10 < calculatedCalories ? caloriesDisplay + 50 : calculatedCalories);
+      setProteinDisplay((proteinDisplay) => proteinDisplay + 1 < calculatedProtein ? proteinDisplay + 6 : calculatedProtein);
+      setbmiDisplay((bmiDisplay) => bmiDisplay + 1 < calculatedBmi ? bmiDisplay + 2 : calculatedBmi);
     }, 5);
 
     return () => clearInterval(interval);
