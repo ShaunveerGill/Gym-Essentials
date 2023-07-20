@@ -1,7 +1,6 @@
-import React, { isValidElement, useContext, useState, useRef } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Animated, FlatList, ScrollView, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';

@@ -1,4 +1,4 @@
-import React, { isValidElement, useContext, useState, useRef } from "react";
+import React, { useContext, useState } from "react";
 import {
   Text,
   View,
@@ -6,9 +6,7 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
-  Animated,
   FlatList,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";

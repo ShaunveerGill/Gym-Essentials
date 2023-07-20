@@ -12,14 +12,11 @@ import {
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth } from "../firebase";
-import { getDatabase, ref, onValue, set } from "firebase/database";
 import InformationScreen from "./InformationScreen";
 import SettingsScreen from "./SettingsScreen";
-import { UserContext, UserContextProvider } from "../UserContext";
+import { UserContext } from "../UserContext";
 import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-
-import { TextInput } from "react-native-gesture-handler";
 const AccountStack = createNativeStackNavigator();
 
 const AccountScreen = ({ navigation }) => {

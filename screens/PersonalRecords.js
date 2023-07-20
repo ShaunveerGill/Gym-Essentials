@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { RecordsContext } from '../RecordsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
-import { set } from 'firebase/database';
 
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);

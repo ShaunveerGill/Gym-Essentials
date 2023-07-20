@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"; 
-import { Image, Animated, StyleSheet, ImageBackground } from 'react-native';
+import { Animated, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 function WelcomeScreen() {

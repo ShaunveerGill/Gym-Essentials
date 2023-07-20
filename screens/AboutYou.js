@@ -1,4 +1,3 @@
-//AboutYou.js
 import { useState } from "react";
 import {
   Text,
@@ -10,9 +9,9 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
-import { getDatabase, ref, push, set } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 import React, { useContext } from "react";
 import { UserContext } from "../UserContext";
 
@@ -54,8 +53,6 @@ function AboutYou() {
   };
 
   const handleFinishButtonPress = () => {
-    // Check for the current user
-    // if (!Incomplete) {
     setSub(true);
 
     const user = auth.currentUser;

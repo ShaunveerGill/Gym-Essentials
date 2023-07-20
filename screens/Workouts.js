@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { WorkoutsContext } from '../WorkoutsContext';
 import { auth } from "../firebase";
 import axios from 'axios';
-import { set } from 'firebase/database';
-
 
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);

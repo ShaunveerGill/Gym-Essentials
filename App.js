@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect } from 'react';
-import { Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -13,7 +12,7 @@ import FitnessCalculators from "./screens/FitnessCalculators";
 import signup from "./screens/signup";
 import AboutYou from "./screens/AboutYou";
 import AccountScreen from "./screens/AccountScreen";
-import { UserProvider, UserContextProvider } from "./UserContext";
+import { UserContextProvider } from "./UserContext";
 import ManageRecord from "./screens/ManageRecord";
 import { Ionicons } from "@expo/vector-icons";
 import GenderEdit from "./screens/GenderEdit";
@@ -26,7 +25,7 @@ import ManageWorkout from "./screens/ManageWorkout";
 import EditExercise from "./screens/EditExercise";
 import { RecordsContextProvider } from "./RecordsContext";
 import { WorkoutsContextProvider } from "./WorkoutsContext";
-import { StyleSheet, Button, View, Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import TimerModal from "./screens/TimerModal";
 
