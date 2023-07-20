@@ -1,40 +1,46 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { RecordsContext } from '../../context/RecordsContext';
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { RecordsContext } from "../../context/RecordsContext";
 import { auth } from "../../../firebase";
-import axios from 'axios';
+import axios from "axios";
+import { set } from "firebase/database";
 
 function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
 }
 
 function renderRecordItem(itemData) {
-  return (
-    <RecordItem {...itemData.item} />);  
+  return <RecordItem {...itemData.item} />;
 }
 
 function RecordItem({ id, exercise, record, date }) {
   const navigation = useNavigation();
-  
+
   function recordPressHandler() {
-    navigation.navigate('ManageRecord', {
-      recordId: id
+    navigation.navigate("ManageRecord", {
+      recordId: id,
     });
   }
-  
+
   return (
-    <Pressable 
-      onPress={recordPressHandler} 
-      style={({pressed}) => pressed && styles.pressed}
+    <Pressable
+      onPress={recordPressHandler}
+      style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={styles.recordItem}>
         <View>
-          <Text style={[styles.textBase, styles.exercise]}>
-            {exercise}
-          </Text>
-          <Text style={styles.textBase}>{getFormattedDate(date)}</Text> 
+          <Text style={[styles.textBase, styles.exercise]}>{exercise}</Text>
+          <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
         </View>
         <View style={styles.recordContainer}>
           <Text style={styles.record}>{record}</Text>
@@ -52,11 +58,11 @@ const PersonalRecords = () => {
   const recordsCtx = useContext(RecordsContext);
 
   const handleAddRecord = () => {
-    navigation.navigate('ManageRecord');
+    navigation.navigate("ManageRecord");
   };
 
   const user = auth.currentUser;
-  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
+  const BACKEND_URL = "https://gym-essentials-default-rtdb.firebaseio.com";
 
   useEffect(() => {
     async function getRecords() {
@@ -65,7 +71,7 @@ const PersonalRecords = () => {
         const records = await fetchRecords();
         recordsCtx.setRecords(records);
       } catch (error) {
-        setError('Could not fetch personal records!');
+        setError("Could not fetch personal records!");
       }
       setIsFetching(false);
     }
@@ -73,7 +79,9 @@ const PersonalRecords = () => {
   }, []);
 
   async function fetchRecords() {
-    const response = await axios.get(BACKEND_URL + '/users/' + user.uid + '/personalrecords.json');
+    const response = await axios.get(
+      BACKEND_URL + "/users/" + user.uid + "/personalrecords.json"
+    );
     console.log(response);
     const records = [];
 
@@ -82,23 +90,28 @@ const PersonalRecords = () => {
         id: key,
         exercise: response.data[key].exercise,
         record: response.data[key].record,
-        date: new Date(response.data[key].date)
+        date: new Date(response.data[key].date),
       };
       records.push(recordObj);
     }
-  
+
     return records;
   }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Personal Records',
+      title: "Personal Records",
       headerRight: () => (
         <TouchableOpacity
           onPress={handleAddRecord}
           style={({ pressed }) => pressed && styles.pressed}
         >
-          <Ionicons name="add" size={24} color="black" style={styles.addButton} />
+          <Ionicons
+            name="add"
+            size={24}
+            color="black"
+            style={styles.addButton}
+          />
         </TouchableOpacity>
       ),
     });
@@ -119,17 +132,19 @@ const PersonalRecords = () => {
   if (error && !isFetching) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={[styles.errorText, styles.errorTitle]}>An error occurred!</Text>
+        <Text style={[styles.errorText, styles.errorTitle]}>
+          An error occurred!
+        </Text>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );
   }
 
-  if(isFetching) {
+  if (isFetching) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="black" />
-      </View>      
+      </View>
     );
   }
 
@@ -144,84 +159,84 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    justifyContent: 'center', // Center content vertically
+    justifyContent: "center", // Center content vertically
   },
   infoText: {
-    color: 'black',
+    color: "black",
     fontSize: 16,
-    textAlign: 'center',
-    marginTop: 'auto', // Pushes the text to the top edge of the centered container
-    marginBottom: 'auto', // Pushes the text to the bottom edge of the centered container
+    textAlign: "center",
+    marginTop: "auto", // Pushes the text to the top edge of the centered container
+    marginBottom: "auto", // Pushes the text to the bottom edge of the centered container
   },
 
   recordItem: {
     padding: 15,
-    marginVertical: 40,
-    flexDirection: 'row',
-    backgroundColor: 'black',
-    justifyContent: 'space-between',
+    marginVertical: 14,
+    flexDirection: "row",
+    backgroundColor: "black",
+    justifyContent: "space-between",
     borderRadius: 10,
     elevation: 3,
-    shadowColor: "#000", 
+    shadowColor: "#000",
     shadowOffset: {
-      width: 3,   
-      height: 5,  
+      width: 3,
+      height: 5,
     },
-    shadowOpacity: 0.25, 
-    shadowRadius: 3.84,  
-    elevation: 2,       
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
 
   textBase: {
-    color: 'white',
+    color: "white",
   },
 
   exercise: {
     fontSize: 16,
     marginBottom: 4,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   recordContainer: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    backgroundColor: '#cccccc',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#cccccc",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 4,
     minWidth: 20,
   },
 
   record: {
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
   },
   addButton: {
     marginRight: 20,
   },
   loading: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   errorText: {
-    color: 'black',
-    textAlign: 'center',
+    color: "black",
+    textAlign: "center",
     marginBottom: 8,
   },
   errorTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
-export default PersonalRecords
+export default PersonalRecords;

@@ -7,41 +7,38 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
 import { updateData } from "../../data/userServices";
 
-
 function AgeEdit() {
   const navigation = useNavigation();
 
-  const {
-    setAge,
-    age,
-  } = useContext(UserContext);
+  const { setAge, age } = useContext(UserContext);
 
-  const [validAgeInput, setValidAgeInput] = useState(true);
+  const [tempAge, setTempAge] = useState(age);
 
-  const handleAge = (selectedAge) => {
-    const amountIsValid = !isNaN(selectedAge) && selectedAge > 0 && selectedAge < 130;
-    setValidAgeInput(amountIsValid);
+  const amountIsValid = !isNaN(tempAge) && tempAge > 0 && tempAge < 130;
+
+  const handleAge = () => {
     if (amountIsValid) {
-      setAge(selectedAge);
+      setAge(setAge);
     }
   };
 
   const saveAndNavigate = () => {
-    if (!validAgeInput) {
-      Alert.alert('Input invalid', 'Please check your input values');
+    handleAge();
+    if (!amountIsValid) {
+      Alert.alert("Input invalid", "Please check your input values");
       return;
     }
-    updateData("age", age);
+    updateData("age", tempAge);
     navigation.navigate("FeaturesOverview");
-  }
+  };
 
-  const formIsInvalid = !validAgeInput;
+  const formIsInvalid = !amountIsValid;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -51,34 +48,36 @@ function AgeEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validAgeInput && styles.invalidLabel]}>What is your age?</Text>
+          <Text
+            style={[styles.question, !amountIsValid && styles.invalidLabel]}
+          >
+            What is your age?
+          </Text>
           <TextInput
-            style={[
-              styles.inputBox,
-              !validAgeInput && styles.invalidInput,
-            ]}
-            onChangeText={handleAge}
+            style={[styles.inputBox, !amountIsValid && styles.invalidInput]}
+            onChangeText={setTempAge}
             keyboardType="numeric"
-            value={age}
+            value={tempAge}
           />
         </View>
 
         {formIsInvalid && (
-          <Text style={styles.errorText}>
-            Please Enter A Valid Age
-          </Text>
+          <Text style={styles.errorText}>Please Enter A Valid Age</Text>
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validAgeInput && { opacity: 0.5 }]}
+          style={[styles.save, !amountIsValid && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validAgeInput}
+          disabled={!amountIsValid}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.save}
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
@@ -87,7 +86,6 @@ function AgeEdit() {
 }
 
 // ... Rest of the styles remain unchanged ...
-
 
 const styles = StyleSheet.create({
   container: {
@@ -124,6 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginVertical: 10,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   invalidLabel: {
-    color: 'red'
+    color: "red",
   },
   invalidInput: {
     borderColor: "red",
@@ -144,4 +143,3 @@ const styles = StyleSheet.create({
 });
 
 export default AgeEdit;
-

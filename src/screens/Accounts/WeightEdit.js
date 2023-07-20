@@ -17,23 +17,22 @@ import "firebase/compat/database";
 function WeightEdit() {
   const navigation = useNavigation();
 
-  const {
-    setWeight,
-    weight,
-  } = useContext(UserContext);
+  const { setWeight, weight } = useContext(UserContext);
 
-  const [validWeightInput, setValidWeightInput] = useState(true);
-  const handleWeight = (selectedWeight) => {
-    const amountIsValid =
-      !isNaN(selectedWeight) && selectedWeight > 0 && selectedWeight < 1000;
-    setValidWeightInput(amountIsValid);
+  const [tempWeight, setTempWeight] = useState(weight);
+
+  const amountIsValid =
+    !isNaN(tempWeight) && tempWeight > 0 && tempWeight < 1000;
+
+  const handleWeight = () => {
     if (amountIsValid) {
-      setWeight(selectedWeight);
+      setWeight(tempWeight);
     }
   };
 
   const saveAndNavigate = () => {
-    if (!validWeightInput) {
+    handleWeight();
+    if (!amountIsValid) {
       Alert.alert("Input invalid", "Please check your input values");
       return;
     }
@@ -43,7 +42,7 @@ function WeightEdit() {
     const databaseRef = firebase.database().ref("users/" + uid);
     databaseRef
       .update({
-        weight: weight,
+        weight: tempWeight,
       })
       .then(() => {
         console.log("Data updated successfully");
@@ -59,7 +58,7 @@ function WeightEdit() {
     navigation.navigate("AccountScreen");
   };
 
-  const formIsInvalid = !validWeightInput;
+  const formIsInvalid = !amountIsValid;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -70,15 +69,15 @@ function WeightEdit() {
 
         <View style={styles.center}>
           <Text
-            style={[styles.question, !validWeightInput && styles.invalidLabel]}
+            style={[styles.question, !amountIsValid && styles.invalidLabel]}
           >
             What is your weight(lb)?
           </Text>
           <TextInput
-            style={[styles.inputBox, !validWeightInput && styles.invalidInput]}
-            onChangeText={handleWeight}
+            style={[styles.inputBox, !amountIsValid && styles.invalidInput]}
+            onChangeText={setTempWeight}
             keyboardType="numeric"
-            value={weight}
+            value={tempWeight}
           />
         </View>
 
@@ -87,16 +86,19 @@ function WeightEdit() {
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validWeightInput && { opacity: 0.5 }]}
+          style={[styles.save, !amountIsValid && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validWeightInput}
+          disabled={!amountIsValid}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
-            <Text style={styles.buttonText}>Cancel</Text>
+        <TouchableOpacity
+          style={styles.save}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -138,6 +140,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginVertical: 10,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",

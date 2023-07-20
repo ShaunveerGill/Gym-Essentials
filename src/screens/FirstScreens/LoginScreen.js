@@ -113,6 +113,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 3,
+      height: 5,
+    },
+    shadowOpacity: 0.35,
+    shadowRadius: 3.84,
   },
   buttonText: {
     color: 'black',

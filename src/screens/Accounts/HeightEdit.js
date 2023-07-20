@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
@@ -34,20 +34,20 @@ function HeightEdit() {
     goal,
   } = useContext(UserContext);
 
-  const [validHeightInput, setValidHeightInput] = useState(true);
-  const [tempHeight, setTempHEight] = useState('');
-  const handleHeight = (selectedHeight) => {
-    const amountIsValid = !isNaN(selectedHeight) && selectedHeight > 0 && selectedHeight < 274.32;
-    setValidHeightInput(amountIsValid);
-    if (amountIsValid) {
-      setHeight(selectedHeight);
+  const [tempHeight, setTempHeight] = useState(height);
+  const handleHeight = () => {
+    if (tempHeight) {
+      setHeight(tempHeight);
     }
   };
 
+  const amountIsValid =
+    !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
+
   const saveAndNavigate = () => {
-    handleHeight(tempHeight);
-    if (!validHeightInput) {
-      Alert.alert('Input invalid', 'Please check your input values');
+    handleHeight();
+    if (!amountIsValid) {
+      Alert.alert("Input invalid", "Please check your input values");
       return;
     }
 
@@ -56,7 +56,7 @@ function HeightEdit() {
     const databaseRef = firebase.database().ref("users/" + uid);
     databaseRef
       .update({
-        height: height,
+        height: tempHeight,
       })
       .then(() => {
         console.log("Data updated successfully");
@@ -72,7 +72,7 @@ function HeightEdit() {
     navigation.navigate("AccountScreen");
   };
 
-  const formIsInvalid = !validHeightInput;
+  const formIsInvalid = !amountIsValid;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -82,35 +82,37 @@ function HeightEdit() {
         </View>
 
         <View style={styles.center}>
-          <Text style={[styles.question, !validHeightInput && styles.invalidLabel]}>What is your height(cm)?</Text>
+          <Text
+            style={[styles.question, !amountIsValid && styles.invalidLabel]}
+          >
+            What is your height(cm)?
+          </Text>
           <TextInput
-            style={[
-              styles.inputBox,
-              !validHeightInput && styles.invalidInput,
-            ]}
+            style={[styles.inputBox, !amountIsValid && styles.invalidInput]}
             onChangeText={setTempHeight}
             keyboardType="numeric"
-            value={height}
+            value={tempHeight}
           />
         </View>
 
         {formIsInvalid && (
-          <Text style={styles.errorText}>
-            Please Enter A Valid Height
-          </Text>
+          <Text style={styles.errorText}>Please Enter A Valid Height</Text>
         )}
 
         <TouchableOpacity
-          style={[styles.save, !validHeightInput && { opacity: 0.5 }]}
+          style={[styles.save, !amountIsValid && { opacity: 0.5 }]}
           onPress={saveAndNavigate}
-          disabled={!validHeightInput}
+          disabled={!amountIsValid}
         >
           <View>
             <Text style={styles.buttonText}>Save</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
-            <Text style={styles.buttonText}>Cancel</Text>
+        <TouchableOpacity
+          style={styles.save}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginVertical: 10,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
@@ -159,7 +162,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   invalidLabel: {
-    color: 'red'
+    color: "red",
   },
   invalidInput: {
     borderColor: "red",
@@ -172,4 +175,3 @@ const styles = StyleSheet.create({
 });
 
 export default HeightEdit;
-
