@@ -10,27 +10,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { updateData } from "../../data/userServices";
 
 function ActivityEdit() {
   const navigation = useNavigation();
 
   const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
     setActivityLevel,
     activityLevel,
   } = useContext(UserContext);
@@ -40,27 +25,10 @@ function ActivityEdit() {
   };
 
   const saveAndNavigate = () => {
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        activityLevel: activityLevel,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
-
+    updateData("activityLevel",activityLevel)
     navigation.navigate("FeaturesOverview");
   };
-
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
-  };
-
+  
   return (
     <ScrollView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

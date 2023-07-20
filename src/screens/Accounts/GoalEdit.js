@@ -96,6 +96,9 @@ function GoalEdit() {
               <Text style={styles.buttonText}> Save </Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
     </ScrollView>

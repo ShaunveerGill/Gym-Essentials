@@ -11,30 +11,19 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { updateData } from "../../data/userServices";
+
 
 function AgeEdit() {
   const navigation = useNavigation();
 
   const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
     setAge,
     age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
   } = useContext(UserContext);
 
   const [validAgeInput, setValidAgeInput] = useState(true);
+
   const handleAge = (selectedAge) => {
     const amountIsValid = !isNaN(selectedAge) && selectedAge > 0 && selectedAge < 130;
     setValidAgeInput(amountIsValid);
@@ -48,27 +37,9 @@ function AgeEdit() {
       Alert.alert('Input invalid', 'Please check your input values');
       return;
     }
-
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        age: age,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
-
+    updateData("age", age);
     navigation.navigate("FeaturesOverview");
-  };
-
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
-  };
+  }
 
   const formIsInvalid = !validAgeInput;
 
@@ -88,6 +59,7 @@ function AgeEdit() {
             ]}
             onChangeText={handleAge}
             keyboardType="numeric"
+            value={age}
           />
         </View>
 
@@ -106,10 +78,16 @@ function AgeEdit() {
             <Text style={styles.buttonText}>Save</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
 }
+
+// ... Rest of the styles remain unchanged ...
+
 
 const styles = StyleSheet.create({
   container: {

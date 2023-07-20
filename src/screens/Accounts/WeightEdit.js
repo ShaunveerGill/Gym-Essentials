@@ -18,20 +18,8 @@ function WeightEdit() {
   const navigation = useNavigation();
 
   const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
-    setHeight,
-    height,
     setWeight,
     weight,
-    setGoal,
-    goal,
   } = useContext(UserContext);
 
   const [validWeightInput, setValidWeightInput] = useState(true);
@@ -90,6 +78,7 @@ function WeightEdit() {
             style={[styles.inputBox, !validWeightInput && styles.invalidInput]}
             onChangeText={handleWeight}
             keyboardType="numeric"
+            value={weight}
           />
         </View>
 
@@ -105,6 +94,9 @@ function WeightEdit() {
           <View>
             <Text style={styles.buttonText}>Save</Text>
           </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.save} onPress={() => navigation.goBack()}>
+            <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
