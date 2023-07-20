@@ -49,11 +49,10 @@ export const handleLogin = (userEmail, password, setUserEmail, setUserName, setG
                 setActivityLevel(data.activityLevel);
               }
 
-              resolve(); // Resolve the Promise after updating user data
+              resolve();
             },
             (error) => {
-              // Error occurred while fetching user data
-              reject(error); // Reject the Promise with the error
+              reject(error); 
             }
           );
         }
@@ -64,5 +63,17 @@ export const handleLogin = (userEmail, password, setUserEmail, setUserName, setG
         alert(errorMessage);
         reject(error); // Reject the Promise with the error
       });
+  });
+};
+
+export const handleSignUp = (userEmail, Cpassword) => {
+  return new Promise((resolve, reject) => {
+    auth
+      .createUserWithEmailAndPassword(userEmail, Cpassword)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        resolve(user); 
+      })
+      .catch(error => reject(error));
   });
 };

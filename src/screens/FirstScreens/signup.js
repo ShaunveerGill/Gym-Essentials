@@ -5,6 +5,7 @@ import { auth } from '../../../firebase'
 import { SvgXml } from 'react-native-svg';
 import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
+import { handleSignUp } from "../../data/userServices";
 
 function SignUp() {
   const navigation = useNavigation();
@@ -23,7 +24,7 @@ function SignUp() {
     const amountIsValid = Cpassword === password;
     setValidPassword(amountIsValid);
     if (amountIsValid) {
-      handleSignUp();
+      handleSubmit();
     }
   };
 
@@ -33,17 +34,18 @@ function SignUp() {
 
   const formIsInvalid = !ValidPassword;
 
-  const handleSignUp = () => {
-    auth
-      .createUserWithEmailAndPassword(userEmail, Cpassword)
-      .then(userCredentials => {
-        const user = userCredentials.user;
+  const handleSubmit = () => {
+    handleSignUp(userEmail, Cpassword)
+      .then(() => {
         setPassword('');
-        setCPassword('');
         navigation.navigate('AboutYou');
       })
-      .catch(error => alert(error.message))
+      .catch((error) => {
+        setLoginError(error.message);
+      });
   }
+
+  
 
   const handleBack = () => {
     setPassword('');
@@ -52,6 +54,7 @@ function SignUp() {
     setUserName('');
     navigation.navigate('Login');
   }
+  
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
