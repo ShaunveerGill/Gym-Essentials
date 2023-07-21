@@ -199,6 +199,7 @@ function EditExercise({ route }) {
                   </Text>
                   <View style={styles.inputWrapper}>
                     <TextInput
+                      keyboardType="numeric"
                       style={[
                         styles.smallInput,
                         !inputs.sets.isValid && styles.invalidInput,
@@ -220,6 +221,7 @@ function EditExercise({ route }) {
                   </Text>
                   <View style={styles.inputWrapper}>
                     <TextInput
+                    keyboardType="numeric"
                       style={[
                         styles.smallInput,
                         !inputs.reps.isValid && styles.invalidInput,
@@ -289,12 +291,12 @@ function EditExercise({ route }) {
                   </Text>
                   <View style={styles.inputWrapper}>
                     <TextInput
-                      keyboardType="numeric"
                       style={[
                         styles.smallInput,
                         !inputs.sets.isValid && styles.invalidInput,
                       ]}
                       onChangeText={(text) => inputChangedHandler("sets", text)}
+                      keyboardType="numeric"
                     />
                   </View>
                 </View>
@@ -520,6 +522,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "20%",
     alignSelf: "center",
+
   },
   itemContainer1: {
     flexDirection: "row",

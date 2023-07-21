@@ -28,6 +28,8 @@ import { WorkoutsContextProvider } from "./src/context/WorkoutsContext";
 import { Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import TimerModal from "./src/screens/Workouts/TimerModal";
+import WorkoutList from "./src/screens/Workouts/WorkoutList";
+import ChoosePlan from "./src/screens/Workouts/ChoosePlan";
 
 const Stack = createStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -261,6 +263,8 @@ export default function App() {
               <Stack.Screen name="AccountScreen" component={AccountScreen} />
               <Stack.Screen name="ManageWorkout"component={ManageWorkout}/>
               <Stack.Screen name="TimerModal"component={TimerModal}/>
+              <Stack.Screen name="ChoosePlan"component={ChoosePlan}/>
+              <Stack.Screen name="WorkoutList"component={WorkoutList}/>
               </Stack.Navigator>
             </NavigationContainer>
           </>
