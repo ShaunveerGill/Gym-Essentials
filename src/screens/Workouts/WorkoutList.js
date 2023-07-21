@@ -33,7 +33,7 @@ const WorkoutsData = [
     ],
   },
   {
-    workoutName: "Glutes and Hamstrings",
+    workoutName: "Glutes & Hamstrings",
     exercises: [
       {
         exerciseName: "Hip Thrust",

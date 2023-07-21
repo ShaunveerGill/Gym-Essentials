@@ -115,8 +115,6 @@ const AccountScreen = () => {
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
-            {/* </View> */}
-
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={submithandler}>
                 <Text style={styles.buttonText}>Log Out</Text>

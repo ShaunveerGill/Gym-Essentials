@@ -5,7 +5,6 @@ import { getDatabase, ref, onValue, set} from "firebase/database";
 import axios from 'axios';
 import { BACKEND_URL } from "../config/config";
 
-
 export const updateData = (variableName, value) => {
   const user = firebase.auth().currentUser;
   const uid = user.uid;

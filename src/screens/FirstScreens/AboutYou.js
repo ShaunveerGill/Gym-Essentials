@@ -1,4 +1,3 @@
-//AboutYou.js
 import { useState } from "react";
 import {
   Text,
