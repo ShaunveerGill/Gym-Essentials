@@ -9,6 +9,7 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -264,8 +265,11 @@ function ManageWorkout({ route }) {
       <View style={styles.itemContainer}>
         <View style={styles.exerciseLabelContainer}>
           <Text style={styles.exerciseLabel}>Exercise:</Text>
-          <Text style={styles.text}>{item.exerciseName}</Text>
+           <ScrollView horizontal={true} style={styles.scrollView}>
+             <Text style={styles.text}>{item.exerciseName}</Text>
+           </ScrollView>
         </View>
+        <View style={styles.iconContainer}>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("EditExercise", {
@@ -274,8 +278,20 @@ function ManageWorkout({ route }) {
             })
           }
         >
-          <Ionicons name="ellipsis-vertical" size={24} color="black" />
+          <Ionicons name="ellipsis-vertical" size={20} color="black" />
         </TouchableOpacity>
+      </View>
+        {/* <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("EditExercise", {
+              currentEditId: editedWorkoutId,
+              exerciseId: item.id,
+            })
+          }
+          style={styles.iconContainer}
+        >
+          <Ionicons name="ellipsis-vertical" size={24} color="black" />
+        </TouchableOpacity> */}
       </View>
 
       <View style={styles.itemContainer}>
@@ -421,16 +437,28 @@ function ManageWorkout({ route }) {
 export default ManageWorkout;
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    position: "absolute",
+    top: 0,
+    right: 1,
+
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  },
   exerciseLabelContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   exerciseLabel: {
-    marginLeft: 0,
-    marginRight: 5,
+    //marginLeft: 0,
+    //marginRight: 5,
     fontSize: 18,
     fontFamily: "Arial",
     fontWeight: "bold",
+  },
+  scrollView: {
+    maxWidth: "69%", // Set the maximum width for the text container
   },
 
   itemContainer: {

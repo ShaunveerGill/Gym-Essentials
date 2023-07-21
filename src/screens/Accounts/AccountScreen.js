@@ -65,13 +65,17 @@ const AccountScreen = ({ navigation }) => {
               style={styles.logo}
             />
 
-          <View style={styles.infoBoxes}>
-              <View style={styles.scrollViewContainer}>
-              <Text style={styles.infoboxtext}>User Name: {userName}</Text>
-              <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
-              </View>
+            <View style={styles.infoBoxes}>
+              <ScrollView horizontal={true}style={styles.scrollViewContainer}>
+                <Text style={styles.infoboxtext}>User Name: {userName}</Text>
+              </ScrollView>
             </View>
-
+            
+            <View style={styles.infoBoxes}>
+              <ScrollView horizontal={true}style={styles.scrollViewContainer}>
+                <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
+              </ScrollView>
+            </View>
 
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Age: {age}</Text>
