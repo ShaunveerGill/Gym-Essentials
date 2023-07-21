@@ -85,7 +85,6 @@ function AgeEdit() {
   );
 }
 
-// ... Rest of the styles remain unchanged ...
 
 const styles = StyleSheet.create({
   container: {

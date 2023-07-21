@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { WorkoutsContext } from '../../context/WorkoutsContext';
 import { auth } from "../../../firebase";
 import axios from 'axios';
+import { fetchWorkouts } from '../../data/userServices';
 
 
 function getFormattedDate(date) {
@@ -53,13 +54,12 @@ const Workouts = () => {
   };
 
   const user = auth.currentUser;
-  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
-
+  
   useEffect(() => {
     async function getWorkouts() {
       setIsFetching(true);
       try {
-        const workouts = await fetchWorkouts();
+        const workouts = await fetchWorkouts(user.uid);
         workoutsCtx.setWorkouts(workouts);
         (workouts);
       } catch (error) {
@@ -70,60 +70,7 @@ const Workouts = () => {
     }
     getWorkouts();
   }, []);
-  async function fetchWorkouts() {
-    try {
-      const response = await axios.get(
-        BACKEND_URL + '/users/' + user.uid + '/workouts.json'
-      );
-  
-      const workouts = [];
-  
-      for (const workoutId in response.data) {
-        const workoutData = response.data[workoutId];
-        const exercises = await fetchExercises(workoutId); // Fetch exercises for the current workout
-  
-        const workoutObj = {
-          id: workoutId,
-          workoutName: workoutData.workoutName,
-          exercises: exercises,
-        };
-        workouts.push(workoutObj);
-      }
-      console.log(workouts);
-      return workouts;
-    } catch (error) {
-      console.log('Error fetching workouts:', error);
-      throw error;
-    }
-  }
-  
-  async function fetchExercises(workoutId) {
-    try {
-      const response = await axios.get(
-        BACKEND_URL + '/users/' + user.uid + '/workouts/' + workoutId + '/exercises.json'
-      );
-  
-      const exercises = [];
-  
-      for (const exerciseId in response.data) {
-        const exerciseData = response.data[exerciseId];
-  
-        const exerciseObj = {
-          id: exerciseId,
-          exerciseName: exerciseData.exerciseName,
-          sets: exerciseData.sets,
-          reps: exerciseData.reps,
-        };
-        exercises.push(exerciseObj);
-      }
-      console.log("exercises:");
-      console.log(exercises);
-      return exercises;
-    } catch (error) {
-      console.log('Error fetching exercises for workout', workoutId, ':', error);
-      throw error;
-    }
-  }
+
 
   React.useLayoutEffect(() => {
     navigation.setOptions({

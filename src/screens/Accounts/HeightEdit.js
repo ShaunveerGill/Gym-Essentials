@@ -18,20 +18,8 @@ function HeightEdit() {
   const navigation = useNavigation();
 
   const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
     setHeight,
     height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
   } = useContext(UserContext);
 
   const [tempHeight, setTempHeight] = useState(height);
@@ -50,26 +38,8 @@ function HeightEdit() {
       Alert.alert("Input invalid", "Please check your input values");
       return;
     }
-
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        height: tempHeight,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
-
+    updateData("height", height);
     navigation.navigate("FeaturesOverview");
-  };
-
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
   };
 
   const formIsInvalid = !amountIsValid;

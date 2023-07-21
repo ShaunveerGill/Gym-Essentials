@@ -197,8 +197,9 @@ export default function App() {
     "You can barely do 3 pushups",
     "Stop scrolling Tiktok",
     "Workout so you can outrun your enemies",
+    "I'm Ready, I'm Ready, I'm Ready",
   ]
-  const quote = quotes[Math.floor(Math.random() * 14)];
+  const quote = quotes[Math.floor(Math.random() * 15)];
 
   const scheduleDailyNotification = async () => {
     await Notifications.scheduleNotificationAsync({

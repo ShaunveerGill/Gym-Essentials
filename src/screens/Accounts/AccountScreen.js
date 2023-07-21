@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import {
   Image,
   Text,
@@ -8,50 +8,52 @@ import {
   ScrollView,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React, { useContext } from "react"; // Import from "react", not "react-native"
 import { auth } from "../../../firebase";
 import { UserContext } from "../../context/UserContext";
-import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { handleLogout } from "../../data/userServices";
+
 
 const AccountStack = createNativeStackNavigator();
 
 const AccountScreen = ({ navigation }) => {
   const {
     userEmail,
-    setUserEmail,
     userName,
-    setUserName,
     gender,
-    setGender,
-    setAge,
     age,
-    setHeight,
     height,
-    setWeight,
     weight,
-    setGoal,
     goal,
     activityLevel,
+    setUserEmail,
+    setUserName,
+    setGender,
+    setAge,
+    setHeight,
+    setWeight,
+    setGoal,
     setActivityLevel,
   } = useContext(UserContext);
 
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        setUserName("");
-        setGender("");
-        setAge("");
-        setHeight("");
-        setWeight("");
-        setGoal("");
-        setActivityLevel("");
-        console.log("User signed out");
-        navigation.navigate("Login");
-      })
-      .catch((error) => console.log(error));
-  };
+  const submithandler = () => {
+    handleLogout()
+    .then(() => {
+      setUserName("");
+      setGender("");
+      setAge("");
+      setHeight("");
+      setWeight("");
+      setGoal("");
+      setActivityLevel("");
+      navigation.navigate("Login");
+    })
+    .catch((error) => {
+      setLoginError(error.message);
+    });
+}
 
   const nav = useNavigation();
 
@@ -133,7 +135,7 @@ const AccountScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.buttons}>
-              <TouchableOpacity style={styles.button} onPress={handleLogout}>
+              <TouchableOpacity style={styles.button} onPress={submithandler}>
                 <Text style={styles.buttonText}>Log Out</Text>
               </TouchableOpacity>
             </View>
