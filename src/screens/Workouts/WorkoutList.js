@@ -1,14 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   Text,
   View,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
-  ActivityIndicator,
   FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -43,7 +39,7 @@ const WorkoutsData = [
     ],
   },
   {
-    workoutName: "Glutes and Hamstrings",
+    workoutName: "Glutes & Hamstrings",
     exercises: [
       {
         exerciseName: "Hip Thrust",

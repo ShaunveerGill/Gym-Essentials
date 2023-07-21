@@ -2,7 +2,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import { auth } from "../../firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
-import { UserContext } from "../context/UserContext";
 
 export const updateData = (variableName, value) => {
   const user = firebase.auth().currentUser;

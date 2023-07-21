@@ -117,8 +117,6 @@ const AccountScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-
-            {/* <View style={{...styles.infoBoxes, flexDirection: 'column'}}> */}
             <View style={styles.infoBoxes}>
               <Text style={styles.infoboxtext}>Goal: {goal}</Text>
               <TouchableOpacity
@@ -138,8 +136,6 @@ const AccountScreen = ({ navigation }) => {
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
-            {/* </View> */}
-
             <View style={styles.buttons}>
               <TouchableOpacity style={styles.button} onPress={handleLogout}>
                 <Text style={styles.buttonText}>Log Out</Text>

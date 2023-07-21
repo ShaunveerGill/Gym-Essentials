@@ -1,8 +1,6 @@
 import React, { useState, useContext } from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import { getDatabase, ref, onValue } from "firebase/database";
-import { auth } from '../../../firebase'
 import { UserContext } from "../../context/UserContext";
 import { handleLogin } from "../../data/userServices";
 
