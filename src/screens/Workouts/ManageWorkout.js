@@ -231,17 +231,6 @@ function ManageWorkout({ route }) {
           <Ionicons name="ellipsis-vertical" size={20} color="black" />
         </TouchableOpacity>
       </View>
-        {/* <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("EditExercise", {
-              currentEditId: editedWorkoutId,
-              exerciseId: item.id,
-            })
-          }
-          style={styles.iconContainer}
-        >
-          <Ionicons name="ellipsis-vertical" size={24} color="black" />
-        </TouchableOpacity> */}
       </View>
 
       <View style={styles.itemContainer}>

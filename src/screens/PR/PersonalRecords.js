@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RecordsContext } from "../../context/RecordsContext";
 import { auth } from "../../../firebase";
 import { fetchRecords } from "../../data/userServices";
+
 function renderRecordItem(itemData) {
   return <RecordItem {...itemData.item} />;
 }
@@ -50,13 +51,13 @@ const PersonalRecords = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState();
   const recordsCtx = useContext(RecordsContext);
+    const user = auth.currentUser;
 
   const handleAddRecord = () => {
     navigation.navigate("ManageRecord");
   };
 
-  const user = auth.currentUser;
-  const BACKEND_URL = "https://gym-essentials-default-rtdb.firebaseio.com";
+
 
   useEffect(() => {
     async function getRecords() {
@@ -71,26 +72,6 @@ const PersonalRecords = () => {
     }
     getRecords();
   }, []);
-
-  // async function fetchRecords() {
-  //   const response = await axios.get(
-  //     BACKEND_URL + "/users/" + user.uid + "/personalrecords.json"
-  //   );
-  //   console.log(response);
-  //   const records = [];
-
-  //   for (const key in response.data) {
-  //     const recordObj = {
-  //       id: key,
-  //       exercise: response.data[key].exercise,
-  //       record: response.data[key].record,
-  //       date: new Date(response.data[key].date),
-  //     };
-  //     records.push(recordObj);
-  //   }
-
-  //   return records;
-  // }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -149,20 +130,18 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.75,
   },
-
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    justifyContent: "center", // Center content vertically
+    justifyContent: "center",
   },
   infoText: {
     color: "black",
     fontSize: 16,
     textAlign: "center",
-    marginTop: "auto", // Pushes the text to the top edge of the centered container
-    marginBottom: "auto", // Pushes the text to the bottom edge of the centered container
+    marginTop: "auto",
+    marginBottom: "auto",
   },
-
   recordItem: {
     padding: 15,
     marginVertical: 14,

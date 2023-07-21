@@ -2,9 +2,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import { auth } from "../../firebase";
 import { getDatabase, ref, onValue, set} from "firebase/database";
-import { UserContext } from "../context/UserContext";
-import { WorkoutsContext } from '../context/WorkoutsContext';
-import React, { useContext, useState } from "react";
 import axios from 'axios';
 import { BACKEND_URL } from "../config/config";
 
@@ -108,10 +105,8 @@ export async function fetchWorkouts(userUid) {
       };
       workouts.push(workoutObj);
     }
-    console.log(workouts);
     return workouts;
   } catch (error) {
-    console.log('Error fetching workouts:', error);
     throw error;
   }
 }
@@ -135,8 +130,6 @@ export async function fetchExercises(userUid, workoutId) {
       };
       exercises.push(exerciseObj);
     }
-    console.log("exercises:");
-    console.log(exercises);
     return exercises;
   } catch (error) {
     console.log('Error fetching exercises for workout', workoutId, ':', error);
@@ -236,7 +229,6 @@ export async function confirmHandler(
 }
 
 export async function storeWorkout(exerciseData, userUid, currentEditId) {
-  console.log("hello");
   const response = await axios.post(
     BACKEND_URL +
       "/users/" +
@@ -248,7 +240,6 @@ export async function storeWorkout(exerciseData, userUid, currentEditId) {
   );
   const id = response.data.name;
   exerciseData.exerciseId = id;
-  console.log(id);
   return id;
 }
 
@@ -288,7 +279,6 @@ export async function confirmExerciseHandler(
         exerciseData
       );
     } else {
-      console.log("hello"); 
       const id = await storeWorkout(exerciseData, userUid, currentEditId);
       workoutsCtx.addExercise(currentEditId, exerciseData, id);
     }
@@ -389,18 +379,18 @@ export function AboutYouFinishHandler(UserCtx) {
 
         set(userRef, userData)
           .then(() => {
-            resolve(); // Resolve the Promise after successful data storage
+            resolve(); 
           })
           .catch((error) => {
             console.error("Error saving user data: ", error);
-            reject(error); // Reject the Promise if there's an error
+            reject(error); 
           });
       } else {
         console.error("No user is signed in");
-        reject(new Error("No user is signed in")); // Reject the Promise if user is not signed in
+        reject(new Error("No user is signed in")); 
       }
     } else {
-      reject(new Error("Incomplete user data")); // Reject the Promise if user data is incomplete
+      reject(new Error("Incomplete user data")); 
     }
   });
 }
@@ -422,4 +412,39 @@ export async function fetchRecords(UserUid) {
   }
 
   return records;
+}
+
+export async function WorkoutListsHandler(workoutName, userUid, workoutsCtx, WorkoutsData) {
+  const selectedWorkoutData = WorkoutsData.find(
+    (workout) => workout.workoutName === workoutName
+  );
+
+  const tempObj = {
+    workoutName: workoutName,
+    exercises: [],
+  };
+
+  const response = await axios.post(
+    BACKEND_URL + "/users/" + userUid + "/workouts.json",
+    tempObj
+  );
+  const workoutId = response.data.name;
+
+  for (let i = 0; i < selectedWorkoutData.exercises.length; i++) {
+    const responseTwo = await axios.post(
+      BACKEND_URL +
+        "/users/" +
+        userUid +
+        "/workouts/" +
+        workoutId +
+        "/exercises.json",
+      selectedWorkoutData.exercises[i]
+    );
+    const exerciseId = responseTwo.data.name;
+    selectedWorkoutData.exercises[i].id = exerciseId;
+    tempObj.exercises.push(selectedWorkoutData.exercises[i]);
+  }
+
+  tempObj.id = workoutId;
+  workoutsCtx.addWorkout(tempObj);
 }

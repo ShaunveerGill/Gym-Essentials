@@ -3,9 +3,8 @@ import { Text, View, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../../../firebase";
-import axios from "axios";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
-import { BACKEND_URL } from "../../config/config";
+import { WorkoutListsHandler } from "../../data/userServices";
 
 const WorkoutsData = [
   {
@@ -126,41 +125,52 @@ const WorkoutList = () => {
   const user = auth.currentUser;
   const workoutsCtx = useContext(WorkoutsContext);
 
-  async function handlePress(workoutName) {
-    const selectedExercises = WorkoutsData.find(
-      (workout) => workout.workoutName === workoutName
-    ).exercises;
-
-    const tempObj = {
-      workoutName: workoutName,
-      exercises: [],
-    };
-
-    const response = await axios.post(
-      BACKEND_URL + "/users/" + user.uid + "/workouts.json",
-      tempObj
-    );
-    const workoutId = response.data.name;
-
-    for (let i = 0; i < selectedExercises.length; i++) {
-      const responeTwo = await axios.post(
-        BACKEND_URL +
-          "/users/" +
-          user.uid +
-          "/workouts/" +
-          workoutId +
-          "/exercises.json",
-        selectedExercises[i]
+  const handlePress = async (workoutName) => {
+    try {
+      const selectedWorkoutData = WorkoutsData.find(
+        (workout) => workout.workoutName === workoutName
       );
-      const exerciseId = responeTwo.data.name;
-      selectedExercises[i].id = exerciseId;
-      tempObj.exercises.push(selectedExercises[i]);
+      await WorkoutListsHandler(workoutName, user.uid, workoutsCtx, WorkoutsData, selectedWorkoutData);
+      navigation.navigate("Workouts");
+    } catch (error) {
+      console.error('Error creating workout:', error);
     }
+  };
+  //async function handlePress(workoutName) {
+    // const selectedExercises = WorkoutsData.find(
+    //   (workout) => workout.workoutName === workoutName
+    // ).exercises;
 
-    tempObj.id = workoutId;
-    workoutsCtx.addWorkout(tempObj);
-    navigation.navigate("Workouts");
-  }
+    // const tempObj = {
+    //   workoutName: workoutName,
+    //   exercises: [],
+    // };
+
+    // const response = await axios.post(
+    //   BACKEND_URL + "/users/" + user.uid + "/workouts.json",
+    //   tempObj
+    // );
+    // const workoutId = response.data.name;
+
+    // for (let i = 0; i < selectedExercises.length; i++) {
+    //   const responeTwo = await axios.post(
+    //     BACKEND_URL +
+    //       "/users/" +
+    //       user.uid +
+    //       "/workouts/" +
+    //       workoutId +
+    //       "/exercises.json",
+    //     selectedExercises[i]
+    //   );
+    //   const exerciseId = responeTwo.data.name;
+    //   selectedExercises[i].id = exerciseId;
+    //   tempObj.exercises.push(selectedExercises[i]);
+    // }
+
+    // tempObj.id = workoutId;
+    // workoutsCtx.addWorkout(tempObj);
+  //  navigation.navigate("Workouts");
+  //}
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
