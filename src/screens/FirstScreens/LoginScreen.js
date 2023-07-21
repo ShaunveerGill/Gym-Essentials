@@ -3,20 +3,19 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWi
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from "../../context/UserContext";
 import { handleLogin } from "../../data/userServices";
+import { Ionicons } from '@expo/vector-icons';
+
 
 function LoginScreen() {
 
-  //remove loginERROr
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
   const [password, setPassword] = useState('');
-  // const [loginError, setLoginError] = useState(null); 
 
   const handleSubmit = () => {
     handleLogin(UserCtx.userEmail, password, UserCtx)
       .then(() => {
         setPassword('');
-        // setLoginError(null); 
         navigation.navigate('FeaturesOverview');
       })
       .catch((error) => {
@@ -32,19 +31,29 @@ function LoginScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Login</Text>
         </View>
+        <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email Address"
+              value={UserCtx.userEmail}
+              onChangeText={text => UserCtx.setUserEmail(text)}
+            />
+            <TouchableOpacity style={styles.iconContainer}>
+              <Ionicons name="mail-outline" size={24} color="black" style={styles.addButton} />
+            </TouchableOpacity>
+        </View>
+        <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Email Address"
-            value={UserCtx.userEmail}
-            onChangeText={text => UserCtx.setUserEmail(text)}
+            placeholder="Password"
+            value={password}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry
           />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry
-        />
+           <TouchableOpacity style={styles.iconContainer}>
+              <Ionicons name="lock-closed-outline" size={24} color="black" style={styles.addButton} />
+            </TouchableOpacity>
+         </View>
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.createAccountButton} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Login</Text>
@@ -76,14 +85,19 @@ const styles = StyleSheet.create({
     fontSize: 40,
     marginRight: 10,
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 20,
-    padding: 10,
-    minWidth: 200,
+  inputContainer: {
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
   },
   logo: {
     width: 100,

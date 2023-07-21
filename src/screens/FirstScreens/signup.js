@@ -8,18 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 
 function SignUp() {
   const navigation = useNavigation();
-  const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-  } = useContext(UserContext);
+  const UserCtx = useContext(UserContext);
 
   const [Cpassword, setCPassword] = useState('');
   const [password, setPassword] = useState('');
   const [ValidPassword, setValidPassword] = useState(true);
 
   const handlePassword = (Cpassword, password) => {
+
     const amountIsValid = Cpassword === password;
     setValidPassword(amountIsValid);
     if (amountIsValid) {
@@ -28,15 +24,15 @@ function SignUp() {
   };
 
   const formIsInvalid = !ValidPassword;
-
+  
   const handleSubmit = () => {
-    handleSignUp(userEmail, Cpassword)
+    const email = UserCtx.userEmail
+    handleSignUp(email, Cpassword)
       .then(() => {
         setPassword('');
         navigation.navigate('AboutYou');
       })
       .catch((error) => {
-        // setLoginError(error.message);
         alert(error.message);
       });
   }
@@ -46,8 +42,8 @@ function SignUp() {
   const handleBack = () => {
     setPassword('');
     setCPassword('');
-    setUserEmail('');
-    setUserName('');
+    UserCtx.setUserEmail('');
+    UserCtx.setUserName('');
     navigation.navigate('Login');
   }
   
@@ -61,8 +57,8 @@ function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            value={userName}
-            onChangeText={text => setUserName(text)}
+            value={UserCtx.userName}
+            onChangeText={text => UserCtx.setUserName(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
             <Ionicons name="mail-outline" size={24} color="black" style={styles.addButton} />
@@ -72,8 +68,8 @@ function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Email Address"
-            value={userEmail}
-            onChangeText={text => setUserEmail(text)}
+            value={UserCtx.userEmail}
+            onChangeText={text => UserCtx.setUserEmail(text)}
           />
           <TouchableOpacity style={styles.iconContainer}>
             <Ionicons name="person-outline" size={24} color="black" style={styles.addButton} />
@@ -181,6 +177,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 3,
+      height: 5,
+    },
+    shadowOpacity: 0.35,
+    shadowRadius: 3.84,
   },
   buttonText: {
     color: 'black',

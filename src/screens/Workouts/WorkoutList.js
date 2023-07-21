@@ -5,120 +5,121 @@ import { useNavigation } from "@react-navigation/native";
 import { auth } from "../../../firebase";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
 import { WorkoutListsHandler } from "../../data/userServices";
+import { WorkoutsData } from "../../data/WorkoutData";
 
-const WorkoutsData = [
-  {
-    workoutName: "Quads & Calves",
-    exercises: [
-      {
-        exerciseName: "Squats",
-        sets: "5",
-        reps: "5",
-      },
-      {
-        exerciseName: "Seated Calf Raise",
-        sets: "3",
-        reps: "12",
-      },
-      {
-        exerciseName: "Leg Press",
-        sets: "4",
-        reps: "6",
-      },
-      {
-        exerciseName: "Calf Press on Leg Press",
-        sets: "4",
-        reps: "8",
-      },
-    ],
-  },
-  {
-    workoutName: "Glutes & Hamstrings",
-    exercises: [
-      {
-        exerciseName: "Hip Thrust",
-        sets: "5",
-        reps: "5",
-      },
-      {
-        exerciseName: "Romanian Deadlift",
-        sets: "5",
-        reps: "5",
-      },
-      {
-        exerciseName: "Lying Hamstring Curl",
-        sets: "4",
-        reps: "8",
-      },
+// const WorkoutsData = [
+//   {
+//     workoutName: "Quads & Calves",
+//     exercises: [
+//       {
+//         exerciseName: "Squats",
+//         sets: "5",
+//         reps: "5",
+//       },
+//       {
+//         exerciseName: "Seated Calf Raise",
+//         sets: "3",
+//         reps: "12",
+//       },
+//       {
+//         exerciseName: "Leg Press",
+//         sets: "4",
+//         reps: "6",
+//       },
+//       {
+//         exerciseName: "Calf Press on Leg Press",
+//         sets: "4",
+//         reps: "8",
+//       },
+//     ],
+//   },
+//   {
+//     workoutName: "Glutes and Hamstrings",
+//     exercises: [
+//       {
+//         exerciseName: "Hip Thrust",
+//         sets: "5",
+//         reps: "5",
+//       },
+//       {
+//         exerciseName: "Romanian Deadlift",
+//         sets: "5",
+//         reps: "5",
+//       },
+//       {
+//         exerciseName: "Lying Hamstring Curl",
+//         sets: "4",
+//         reps: "8",
+//       },
 
-      {
-        exerciseName: "Hip Abductor Machine",
-        sets: "3",
-        reps: "12",
-      },
-    ],
-  },
-  {
-    workoutName: "Pull (Back & Biceps)",
-    exercises: [
-      {
-        exerciseName: "Bent Over Barbell Row",
-        sets: "5",
-        reps: "5",
-      },
-      {
-        exerciseName: "Seated Cable Row",
-        sets: "4",
-        reps: "6",
-      },
-      {
-        exerciseName: "Cable Bicep Curl",
-        sets: "4",
-        reps: "8",
-      },
-      {
-        exerciseName: "Bent Over One Arm Dumbbell Row",
-        sets: "4",
-        reps: "8",
-      },
-      {
-        exerciseName: "Hammer Curl",
-        sets: "4",
-        reps: "8",
-      },
-    ],
-  },
-  {
-    workoutName: "Push (Chest, Shoulders, & Triceps)",
-    exercises: [
-      {
-        exerciseName: "Push Ups",
-        sets: "5",
-        reps: "5",
-      },
-      {
-        exerciseName: "Cable Tricep Pushdown",
-        sets: "4",
-        reps: "8",
-      },
-      {
-        exerciseName: "Lateral Raise",
-        sets: "4",
-        reps: "6",
-      },
-      {
-        exerciseName: "Dumbbell Chest Fly",
-        sets: "4",
-        reps: "8",
-      },
-      {
-        exerciseName: "Overhead Press",
-        sets: "4",
-        reps: "8",
-      },
-    ],
-  },
-];
+//       {
+//         exerciseName: "Hip Abductor Machine",
+//         sets: "3",
+//         reps: "12",
+//       },
+//     ],
+//   },
+//   {
+//     workoutName: "Pull (Back & Biceps)",
+//     exercises: [
+//       {
+//         exerciseName: "Bent Over Barbell Row",
+//         sets: "5",
+//         reps: "5",
+//       },
+//       {
+//         exerciseName: "Seated Cable Row",
+//         sets: "4",
+//         reps: "6",
+//       },
+//       {
+//         exerciseName: "Cable Bicep Curl",
+//         sets: "4",
+//         reps: "8",
+//       },
+//       {
+//         exerciseName: "Bent Over One Arm Dumbbell Row",
+//         sets: "4",
+//         reps: "8",
+//       },
+//       {
+//         exerciseName: "Hammer Curl",
+//         sets: "4",
+//         reps: "8",
+//       },
+//     ],
+//   },
+//   {
+//     workoutName: "Push (Chest, Shoulders, & Triceps)",
+//     exercises: [
+//       {
+//         exerciseName: "Push Ups",
+//         sets: "5",
+//         reps: "5",
+//       },
+//       {
+//         exerciseName: "Cable Tricep Pushdown",
+//         sets: "4",
+//         reps: "8",
+//       },
+//       {
+//         exerciseName: "Lateral Raise",
+//         sets: "4",
+//         reps: "6",
+//       },
+//       {
+//         exerciseName: "Dumbbell Chest Fly",
+//         sets: "4",
+//         reps: "8",
+//       },
+//       {
+//         exerciseName: "Overhead Press",
+//         sets: "4",
+//         reps: "8",
+//       },
+//     ],
+//   },
+// ];
 
 const WorkoutList = () => {
   const navigation = useNavigation();
@@ -136,41 +137,6 @@ const WorkoutList = () => {
       console.error('Error creating workout:', error);
     }
   };
-  //async function handlePress(workoutName) {
-    // const selectedExercises = WorkoutsData.find(
-    //   (workout) => workout.workoutName === workoutName
-    // ).exercises;
-
-    // const tempObj = {
-    //   workoutName: workoutName,
-    //   exercises: [],
-    // };
-
-    // const response = await axios.post(
-    //   BACKEND_URL + "/users/" + user.uid + "/workouts.json",
-    //   tempObj
-    // );
-    // const workoutId = response.data.name;
-
-    // for (let i = 0; i < selectedExercises.length; i++) {
-    //   const responeTwo = await axios.post(
-    //     BACKEND_URL +
-    //       "/users/" +
-    //       user.uid +
-    //       "/workouts/" +
-    //       workoutId +
-    //       "/exercises.json",
-    //     selectedExercises[i]
-    //   );
-    //   const exerciseId = responeTwo.data.name;
-    //   selectedExercises[i].id = exerciseId;
-    //   tempObj.exercises.push(selectedExercises[i]);
-    // }
-
-    // tempObj.id = workoutId;
-    // workoutsCtx.addWorkout(tempObj);
-  //  navigation.navigate("Workouts");
-  //}
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
