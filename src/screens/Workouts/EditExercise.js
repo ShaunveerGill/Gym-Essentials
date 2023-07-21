@@ -10,8 +10,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
 import { auth } from "../../../firebase";
-import axios from "axios";
-import { storeWorkout, confirmExerciseHandler} from "../../data/userServices";
+import { confirmExerciseHandler} from "../../data/userServices";
 
 
 function EditExercise({ route }) {

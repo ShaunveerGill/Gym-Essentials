@@ -4,8 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { RecordsContext } from '../../context/RecordsContext';
 import { auth } from "../../../firebase";
-import axios from 'axios';
-import { deleteRecordsHandler, storeRecord,confirmRecordsHandler } from '../../data/userServices';
+import { deleteRecordsHandler, confirmRecordsHandler } from '../../data/userServices';
 
 function ManageRecord({ route }) {
   const recordsCtx = useContext(RecordsContext);
