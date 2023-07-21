@@ -19,18 +19,23 @@ const TimerModal = ({ isVisible, onClose }) => {
     }
   }, [isVisible]);
 
-  useEffect(() => {
-    let timer;
-    if (isRunning) {
-      timer = setInterval(() => {
-        setRemainingTime((prevRemainingTime) => prevRemainingTime - 1);
-      }, 1000);
-    }
+useEffect(() => {
+  let timer;
+  if (isRunning) {
+    timer = setInterval(() => {
+      setRemainingTime((prevRemainingTime) => {
+        
+        // Prevent remainingTime from going below 0 so we display the correct message 
+        const newRemainingTime = prevRemainingTime - 1;
+        return newRemainingTime >= 0 ? newRemainingTime : 0;
+      });
+    }, 1000);
+  }
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, [isRunning]);
+  return () => {
+    clearInterval(timer);
+  };
+}, [isRunning]);
 
   const startTimer = () => {
     const newTime = parseInt(inputTime, 10);
@@ -61,14 +66,16 @@ const TimerModal = ({ isVisible, onClose }) => {
 
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
+
+
   const formattedTime =
-    remainingTime < 0
-      ? 'Enter a rest time'
-      : remainingTime === 0
-      ? 'Time is up!'
-      : `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  remainingTime === -1
+    ? 'Enter a rest time'
+    : remainingTime === 0
+    ? 'Time is up!'
+    : `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
 
-
+        
   return (
     <Modal
       isVisible={isVisible}
