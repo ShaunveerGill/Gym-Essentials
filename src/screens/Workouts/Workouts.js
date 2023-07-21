@@ -89,7 +89,6 @@ const Workouts = () => {
         };
         workouts.push(workoutObj);
       }
-      console.log(workouts);
       return workouts;
     } catch (error) {
       console.log('Error fetching workouts:', error);
@@ -116,8 +115,6 @@ const Workouts = () => {
         };
         exercises.push(exerciseObj);
       }
-      console.log("exercises:");
-      console.log(exercises);
       return exercises;
     } catch (error) {
       console.log('Error fetching exercises for workout', workoutId, ':', error);
@@ -142,7 +139,6 @@ const Workouts = () => {
   let content = <Text style={styles.infoText}>No Workouts Added</Text>;
 
   if (workoutsCtx.workouts.length > 0) {
-    console.log(workoutsCtx.workouts);
     content = (
       <FlatList
         data={workoutsCtx.workouts}
@@ -150,8 +146,6 @@ const Workouts = () => {
         keyExtractor={(item) => item.id}
       />
     );
-  } else {
-    console.log(workoutsCtx.workouts);
   }
 
   if (error && !isFetching) {

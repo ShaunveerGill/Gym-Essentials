@@ -353,15 +353,7 @@ function ManageWorkout({ route }) {
                 <Text style={styles.headerButtonText1}>Delete Workout</Text>
               </TouchableOpacity>
             </View>
-            <TextInput
-              style={[
-                styles.input1,
-                !inputs.workoutName.isValid && styles.invalidInput,
-              ]}
-              placeholder="Workout Name"
-              value={inputs.workoutName.value}
-              onChangeText={inputChangedHandler.bind(this, "workoutName")}
-            />
+            <Text style={styles.input1}>{inputs.workoutName.value}</Text>
 
             {selectedWorkout?.exercises &&
               selectedWorkout.exercises.length > 0 && (
