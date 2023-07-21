@@ -21,7 +21,7 @@ function ActivityEdit() {
   };
 
   const saveAndNavigate = () => {
-    updateData("activityLevel",activityLevel)
+    updateData("activityLevel", UserCtx.activityLevel)
     navigation.navigate("FeaturesOverview");
   };
 
@@ -42,7 +42,7 @@ function ActivityEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    activityLevel === "Sedentary" ? "#ffffff" : "#cccccc",
+                  UserCtx.activityLevel === "Sedentary" ? "#ffffff" : "#cccccc",
                 },
               ]}
               onPress={() => handleActivityLevel("Sedentary")}
@@ -59,7 +59,7 @@ function ActivityEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    activityLevel === "Lightly active" ? "#ffffff" : "#cccccc",
+                  UserCtx.activityLevel === "Lightly active" ? "#ffffff" : "#cccccc",
                 },
               ]}
               onPress={() => handleActivityLevel("Lightly active")}
@@ -76,7 +76,7 @@ function ActivityEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    activityLevel === "Moderately active" ? "#ffffff" : "#cccccc",
+                  UserCtx.activityLevel === "Moderately active" ? "#ffffff" : "#cccccc",
                 },
               ]}
               onPress={() => handleActivityLevel("Moderately active")}
@@ -93,7 +93,7 @@ function ActivityEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    activityLevel === "Very active" ? "#ffffff" : "#cccccc",
+                  UserCtx.activityLevel === "Very active" ? "#ffffff" : "#cccccc",
                 },
               ]}
               onPress={() => handleActivityLevel("Very active")}
@@ -110,7 +110,7 @@ function ActivityEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    activityLevel === "Extra active" ? "#ffffff" : "#cccccc",
+                  UserCtx.activityLevel === "Extra active" ? "#ffffff" : "#cccccc",
                 },
               ]}
               onPress={() => handleActivityLevel("Extra active")}

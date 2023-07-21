@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, StyleSheet, View, ScrollView } from "react-native";
+import { Text, StyleSheet, View, Image, ScrollView } from "react-native";
 import { UserContext } from "../../context/UserContext";
 
 const LOSE_WEIGHT = -750;
@@ -8,8 +8,8 @@ const GAIN_WEIGHT = 375;
 // MEN 88.362 + (13.397 * (weightInt / 2.2)) + (4.799 * heightInt) – (5.677 * ageInt)
 // WOMEN 447.593 + (9.247 * (weightInt / 2.2)) + (3.098 * heightInt) – (4.330 * ageInt)
 const FitnessCalculators = () => {
-  const { gender, age, height, weight, goal, activityLevel } = useContext(UserContext);
-
+  const {gender, age, height, weight, goal, activityLevel} = useContext(UserContext);
+  
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
   const [bmi, setBmi] = useState(0);
@@ -18,6 +18,7 @@ const FitnessCalculators = () => {
   const [caloriesDisplay, setCaloriesDisplay] = useState(0);
   const [proteinDisplay, setProteinDisplay] = useState(0);
   const [bmiDisplay, setbmiDisplay] = useState(0);
+
   useEffect(() => {
     let weightInt = parseFloat(weight, 10);
     let heightInt = parseFloat(height, 10);
@@ -106,7 +107,7 @@ const FitnessCalculators = () => {
         {'\n'}
         </Text>
         <Text style={styles.buttonText}>
-          Based on your fitness goals.
+          Based on your fitness goals
           {/* <Text style={styles.boldText}> Daily Caloric Intake </Text>
           is: */}
           {'\n'}

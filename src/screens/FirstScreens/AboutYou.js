@@ -1,3 +1,4 @@
+//AboutYou.js
 import { useState } from "react";
 import {
   Text,
@@ -41,7 +42,6 @@ function AboutYou() {
               What is your gender to calculate your calorie?
             </Text>
           </View>
-          {/*Changed code for when you want change the gender selections*/}
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[
@@ -222,7 +222,7 @@ function AboutYou() {
               style={styles.finishButton}
               onPress={handleFinishButtonPress}
             >
-              <Text style={styles.buttonText}>Finish</Text>
+              <Text style={styles.finishbuttonText}>Finish</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
     padding: 10,
     minWidth: 200,
     width: "100%",
+    borderRadius: 5,
   },
   buttons: {
     width: "100%",
@@ -270,16 +271,27 @@ const styles = StyleSheet.create({
   },
 
   finishButton: {
-    backgroundColor: "#cccccc",
+    backgroundColor: "white",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     width: "50%",
-    marginBottom: 10,
-    marginTop: 50,
+    marginBottom: 30,
+    marginTop: 30,
     marginLeft: 85,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 3,
+      height: 5,
+    },
+    shadowOpacity: 0.35,
+    shadowRadius: 3.84,
+  },
+  finishbuttonText: {
+    color: "black",
+    fontSize: 18,
   },
   buttonText: {
     color: "black",
@@ -316,6 +328,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   questions: {
+    borderRadius: 5,
     marginBottom: 10,
   },
 });

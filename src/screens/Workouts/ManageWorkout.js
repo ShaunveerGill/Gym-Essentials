@@ -9,7 +9,7 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -308,8 +308,9 @@ function ManageWorkout({ route }) {
                 <Text style={styles.headerButtonText1}>Delete Workout</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.input1}>{inputs.workoutName.value}</Text>
-
+            <ScrollView horizontal={true}>
+              <Text style={styles.input1}>{inputs.workoutName.value}</Text>
+            </ScrollView>
             {selectedWorkout?.exercises &&
               selectedWorkout.exercises.length > 0 && (
                 <FlatList
@@ -397,7 +398,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   scrollView: {
-    maxWidth: "69%", // Set the maximum width for the text container
+    maxWidth: "69%", 
   },
 
   itemContainer: {
