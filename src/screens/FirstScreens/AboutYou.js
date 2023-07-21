@@ -10,91 +10,23 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../../../firebase";
-import { getDatabase, ref, set } from "firebase/database";
 import React, { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
+import { AboutYouFinishHandler } from "../../data/userServices";
 
 function AboutYou() {
   const navigation = useNavigation();
-  const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
-    setActivityLevel,
-    activityLevel,
-  } = useContext(UserContext);
+  const UserCtx = useContext(UserContext);
 
-  const formIsInvalid = (!weight || !height || !age) && Sub;
+
+  const formIsInvalid = (!UserCtx.weight || !UserCtx.height || !UserCtx.age) && Sub;
   const [Sub, setSub] = useState(false);
 
-  const handleGender = (selectedGender) => {
-    IncompleteGender = false;
-    setGender(selectedGender);
-  };
-
-  const handleGoal = (selectedGoal) => {
-    setGoal(selectedGoal);
-  };
-
-  const handleActivityLevel = (selectedActivityLevel) => {
-    setActivityLevel(selectedActivityLevel);
-  };
-
   const handleFinishButtonPress = () => {
-    // Check for the current user
-    // if (!Incomplete) {
     setSub(true);
-
-    const user = auth.currentUser;
-    verification = true;
-
-    if (
-      gender &&
-      userName &&
-      age &&
-      height &&
-      weight &&
-      goal &&
-      activityLevel
-    ) {
-      if (user) {
-        const userData = {
-          email: userEmail,
-          name: userName,
-          gender: gender,
-          age: age,
-          height: height,
-          weight: weight,
-          goal: goal,
-          activityLevel: activityLevel,
-        };
-
-        const db = getDatabase();
-        const userRef = ref(db, "users/" + user.uid);
-
-        set(userRef, userData)
-          .then(() => {
-            navigation.navigate("FeaturesOverview");
-          })
-          .catch((error) => {
-            console.error("Error saving user data: ", error);
-          });
-      } else {
-        console.error("No user is signed in");
-      }
-    }
+    AboutYouFinishHandler(UserCtx).then(() => {
+      navigation.navigate("FeaturesOverview");
+    });
   };
 
   return (
@@ -114,9 +46,9 @@ function AboutYou() {
             <TouchableOpacity
               style={[
                 styles.button,
-                { backgroundColor: gender === "Male" ? "#ffffff" : "#cccccc" },
+                { backgroundColor: UserCtx.gender === "Male" ? "#ffffff" : "#cccccc" },
               ]}
-              onPress={() => handleGender("Male")}
+              onPress={() => UserCtx.setGender("Male")}
             >
               <Text style={styles.buttonText}>Male</Text>
             </TouchableOpacity>
@@ -125,39 +57,39 @@ function AboutYou() {
               style={[
                 styles.button,
                 {
-                  backgroundColor: gender === "Female" ? "#ffffff" : "#cccccc",
+                  backgroundColor: UserCtx.gender === "Female" ? "#ffffff" : "#cccccc",
                 },
               ]}
-              onPress={() => handleGender("Female")}
+              onPress={() => UserCtx.setGender("Female")}
             >
               <Text style={styles.buttonText}>Female</Text>
             </TouchableOpacity>
           </View>
-          {!gender && Sub && (
+          {!UserCtx.gender && Sub && (
             <Text style={styles.errorText}>No Gender selected</Text>
           )}
           <View>
             <Text style={styles.questions}>What is your age?</Text>
           </View>
           <TextInput
-            style={[styles.input, Sub && !age && styles.invalidInput]}
-            onChangeText={(text) => setAge(text)}
+            style={[styles.input, Sub && !UserCtx.age && styles.invalidInput]}
+            onChangeText={(text) => UserCtx.setAge(text)}
             keyboardType="numeric"
           />
           <View>
             <Text style={styles.questions}>What is your height(cm)?</Text>
           </View>
           <TextInput
-            style={[styles.input, Sub && !height && styles.invalidInput]}
-            onChangeText={(text) => setHeight(text)}
+            style={[styles.input, Sub && !UserCtx.height && styles.invalidInput]}
+            onChangeText={(text) => UserCtx.setHeight(text)}
             keyboardType="numeric"
           />
           <View>
             <Text style={styles.questions}>What is your weight(lb)?</Text>
           </View>
           <TextInput
-            style={[styles.input, Sub && !weight && styles.invalidInput]}
-            onChangeText={(text) => setWeight(text)}
+            style={[styles.input, Sub && !UserCtx.weight && styles.invalidInput]}
+            onChangeText={(text) => UserCtx.setWeight(text)}
             keyboardType="numeric"
           />
           {formIsInvalid && (
@@ -173,10 +105,10 @@ function AboutYou() {
             style={[
               styles.buttonGoals,
               {
-                backgroundColor: goal === "Lose Weight" ? "#ffffff" : "#cccccc",
+                backgroundColor: UserCtx.goal === "Lose Weight" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleGoal("Lose Weight")}
+            onPress={() => UserCtx.setGoal("Lose Weight")}
           >
             <Text style={styles.buttonText}>Lose Weight</Text>
           </TouchableOpacity>
@@ -185,10 +117,10 @@ function AboutYou() {
             style={[
               styles.buttonGoals,
               {
-                backgroundColor: goal === "Gain Weight" ? "#ffffff" : "#cccccc",
+                backgroundColor: UserCtx.goal === "Gain Weight" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleGoal("Gain Weight")}
+            onPress={() => UserCtx.setGoal("Gain Weight")}
           >
             <Text style={styles.buttonText}>Gain Weight</Text>
           </TouchableOpacity>
@@ -198,14 +130,14 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  goal === "Maintain Weight" ? "#ffffff" : "#cccccc",
+                UserCtx.goal === "Maintain Weight" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleGoal("Maintain Weight")}
+            onPress={() => UserCtx.setGoal("Maintain Weight")}
           >
             <Text style={styles.buttonText}>Maintain Weight</Text>
           </TouchableOpacity>
-          {!goal && Sub && (
+          {!UserCtx.goal && Sub && (
             <Text style={styles.errorText}>No Goal selected</Text>
           )}
           <View>
@@ -217,10 +149,10 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  activityLevel === "Sedentary" ? "#ffffff" : "#cccccc",
+                UserCtx.activityLevel === "Sedentary" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleActivityLevel("Sedentary")}
+            onPress={() =>  UserCtx.setActivityLevel("Sedentary")}
           >
             <Text style={styles.activityButtonText}>
               Sedentary (little to no exercise)
@@ -231,10 +163,10 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  activityLevel === "Lightly active" ? "#ffffff" : "#cccccc",
+                UserCtx.activityLevel === "Lightly active" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleActivityLevel("Lightly active")}
+            onPress={() => UserCtx.setActivityLevel("Lightly active")}
           >
             <Text style={styles.activityButtonText}>
               Lightly active (exercise 1-3 days/week)
@@ -245,10 +177,10 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  activityLevel === "Moderately active" ? "#ffffff" : "#cccccc",
+                UserCtx.activityLevel === "Moderately active" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleActivityLevel("Moderately active")}
+            onPress={() =>  UserCtx.setActivityLevel("Moderately active")}
           >
             <Text style={styles.activityButtonText}>
               Moderately active (exercise 3-5 days/week)
@@ -259,10 +191,10 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  activityLevel === "Very active" ? "#ffffff" : "#cccccc",
+                UserCtx.activityLevel === "Very active" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleActivityLevel("Very active")}
+            onPress={() =>  UserCtx.setActivityLevel("Very active")}
           >
             <Text style={styles.activityButtonText}>
               Very active (exercise 6-7 days/week)
@@ -273,16 +205,16 @@ function AboutYou() {
               styles.buttonGoals,
               {
                 backgroundColor:
-                  activityLevel === "Extra active" ? "#ffffff" : "#cccccc",
+                UserCtx.activityLevel === "Extra active" ? "#ffffff" : "#cccccc",
               },
             ]}
-            onPress={() => handleActivityLevel("Extra active")}
+            onPress={() => UserCtx.setActivityLevel("Extra active")}
           >
             <Text style={styles.activityButtonText}>
               Extra active (very active and physical job)
             </Text>
           </TouchableOpacity>
-          {!activityLevel && Sub && (
+          {!UserCtx.activityLevel && Sub && (
             <Text style={styles.errorText}>No Activity selected</Text>
           )}
           <View style={styles.buttons}>

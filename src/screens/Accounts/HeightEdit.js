@@ -11,65 +11,26 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { updateData } from "../../data/userServices";
 
 function HeightEdit() {
   const navigation = useNavigation();
-
-  const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
-  } = useContext(UserContext);
-
-  const [tempHeight, setTempHeight] = useState(height);
-  const handleHeight = () => {
-    if (tempHeight) {
-      setHeight(tempHeight);
-    }
-  };
-
+  const UserCtx = useContext(UserContext);
+  const [tempHeight, setTempHeight] = useState(UserCtx.height);
   const amountIsValid =
-    !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
+  !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
 
   const saveAndNavigate = () => {
-    handleHeight();
+    // handleHeight();
+    if (tempHeight) {
+      UserCtx.setHeight(tempHeight);
+    }
     if (!amountIsValid) {
       Alert.alert("Input invalid", "Please check your input values");
       return;
     }
-
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        height: tempHeight,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
-
+    updateData("height", tempHeight);
     navigation.navigate("FeaturesOverview");
-  };
-
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
   };
 
   const formIsInvalid = !amountIsValid;

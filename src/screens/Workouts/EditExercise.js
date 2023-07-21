@@ -10,7 +10,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
 import { auth } from "../../../firebase";
-import axios from "axios";
+import { confirmExerciseHandler} from "../../data/userServices";
+
 
 function EditExercise({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -55,69 +56,19 @@ function EditExercise({ route }) {
     });
   }
 
-  async function storeWorkout(exerciseData) {
-    const response = await axios.post(
-      BACKEND_URL +
-        "/users/" +
-        user.uid +
-        "/workouts/" +
-        currentEditId +
-        "/exercises.json",
-      exerciseData
-    );
-    const id = response.data.name;
-    exerciseData.exerciseId = id;
-    return id;
-  }
-
-  async function confirmHandler(exerciseData) {
-    setIsSubmitting(true);
-    try {
-      if (isEditing) {
-        const updatedWorkout = workoutsCtx.workouts.find(
-          (workout) => workout.id === currentEditId
-        );
-        const updatedExercises = updatedWorkout.exercises.map((exercise) => {
-          if (exercise.id === editedExerciseId) {
-            return { ...exercise, ...exerciseData };
-          }
-          return exercise;
-        });
-        updatedWorkout.exercises = updatedExercises;
-        workoutsCtx.updateWorkout(currentEditId, updatedWorkout);
-        await axios.put(
-          BACKEND_URL +
-            "/users/" +
-            user.uid +
-            "/workouts/" +
-            currentEditId +
-            "/exercises/" +
-            editedExerciseId +
-            ".json",
-          exerciseData
-        );
-      } else {
-        const id = await storeWorkout(exerciseData);
-        workoutsCtx.addExercise(currentEditId, exerciseData, id);
-      }
-      navigation.goBack();
-    } catch (error) {
-      setError("Could not delete workout - please try again later!");
-      setIsSubmitting(false);
-    }
-  }
-
-  function submitHandler() {
+  
+  async function submitHandler() {
     const exerciseData = {
       exerciseName: inputs.exerciseName.value,
       sets: inputs.sets.value,
       reps: inputs.reps.value,
     };
-
+  
+    console.log(exerciseData);
     const exerciseNameIsValid = exerciseData.exerciseName.trim().length > 0;
     const setsIsValid = exerciseData.sets.trim().length > 0;
     const repsIsValid = exerciseData.reps.trim().length > 0;
-
+  
     if (!exerciseNameIsValid || !setsIsValid || !repsIsValid) {
       setInputs((curInputs) => {
         return {
@@ -131,10 +82,28 @@ function EditExercise({ route }) {
       });
       return;
     }
-
-    confirmHandler(exerciseData);
+  
+    setIsSubmitting(true);
+  
+    try {
+      await confirmExerciseHandler(
+        exerciseData,
+        user.uid,
+        currentEditId,
+        workoutsCtx,
+        editedExerciseId,
+        setError,
+        setIsSubmitting,
+        isEditing
+      );
+  
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not add exercise - please try again later!");
+      setIsSubmitting(false);
+    }
   }
-
+  
   const formIsInvalid =
     !inputs.exerciseName.isValid ||
     !inputs.sets.isValid ||
@@ -221,7 +190,7 @@ function EditExercise({ route }) {
                   </Text>
                   <View style={styles.inputWrapper}>
                     <TextInput
-                    keyboardType="numeric"
+                      keyboardType="numeric"
                       style={[
                         styles.smallInput,
                         !inputs.reps.isValid && styles.invalidInput,

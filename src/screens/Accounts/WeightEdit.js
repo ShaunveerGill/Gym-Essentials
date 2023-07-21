@@ -11,51 +11,25 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { updateData } from "../../data/userServices";
 
 function WeightEdit() {
   const navigation = useNavigation();
-
-  const { setWeight, weight } = useContext(UserContext);
-
-  const [tempWeight, setTempWeight] = useState(weight);
-
+  const UserCtx = useContext(UserContext);
+  const [tempWeight, setTempWeight] = useState(UserCtx.weight);
   const amountIsValid =
     !isNaN(tempWeight) && tempWeight > 0 && tempWeight < 1000;
 
-  const handleWeight = () => {
-    if (amountIsValid) {
-      setWeight(tempWeight);
-    }
-  };
-
   const saveAndNavigate = () => {
-    handleWeight();
+    if (amountIsValid) {
+      UserCtx.setWeight(tempWeight);
+    }
     if (!amountIsValid) {
       Alert.alert("Input invalid", "Please check your input values");
       return;
     }
-
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        weight: tempWeight,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
-
+    updateData("weight", tempWeight);
     navigation.navigate("FeaturesOverview");
-  };
-
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
   };
 
   const formIsInvalid = !amountIsValid;

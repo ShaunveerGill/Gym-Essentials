@@ -14,14 +14,10 @@ import { updateData } from "../../data/userServices";
 
 function ActivityEdit() {
   const navigation = useNavigation();
-
-  const {
-    setActivityLevel,
-    activityLevel,
-  } = useContext(UserContext);
+  const UserCtx = useContext(UserContext);
 
   const handleActivityLevel = (selectedActivityLevel) => {
-    setActivityLevel(selectedActivityLevel);
+    UserCtx.setActivityLevel(selectedActivityLevel);
   };
 
   const saveAndNavigate = () => {

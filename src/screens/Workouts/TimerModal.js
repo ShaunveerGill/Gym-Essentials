@@ -197,5 +197,3 @@ input: {
 });
 
 export default TimerModal;
-
-

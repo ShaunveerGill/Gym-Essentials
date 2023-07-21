@@ -14,23 +14,11 @@ import { updateData } from "../../data/userServices";
 
 function GenderEdit() {
   const navigation = useNavigation();
-
-  const {
-    gender,
-    setGender,
-  } = useContext(UserContext);
-
-  const handleGender = (selectedGender) => {
-    setGender(selectedGender);
-  };
+  const UserCtx = useContext(UserContext);
 
   const saveAndNavigate = () => {
-    updateData("gender", gender);
+    updateData("gender", UserCtx.gender);
     navigation.navigate("FeaturesOverview");
-  };
-
-  const handleAccountPress = () => {
-    navigation.navigate("AccountScreen");
   };
 
   return (
@@ -50,9 +38,9 @@ function GenderEdit() {
             <TouchableOpacity
               style={[
                 styles.button,
-                { backgroundColor: gender === "Male" ? "#ffffff" : "#cccccc" },
+                { backgroundColor: UserCtx.gender === "Male" ? "#ffffff" : "#cccccc" },
               ]}
-              onPress={() => handleGender("Male")}
+              onPress={() => UserCtx.setGender("Male")}
             >
               <Text style={styles.buttonText}>Male</Text>
             </TouchableOpacity>
@@ -62,10 +50,10 @@ function GenderEdit() {
               style={[
                 styles.button,
                 {
-                  backgroundColor: gender === "Female" ? "#ffffff" : "#cccccc",
+                  backgroundColor: UserCtx.gender === "Female" ? "#ffffff" : "#cccccc",
                 },
               ]}
-              onPress={() => handleGender("Female")}
+              onPress={() => UserCtx.setGender("Female")}
             >
               <Text style={styles.buttonText}>Female</Text>
             </TouchableOpacity>

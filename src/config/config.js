@@ -1,0 +1,1 @@
+export const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com';

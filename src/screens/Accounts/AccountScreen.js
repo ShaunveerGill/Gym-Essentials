@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Image,
   Text,
@@ -6,58 +5,38 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { auth } from "../../../firebase";
+import React, { useContext } from "react"; // Import from "react", not "react-native"
 import { UserContext } from "../../context/UserContext";
-import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { handleLogout } from "../../data/userServices";
+import { resetUserContext } from "../../controller/UserController";
+
 
 const AccountStack = createNativeStackNavigator();
 
-const AccountScreen = ({ navigation }) => {
-  const {
-    userEmail,
-    setUserEmail,
-    userName,
-    setUserName,
-    gender,
-    setGender,
-    setAge,
-    age,
-    setHeight,
-    height,
-    setWeight,
-    weight,
-    setGoal,
-    goal,
-    activityLevel,
-    setActivityLevel,
-  } = useContext(UserContext);
+const AccountScreen = () => {
+  const navigation = useNavigation();
+  const UserCtx = useContext(UserContext);
 
-  const handleLogout = () => {
-    auth
-      .signOut()
+  const submithandler = () => {
+    handleLogout()
       .then(() => {
-        setUserName("");
-        setGender("");
-        setAge("");
-        setHeight("");
-        setWeight("");
-        setGoal("");
-        setActivityLevel("");
-        console.log("User signed out");
+        // Assuming resetUserContext function is available
+        resetUserContext(UserCtx);
         navigation.navigate("Login");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        Alert.alert("Error", error.message, [{ text: "OK" }]);
+      });
   };
-
-  const nav = useNavigation();
 
   return (
     <AccountStack.Navigator>
-      <AccountStack.Screen name={userEmail} options={{ headerShown: false }}>
+      <AccountStack.Screen name={UserCtx.userEmail} options={{ headerShown: false }}>
         {() => (
           <View style={styles.container}>
             <Image
@@ -67,77 +46,77 @@ const AccountScreen = ({ navigation }) => {
 
             <View style={styles.infoBoxes}>
               <ScrollView horizontal={true}style={styles.scrollViewContainer}>
-                <Text style={styles.infoboxtext}>User Name: {userName}</Text>
+                <Text style={styles.infoboxtext}>User Name: {UserCtx.userName}</Text>
               </ScrollView>
             </View>
             
             <View style={styles.infoBoxes}>
               <ScrollView horizontal={true}style={styles.scrollViewContainer}>
-                <Text style={styles.infoboxtext}>Email: {userEmail}</Text>
+                <Text style={styles.infoboxtext}>Email: {UserCtx.userEmail}</Text>
               </ScrollView>
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Age: {age}</Text>
+              <Text style={styles.infoboxtext}>Age: {UserCtx.age}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
-                onPress={() => nav.navigate("AgeEdit")}
+                onPress={() => navigation.navigate("AgeEdit")}
               >
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Height (cm): {height}</Text>
+              <Text style={styles.infoboxtext}>Height (cm): {UserCtx.height}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
-                onPress={() => nav.navigate("HeightEdit")}
+                onPress={() => navigation.navigate("HeightEdit")}
               >
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Weight (lb): {weight}</Text>
+              <Text style={styles.infoboxtext}>Weight (lb): {UserCtx.weight}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
-                onPress={() => nav.navigate("WeightEdit")}
+                onPress={() => navigation.navigate("WeightEdit")}
               >
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Gender: {gender}</Text>
+              <Text style={styles.infoboxtext}>Gender: {UserCtx.gender}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
-                onPress={() => nav.navigate("GenderEdit")}
+                onPress={() => navigation.navigate("GenderEdit")}
               >
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Goal: {goal}</Text>
+              <Text style={styles.infoboxtext}>Goal: {UserCtx.goal}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
-                onPress={() => nav.navigate("GoalEdit")}
+                onPress={() => navigation.navigate("GoalEdit")}
               >
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoBoxes}>
-              <Text style={styles.infoboxtext}>Activity: {activityLevel}</Text>
+              <Text style={styles.infoboxtext}>Activity: {UserCtx.activityLevel}</Text>
               <TouchableOpacity
                 style={styles.editButtonGoal}
-                onPress={() => nav.navigate("ActivityEdit")}
+                onPress={() => navigation.navigate("ActivityEdit")}
               >
                 <Ionicons name="ellipsis-horizontal" size={18} color="black" />
               </TouchableOpacity>
             </View>
             <View style={styles.buttons}>
-              <TouchableOpacity style={styles.button} onPress={handleLogout}>
+              <TouchableOpacity style={styles.button} onPress={submithandler}>
                 <Text style={styles.buttonText}>Log Out</Text>
               </TouchableOpacity>
             </View>

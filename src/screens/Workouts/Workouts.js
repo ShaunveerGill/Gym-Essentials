@@ -1,34 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { WorkoutsContext } from '../../context/WorkoutsContext';
 import { auth } from "../../../firebase";
-import axios from 'axios';
-
-
-function getFormattedDate(date) {
-  return date.toISOString().slice(0, 10);
-}
+import { fetchWorkouts } from '../../data/userServices';
 
 function renderWorkoutItem(itemData) {
-  return (
-    <WorkoutItem {...itemData.item} />);  
+  return <WorkoutItem {...itemData.item} />;
 }
 
 function WorkoutItem({ id, workoutName }) {
   const navigation = useNavigation();
-  
+
   function workoutPressHandler() {
     navigation.navigate('ManageWorkout', {
       workoutId: id
     });
-  }  
-  
+  }
+
   return (
-    <Pressable 
-      onPress={workoutPressHandler} 
-      style={({pressed}) => pressed && styles.pressed}
+    <Pressable
+      onPress={workoutPressHandler}
+      style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={styles.workoutItem}>
         <View>
@@ -43,7 +37,6 @@ function WorkoutItem({ id, workoutName }) {
 
 const Workouts = () => {
   const navigation = useNavigation();
-
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState();
   const workoutsCtx = useContext(WorkoutsContext);
@@ -53,74 +46,20 @@ const Workouts = () => {
   };
 
   const user = auth.currentUser;
-  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
 
   useEffect(() => {
     async function getWorkouts() {
       setIsFetching(true);
       try {
-        const workouts = await fetchWorkouts();
+        const workouts = await fetchWorkouts(user.uid);
         workoutsCtx.setWorkouts(workouts);
-        (workouts);
       } catch (error) {
-        console.log(error);
         setError('Could not fetch workouts!');
       }
       setIsFetching(false);
     }
     getWorkouts();
   }, []);
-  async function fetchWorkouts() {
-    try {
-      const response = await axios.get(
-        BACKEND_URL + '/users/' + user.uid + '/workouts.json'
-      );
-  
-      const workouts = [];
-  
-      for (const workoutId in response.data) {
-        const workoutData = response.data[workoutId];
-        const exercises = await fetchExercises(workoutId); // Fetch exercises for the current workout
-  
-        const workoutObj = {
-          id: workoutId,
-          workoutName: workoutData.workoutName,
-          exercises: exercises,
-        };
-        workouts.push(workoutObj);
-      }
-      return workouts;
-    } catch (error) {
-      console.log('Error fetching workouts:', error);
-      throw error;
-    }
-  }
-  
-  async function fetchExercises(workoutId) {
-    try {
-      const response = await axios.get(
-        BACKEND_URL + '/users/' + user.uid + '/workouts/' + workoutId + '/exercises.json'
-      );
-  
-      const exercises = [];
-  
-      for (const exerciseId in response.data) {
-        const exerciseData = response.data[exerciseId];
-  
-        const exerciseObj = {
-          id: exerciseId,
-          exerciseName: exerciseData.exerciseName,
-          sets: exerciseData.sets,
-          reps: exerciseData.reps,
-        };
-        exercises.push(exerciseObj);
-      }
-      return exercises;
-    } catch (error) {
-      console.log('Error fetching exercises for workout', workoutId, ':', error);
-      throw error;
-    }
-  }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -157,11 +96,11 @@ const Workouts = () => {
     );
   }
 
-  if(isFetching) {
+  if (isFetching) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="black" />
-      </View>      
+      </View>
     );
   }
 
@@ -172,21 +111,19 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.75,
   },
-
   container: {
     flex: 1,
     paddingHorizontal: 24,
     paddingVertical: 30,
-    justifyContent: 'center', 
+    justifyContent: 'center',
   },
   infoText: {
     color: 'black',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 'auto', 
-    marginBottom: 'auto', 
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
-
   workoutItem: {
     padding: 15,
     marginVertical: 15,
@@ -196,40 +133,22 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     elevation: 3,
     width: '97%',
-    shadowColor: "#000", 
+    shadowColor: "#000",
     shadowOffset: {
-      width: 3,   
-      height: 5,  
+      width: 3,
+      height: 5,
     },
-    shadowOpacity: 0.35, 
-    shadowRadius: 3.84,  
-    
+    shadowOpacity: 0.35,
+    shadowRadius: 3.84,
   },
-
   textBase: {
     color: 'white',
     paddingHorizontal: 6,
     letterSpacing: 1.25,
   },
-
   exercise: {
     fontSize: 16,
     marginBottom: 4,
-    fontWeight: 'bold',
-  },
-
-  recordContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    backgroundColor: '#cccccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    minWidth: 20,
-  },
-
-  record: {
-    color: 'black',
     fontWeight: 'bold',
   },
   addButton: {
@@ -258,7 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  
 });
 
-export default Workouts
+export default Workouts;

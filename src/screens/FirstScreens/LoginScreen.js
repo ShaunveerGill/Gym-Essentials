@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from "../../context/UserContext";
 import { handleLogin } from "../../data/userServices";
@@ -8,29 +8,19 @@ function LoginScreen() {
 
   //remove loginERROr
   const navigation = useNavigation();
-  const {
-    userEmail,
-    setUserEmail,
-    setUserName,
-    setGender,
-    setAge,
-    setHeight,
-    setWeight,
-    setGoal,
-    setActivityLevel,
-  } = useContext(UserContext);
+  const UserCtx = useContext(UserContext);
   const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState(null); 
+  // const [loginError, setLoginError] = useState(null); 
 
   const handleSubmit = () => {
-    handleLogin(userEmail, password, setUserEmail, setUserName, setGender, setAge, setHeight, setWeight, setGoal, setActivityLevel)
+    handleLogin(UserCtx.userEmail, password, UserCtx)
       .then(() => {
         setPassword('');
-        setLoginError(null); 
+        // setLoginError(null); 
         navigation.navigate('FeaturesOverview');
       })
       .catch((error) => {
-        setLoginError(error.message);
+        Alert(error.message);
       });
   }
 
@@ -45,8 +35,8 @@ function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="Email Address"
-            value={userEmail}
-            onChangeText={text => setUserEmail(text)}
+            value={UserCtx.userEmail}
+            onChangeText={text => UserCtx.setUserEmail(text)}
           />
         <TextInput
           style={styles.input}
