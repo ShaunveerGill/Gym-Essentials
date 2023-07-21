@@ -1,20 +1,11 @@
-import React, { useContext, useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  ActivityIndicator,
-  FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import React, { useContext } from "react";
+import { Text, View, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../../../firebase";
 import axios from "axios";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
+import { BACKEND_URL } from "../../config/config";
 
 const WorkoutsData = [
   {
@@ -133,7 +124,6 @@ const WorkoutsData = [
 const WorkoutList = () => {
   const navigation = useNavigation();
   const user = auth.currentUser;
-  const BACKEND_URL = "https://gym-essentials-default-rtdb.firebaseio.com";
   const workoutsCtx = useContext(WorkoutsContext);
 
   async function handlePress(workoutName) {
@@ -224,12 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 20,
   },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 40,
-  },
-  headerButton: {
+  headerButton1: {
     padding: 5,
   },
   goBackIcon: {

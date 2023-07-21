@@ -1,7 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import { auth } from "../../firebase";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set} from "firebase/database";
 import { UserContext } from "../context/UserContext";
 import { WorkoutsContext } from '../context/WorkoutsContext';
 import React, { useContext, useState } from "react";
@@ -27,15 +27,21 @@ export const updateData = (variableName, value) => {
     });
 };
 
-export const handleLogin = (userEmail, password, setUserEmail, setUserName, setGender, setAge, setHeight, setWeight, setGoal, setActivityLevel) => {
+
+export const handleLogin = (userEmail, password, UserCtx) => {
+  if (!userEmail) {
+    return Promise.reject(new Error("User email is missing."));
+  }
+
+  UserCtx.setUserEmail(userEmail);
+
   return new Promise((resolve, reject) => {
-    auth.signInWithEmailAndPassword(userEmail, password)
+    auth.signInWithEmailAndPassword(userEmail, password) 
       .then((userCredentials) => {
         const user = userCredentials.user;
         const userData = auth.currentUser;
 
         if (userData !== null) {
-          setUserEmail(userData.email);
           const db = getDatabase();
           const userRef = ref(db, "users/" + userData.uid);
 
@@ -45,13 +51,13 @@ export const handleLogin = (userEmail, password, setUserEmail, setUserName, setG
               const data = snapshot.val();
 
               if (data !== null) {
-                setUserName(data.name);
-                setGender(data.gender);
-                setAge(data.age);
-                setHeight(data.height);
-                setWeight(data.weight);
-                setGoal(data.goal);
-                setActivityLevel(data.activityLevel);
+                UserCtx.setUserName(data.name);
+                UserCtx.setGender(data.gender);
+                UserCtx.setAge(data.age);
+                UserCtx.setHeight(data.height);
+                UserCtx.setWeight(data.weight);
+                UserCtx.setGoal(data.goal);
+                UserCtx.setActivityLevel(data.activityLevel);
               }
 
               resolve();
@@ -60,37 +66,26 @@ export const handleLogin = (userEmail, password, setUserEmail, setUserName, setG
               reject(error); 
             }
           );
+        } else {
+          reject(new Error("User data is null.")); 
         }
       })
       .catch((error) => {
         const errorMessage = error.message || "An error occurred during login.";
         alert(errorMessage);
-        reject(error); // Reject the Promise with the error
+        reject(error); 
       });
-  });
-};
-
-export const handleSignUp = (userEmail, Cpassword) => {
-  return new Promise((resolve, reject) => {
-    auth
-      .createUserWithEmailAndPassword(userEmail, Cpassword)
-      .then(userCredentials => {
-        const user = userCredentials.user;
-        resolve(user); 
-      })
-      .catch(error => reject(error));
   });
 };
 
 export const handleLogout = () => {
   return new Promise((resolve, reject) => {
-  auth
-    .signOut()
-    .then(() => {
-      console.log("User signed out");
-      resolve();
-    })
-    .catch(error => reject(error));
+    auth
+      .signOut()
+      .then(() => {
+        resolve();
+      })
+      .catch((error) => reject(error));
   });
 };
 
@@ -361,4 +356,70 @@ export async function confirmRecordsHandler(
     setError("Could not save data - please try again later!");
     setIsSubmitting(false);
   }
+}
+
+export function AboutYouFinishHandler(UserCtx) {
+  return new Promise((resolve, reject) => {
+    const user = auth.currentUser;
+    const verification = true;
+
+    if (
+      UserCtx.gender &&
+      UserCtx.userName &&
+      UserCtx.age &&
+      UserCtx.height &&
+      UserCtx.weight &&
+      UserCtx.goal &&
+      UserCtx.activityLevel
+    ) {
+      if (user) {
+        const userData = {
+          email: UserCtx.userEmail,
+          name: UserCtx.userName,
+          gender: UserCtx.gender,
+          age: UserCtx.age,
+          height: UserCtx.height,
+          weight: UserCtx.weight,
+          goal: UserCtx.goal,
+          activityLevel: UserCtx.activityLevel,
+        };
+
+        const db = getDatabase();
+        const userRef = ref(db, "users/" + user.uid);
+
+        set(userRef, userData)
+          .then(() => {
+            resolve(); // Resolve the Promise after successful data storage
+          })
+          .catch((error) => {
+            console.error("Error saving user data: ", error);
+            reject(error); // Reject the Promise if there's an error
+          });
+      } else {
+        console.error("No user is signed in");
+        reject(new Error("No user is signed in")); // Reject the Promise if user is not signed in
+      }
+    } else {
+      reject(new Error("Incomplete user data")); // Reject the Promise if user data is incomplete
+    }
+  });
+}
+
+export async function fetchRecords(UserUid) {
+  const response = await axios.get(
+    BACKEND_URL + "/users/" + UserUid + "/personalrecords.json"
+  );
+  const records = [];
+
+  for (const key in response.data) {
+    const recordObj = {
+      id: key,
+      exercise: response.data[key].exercise,
+      record: response.data[key].record,
+      date: new Date(response.data[key].date),
+    };
+    records.push(recordObj);
+  }
+
+  return records;
 }

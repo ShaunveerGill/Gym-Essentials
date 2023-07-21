@@ -15,27 +15,20 @@ import { updateData } from "../../data/userServices";
 
 function WeightEdit() {
   const navigation = useNavigation();
-
-  const { setWeight, weight } = useContext(UserContext);
-
-  const [tempWeight, setTempWeight] = useState(weight);
-
+  const UserCtx = useContext(UserContext);
+  const [tempWeight, setTempWeight] = useState(UserCtx.weight);
   const amountIsValid =
     !isNaN(tempWeight) && tempWeight > 0 && tempWeight < 1000;
 
-  const handleWeight = () => {
-    if (amountIsValid) {
-      setWeight(tempWeight);
-    }
-  };
-
   const saveAndNavigate = () => {
-    handleWeight();
+    if (amountIsValid) {
+      UserCtx.setWeight(tempWeight);
+    }
     if (!amountIsValid) {
       Alert.alert("Input invalid", "Please check your input values");
       return;
     }
-    updateData("weight", weight);
+    updateData("weight", tempWeight);
     navigation.navigate("FeaturesOverview");
   };
 

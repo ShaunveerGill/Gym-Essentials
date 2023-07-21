@@ -14,14 +14,10 @@ import { updateData } from "../../data/userServices";
 
 function GoalEdit() {
   const navigation = useNavigation();
-  const { setGoal, goal } = useContext(UserContext);
-
-  const handleGoal = (selectedGoal) => {
-    setGoal(selectedGoal);
-  };
+  const UserCtx = useContext(UserContext);
 
   const saveAndNavigate = () => {
-    updateData("goal", goal);
+    updateData("goal", UserCtx.goal);
     navigation.navigate("FeaturesOverview");
   };
 
@@ -42,10 +38,10 @@ function GoalEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    goal === "Lose Weight" ? "#ffffff" : "#cccccc",
+                  UserCtx.goal === "Lose Weight" ? "#ffffff" : "#cccccc",
                 },
               ]}
-              onPress={() => handleGoal("Lose Weight")}
+              onPress={() => UserCtx.setGoal("Lose Weight")}
             >
               <Text style={styles.buttonText}>Lose Weight</Text>
             </TouchableOpacity>
@@ -56,10 +52,10 @@ function GoalEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    goal === "Gain Weight" ? "#ffffff" : "#cccccc",
+                  UserCtx.goal === "Gain Weight" ? "#ffffff" : "#cccccc",
                 },
               ]}
-              onPress={() => handleGoal("Gain Weight")}
+              onPress={() => UserCtx.setGoal("Gain Weight")}
             >
               <Text style={styles.buttonText}>Gain Weight</Text>
             </TouchableOpacity>
@@ -70,10 +66,10 @@ function GoalEdit() {
                 styles.button,
                 {
                   backgroundColor:
-                    goal === "Maintain Weight" ? "#ffffff" : "#cccccc",
+                  UserCtx.goal === "Maintain Weight" ? "#ffffff" : "#cccccc",
                 },
               ]}
-              onPress={() => handleGoal("Maintain Weight")}
+              onPress={() => UserCtx.setGoal("Maintain Weight")}
             >
               <Text style={styles.buttonText}>Maintain Weight</Text>
             </TouchableOpacity>

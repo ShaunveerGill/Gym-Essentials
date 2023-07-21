@@ -11,34 +11,25 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { updateData } from "../../data/userServices";
 
 function HeightEdit() {
   const navigation = useNavigation();
-
-  const {
-    setHeight,
-    height,
-  } = useContext(UserContext);
-
-  const [tempHeight, setTempHeight] = useState(height);
-  const handleHeight = () => {
-    if (tempHeight) {
-      setHeight(tempHeight);
-    }
-  };
-
+  const UserCtx = useContext(UserContext);
+  const [tempHeight, setTempHeight] = useState(UserCtx.height);
   const amountIsValid =
-    !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
+  !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
 
   const saveAndNavigate = () => {
-    handleHeight();
+    // handleHeight();
+    if (tempHeight) {
+      UserCtx.setHeight(tempHeight);
+    }
     if (!amountIsValid) {
       Alert.alert("Input invalid", "Please check your input values");
       return;
     }
-    updateData("height", height);
+    updateData("height", tempHeight);
     navigation.navigate("FeaturesOverview");
   };
 

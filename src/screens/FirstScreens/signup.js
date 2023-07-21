@@ -37,7 +37,8 @@ function SignUp() {
         navigation.navigate('AboutYou');
       })
       .catch((error) => {
-        setLoginError(error.message);
+        // setLoginError(error.message);
+        alert(error.message);
       });
   }
 

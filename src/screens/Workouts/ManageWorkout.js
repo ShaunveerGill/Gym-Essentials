@@ -15,7 +15,6 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
 import { auth } from "../../../firebase";
-import axios from "axios";
 import TimerModal from "../Workouts/TimerModal";
 import { Alert } from "react-native";
 import { confirmHandler, confirmDeleteExercise, confirmDelete } from "../../data/userServices";
@@ -26,7 +25,6 @@ function ManageWorkout({ route }) {
   const editedWorkoutId = route.params?.workoutId;
   const isEditing = !!editedWorkoutId;
   const user = auth.currentUser;
-  const BACKEND_URL = "https://gym-essentials-default-rtdb.firebaseio.com";
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);

@@ -15,16 +15,15 @@ import { updateData } from "../../data/userServices";
 
 function AgeEdit() {
   const navigation = useNavigation();
+  const UserCtx = useContext(UserContext);
 
-  const { setAge, age } = useContext(UserContext);
-
-  const [tempAge, setTempAge] = useState(age);
+  const [tempAge, setTempAge] = useState(UserCtx.age);
 
   const amountIsValid = !isNaN(tempAge) && tempAge > 0 && tempAge < 130;
 
   const handleAge = () => {
     if (amountIsValid) {
-      setAge(setAge);
+      UserCtx.setAge(tempAge);
     }
   };
 

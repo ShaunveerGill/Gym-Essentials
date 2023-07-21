@@ -12,13 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { RecordsContext } from "../../context/RecordsContext";
 import { auth } from "../../../firebase";
-import axios from "axios";
-import { set } from "firebase/database";
-
-function getFormattedDate(date) {
-  return date.toISOString().slice(0, 10);
-}
-
+import { fetchRecords } from "../../data/userServices";
 function renderRecordItem(itemData) {
   return <RecordItem {...itemData.item} />;
 }
@@ -40,7 +34,7 @@ function RecordItem({ id, exercise, record, date }) {
       <View style={styles.recordItem}>
         <View>
           <Text style={[styles.textBase, styles.exercise]}>{exercise}</Text>
-          <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
+          <Text style={styles.textBase}>{(date.toISOString().slice(0, 10))}</Text>
         </View>
         <View style={styles.recordContainer}>
           <Text style={styles.record}>{record}</Text>
@@ -68,7 +62,7 @@ const PersonalRecords = () => {
     async function getRecords() {
       setIsFetching(true);
       try {
-        const records = await fetchRecords();
+        const records = await fetchRecords(user.uid);
         recordsCtx.setRecords(records);
       } catch (error) {
         setError("Could not fetch personal records!");
@@ -78,25 +72,25 @@ const PersonalRecords = () => {
     getRecords();
   }, []);
 
-  async function fetchRecords() {
-    const response = await axios.get(
-      BACKEND_URL + "/users/" + user.uid + "/personalrecords.json"
-    );
-    console.log(response);
-    const records = [];
+  // async function fetchRecords() {
+  //   const response = await axios.get(
+  //     BACKEND_URL + "/users/" + user.uid + "/personalrecords.json"
+  //   );
+  //   console.log(response);
+  //   const records = [];
 
-    for (const key in response.data) {
-      const recordObj = {
-        id: key,
-        exercise: response.data[key].exercise,
-        record: response.data[key].record,
-        date: new Date(response.data[key].date),
-      };
-      records.push(recordObj);
-    }
+  //   for (const key in response.data) {
+  //     const recordObj = {
+  //       id: key,
+  //       exercise: response.data[key].exercise,
+  //       record: response.data[key].record,
+  //       date: new Date(response.data[key].date),
+  //     };
+  //     records.push(recordObj);
+  //   }
 
-    return records;
-  }
+  //   return records;
+  // }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
