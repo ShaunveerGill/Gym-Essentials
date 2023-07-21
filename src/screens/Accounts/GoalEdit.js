@@ -10,8 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
+import { updateData } from "../../data/userServices";
 
 function GoalEdit() {
   const navigation = useNavigation();
@@ -21,20 +20,8 @@ function GoalEdit() {
     setGoal(selectedGoal);
   };
 
-  const updateDatabase = () => {
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const databaseRef = firebase.database().ref("users/" + uid);
-    databaseRef
-      .update({
-        goal: goal,
-      })
-      .then(() => {
-        console.log("Data updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-      });
+  const saveAndNavigate = () => {
+    updateData("goal", goal);
     navigation.navigate("FeaturesOverview");
   };
 
@@ -91,7 +78,7 @@ function GoalEdit() {
               <Text style={styles.buttonText}>Maintain Weight</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.save} onPress={updateDatabase}>
+          <TouchableOpacity style={styles.save} onPress={saveAndNavigate}>
             <View>
               <Text style={styles.saveButtonText}> Save </Text>
             </View>

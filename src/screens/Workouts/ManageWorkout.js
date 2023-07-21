@@ -18,6 +18,7 @@ import { auth } from "../../../firebase";
 import axios from "axios";
 import TimerModal from "../Workouts/TimerModal";
 import { Alert } from "react-native";
+import { confirmHandler, confirmDeleteExercise, confirmDelete } from "../../data/userServices";
 
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -34,27 +35,11 @@ function ManageWorkout({ route }) {
   const [timerReset, setTimerReset] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
 
-  // const openModal = () => {
-  //   setModalVisible(true);
-  //   setTimerReset(false);
-  // };
-
-  // const closeModal = () => {
-  //   setModalVisible(false);
-  // };
-
   const resetTimer = () => {
     setModalVisible(true);
     setTimerReset(true);
   };
 
-  // const toggleCheckbox = () => {
-  //   setCheckboxChecked(!checkboxChecked);
-  //   if (!checkboxChecked) {
-  //     setModalVisible(true);
-  //     setTimerReset(false);
-  //   }
-  // };
 
   const [exerciseModalVisible, setExerciseModalVisible] = useState({});
 
@@ -92,36 +77,30 @@ function ManageWorkout({ route }) {
     },
   });
 
-  async function confirmDeleteExercise(exerciseId) {
-    try {
-      await axios.delete(
-        BACKEND_URL +
-          "/users/" +
-          user.uid +
-          "/workouts/" +
-          editedWorkoutId +
-          "/exercises/" +
-          exerciseId +
-          ".json"
-      );
-      const updatedWorkout = { ...selectedWorkout };
-      updatedWorkout.exercises = updatedWorkout.exercises.filter(
-        (exercise) => exercise.id !== exerciseId
-      );
-      workoutsCtx.updateWorkout(editedWorkoutId, updatedWorkout);
-    } catch (error) {
-      setError("Could not delete exercise - please try again later!");
-    }
-  }
 
-  function deleteExerciseHandler(exerciseId) {
+  
+  async function deleteExerciseHandler(exerciseId) {
     Alert.alert(
       "Delete Exercise",
       "Are you sure you want to delete this exercise?",
       [
         {
           text: "Yes",
-          onPress: () => confirmDeleteExercise(exerciseId),
+          onPress: async () => {
+            try {
+              await confirmDeleteExercise(
+                exerciseId,
+                user.uid,
+                editedWorkoutId,
+                setIsSubmitting,
+                setError,
+                selectedWorkout, 
+                workoutsCtx 
+              );
+            } catch (error) {
+              console.error("Error deleting exercise:", error);
+            }
+          },
         },
         {
           text: "No",
@@ -131,25 +110,7 @@ function ManageWorkout({ route }) {
       { cancelable: false }
     );
   }
-
-  async function confirmDelete() {
-    setIsSubmitting(true);
-    try {
-      await axios.delete(
-        BACKEND_URL +
-          "/users/" +
-          user.uid +
-          "/workouts/" +
-          editedWorkoutId +
-          ".json"
-      );
-      workoutsCtx.deleteWorkout(editedWorkoutId);
-      navigation.navigate("Workouts");
-    } catch (error) {
-      setError("Could not delete workout - please try again later!");
-      setIsSubmitting(false);
-    }
-  }
+  
 
   function deleteHandler() {
     Alert.alert(
@@ -158,7 +119,20 @@ function ManageWorkout({ route }) {
       [
         {
           text: "Yes",
-          onPress: confirmDelete,
+          onPress: async () => {
+            try {
+              await confirmDelete(
+                user.uid,
+                editedWorkoutId,
+                setIsSubmitting,
+                setError,
+                workoutsCtx
+              );
+              navigation.navigate("Workouts");
+            } catch (error) {
+              console.error("Error deleting workout:", error);
+            }
+          },
         },
         {
           text: "No",
@@ -168,40 +142,10 @@ function ManageWorkout({ route }) {
       { cancelable: false }
     );
   }
+  
 
   function cancelHandler() {
     navigation.navigate("Workouts");
-  }
-
-  async function confirmHandler(workoutData) {
-    setIsSubmitting(true);
-    try {
-      if (isEditing) {
-        workoutsCtx.updateWorkout(editedWorkoutId, workoutData);
-        await axios.put(
-          BACKEND_URL +
-            "/users/" +
-            user.uid +
-            "/workouts/" +
-            editedWorkoutId +
-            ".json",
-          workoutData
-        );
-      } else {
-        const response = await axios.post(
-          BACKEND_URL + "/users/" + user.uid + "/workouts.json",
-          workoutData
-        );
-        const id = response.data.name;
-        workoutData.exercises = [];
-        workoutData.id = id;
-        workoutsCtx.addWorkout(workoutData);
-      }
-      navigation.navigate("Workouts");
-    } catch (error) {
-      setError("Could not save data - please try again later!");
-      setIsSubmitting(false);
-    }
   }
 
   function inputChangedHandler(inputIdentifier, enteredValue) {
@@ -231,8 +175,16 @@ function ManageWorkout({ route }) {
       });
       return;
     }
-
-    confirmHandler(workoutData);
+    confirmHandler(
+      workoutData,
+      user.uid,
+      editedWorkoutId,
+      setIsSubmitting,
+      setError,
+      workoutsCtx,
+      isEditing,
+    );
+    navigation.navigate("Workouts");
   }
 
   function addHandler() {

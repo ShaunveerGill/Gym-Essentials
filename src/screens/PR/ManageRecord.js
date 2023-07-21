@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RecordsContext } from '../../context/RecordsContext';
 import { auth } from "../../../firebase";
 import axios from 'axios';
+import { deleteRecordsHandler, storeRecord,confirmRecordsHandler } from '../../data/userServices';
 
 function ManageRecord({ route }) {
   const recordsCtx = useContext(RecordsContext);
@@ -12,7 +13,6 @@ function ManageRecord({ route }) {
   const editedRecordId = route.params?.recordId;
   const isEditing = !!editedRecordId;
   const user = auth.currentUser;
-  const BACKEND_URL = 'https://gym-essentials-default-rtdb.firebaseio.com'
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
@@ -36,43 +36,19 @@ function ManageRecord({ route }) {
     }
   });
 
-  async function deleteHandler() {
-    setIsSubmitting(true);
-    try {
-      await axios.delete(BACKEND_URL + '/users/' + user.uid + '/personalrecords/' + editedRecordId + '.json');
-      recordsCtx.deleteRecord(editedRecordId);
-      navigation.navigate('PersonalRecords');
-    } catch (error) {
-      setError('Could not delete record - please try again later!');
-      setIsSubmitting(false);
-    }
-  }
-
   function cancelHandler() {
     navigation.navigate('PersonalRecords');
   }
 
-  async function storeRecord(recordData) {
-    const response = await axios.post(BACKEND_URL + '/users/' + user.uid + '/personalrecords.json', recordData);
-    const id = response.data.name;
-    return id;
-  }  
-
-  async function confirmHandler(recordData) {
-    setIsSubmitting(true);
-    try {
-      if (isEditing){
-        recordsCtx.updateRecord(editedRecordId, recordData);
-        await axios.put(BACKEND_URL + '/users/' + user.uid + '/personalrecords/' + editedRecordId + '.json', recordData);
-      } else {
-        const id = await storeRecord(recordData);
-        recordsCtx.addRecord({...recordData, id: id});
-      }
-      navigation.navigate('PersonalRecords');
-    } catch (error) {
-      setError('Could not save data - please try again later!');
-      setIsSubmitting(false);
-    }
+  function deleteRecord() {
+    deleteRecordsHandler(
+      user.uid,
+      editedRecordId,
+      setError,
+      setIsSubmitting,
+      recordsCtx
+    );
+    navigation.navigate('PersonalRecords');
   }
 
   function inputChangedHandler(inputIdentifier, enteredValue) {
@@ -84,30 +60,45 @@ function ManageRecord({ route }) {
     });
   }
 
-  function submitHandler() {
+  async function submitHandler() {
     const recordData = {
       exercise: inputs.exercise.value,
       record: inputs.record.value,
       date: new Date(inputs.date.value),
     };
-
+  
     const exerciseIsValid = recordData.exercise.trim().length > 0;
     const recordIsValid = recordData.record.trim().length > 0;
-    const dateIsValid = recordData.date.toString() !== 'Invalid Date';
-
+    const dateIsValid = recordData.date.toString() !== "Invalid Date";
+  
     if (!exerciseIsValid || !recordIsValid || !dateIsValid) {
       setInputs((curInputs) => {
         return {
           exercise: { value: curInputs.exercise.value, isValid: exerciseIsValid },
           record: { value: curInputs.record.value, isValid: recordIsValid },
-          date: { value: curInputs.date.value, isValid: dateIsValid }
+          date: { value: curInputs.date.value, isValid: dateIsValid },
         };
       });
       return;
     }
-
-    confirmHandler(recordData);
+  
+    try {
+      await confirmRecordsHandler(
+        recordData,
+        user.uid,
+        editedRecordId,
+        setIsSubmitting,
+        setError,
+        recordsCtx,
+        isEditing,
+      );
+      navigation.navigate("PersonalRecords");
+    } catch (error) {
+      setError("Could not save data - please try again later!");
+      setIsSubmitting(false);
+    }
   }
+  
 
   const formIsInvalid =
     !inputs.exercise.isValid ||
@@ -180,7 +171,10 @@ function ManageRecord({ route }) {
               <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
   
-            <TouchableOpacity style={styles.button} onPress={deleteHandler}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={deleteRecord}
+            >
               <Ionicons name="trash" color="white" size={20} />
             </TouchableOpacity>
   
