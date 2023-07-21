@@ -49,7 +49,7 @@ const Workouts = () => {
   const workoutsCtx = useContext(WorkoutsContext);
 
   const handleAddWorkout = () => {
-    navigation.navigate('ManageWorkout');
+    navigation.navigate('ChoosePlan');
   };
 
   const user = auth.currentUser;

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Verdana',
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 30,
+    fontSize: 35,
     fontStyle: 'italic',
     fontWeight: 'bold'
   },
