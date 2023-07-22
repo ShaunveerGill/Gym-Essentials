@@ -33,55 +33,107 @@ export const handleSignUp = async (userEmail, Cpassword) => {
   }
 };
 
-export const handleLogin = (userEmail, password, UserCtx) => {
+// ... (other imports)
+
+export const handleLogin = async (userEmail, password, UserCtx) => {
   if (!userEmail) {
     return Promise.reject(new Error("User email is missing."));
   }
 
   UserCtx.setUserEmail(userEmail);
 
-  return new Promise((resolve, reject) => {
-    auth.signInWithEmailAndPassword(userEmail, password) 
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        const userData = auth.currentUser;
+  try {
+    const userCredentials = await auth.signInWithEmailAndPassword(userEmail, password);
+    const user = userCredentials.user;
+    const userData = auth.currentUser;
 
-        if (userData !== null) {
-          const db = getDatabase();
-          const userRef = ref(db, "users/" + userData.uid);
+    if (userData !== null) {
+      const db = getDatabase();
+      const userRef = ref(db, "users/" + userData.uid);
 
-          onValue(
-            userRef,
-            (snapshot) => {
-              const data = snapshot.val();
+      return new Promise((resolve, reject) => {
+        onValue(
+          userRef,
+          (snapshot) => {
+            const data = snapshot.val();
 
-              if (data !== null) {
-                UserCtx.setUserName(data.name);
-                UserCtx.setGender(data.gender);
-                UserCtx.setAge(data.age);
-                UserCtx.setHeight(data.height);
-                UserCtx.setWeight(data.weight);
-                UserCtx.setGoal(data.goal);
-                UserCtx.setActivityLevel(data.activityLevel);
-              }
-
-              resolve();
-            },
-            (error) => {
-              reject(error); 
+            if (data !== null) {
+              UserCtx.setUserName(data.name);
+              UserCtx.setGender(data.gender);
+              UserCtx.setAge(data.age);
+              UserCtx.setHeight(data.height);
+              UserCtx.setWeight(data.weight);
+              UserCtx.setGoal(data.goal);
+              UserCtx.setActivityLevel(data.activityLevel);
             }
-          );
-        } else {
-          reject(new Error("User data is null.")); 
-        }
-      })
-      .catch((error) => {
-        const errorMessage = error.message || "An error occurred during login.";
-        alert(errorMessage);
-        reject(error); 
+
+            resolve();
+          },
+          (error) => {
+            reject(error);
+          }
+        );
       });
-  });
+    } else {
+      throw new Error("User data is null.");
+    }
+  } catch (error) {
+    const errorMessage = error.message || "An error occurred during login.";
+    // Instead of using alert, you can set the error message in the UserCtx or display it in a modal.
+    UserCtx.setErrorMessage(errorMessage);
+    throw error;
+  }
 };
+
+// export const handleLogin = (userEmail, password, UserCtx) => {
+//   if (!userEmail) {
+//     return Promise.reject(new Error("User email is missing."));
+//   }
+
+//   UserCtx.setUserEmail(userEmail);
+
+//   return new Promise((resolve, reject) => {
+//     auth.signInWithEmailAndPassword(userEmail, password) 
+//       .then((userCredentials) => {
+//         const user = userCredentials.user;
+//         const userData = auth.currentUser;
+
+//         if (userData !== null) {
+//           const db = getDatabase();
+//           const userRef = ref(db, "users/" + userData.uid);
+
+//           onValue(
+//             userRef,
+//             (snapshot) => {
+//               const data = snapshot.val();
+
+//               if (data !== null) {
+//                 UserCtx.setUserName(data.name);
+//                 UserCtx.setGender(data.gender);
+//                 UserCtx.setAge(data.age);
+//                 UserCtx.setHeight(data.height);
+//                 UserCtx.setWeight(data.weight);
+//                 UserCtx.setGoal(data.goal);
+//                 UserCtx.setActivityLevel(data.activityLevel);
+//               }
+
+//               resolve();
+//             },
+//             (error) => {
+//               reject(error); 
+//             }
+//           );
+//         } else {
+//           reject(new Error("User data is null.")); 
+//         }
+//       })
+//       .catch((error) => {
+//         const errorMessage = error.message || "An error occurred during login.";
+//         alert(errorMessage);
+//         reject(error); 
+//       });
+//   });
+// };
 
 export const handleLogout = () => {
   return new Promise((resolve, reject) => {

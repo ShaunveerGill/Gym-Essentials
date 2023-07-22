@@ -12,16 +12,25 @@ function LoginScreen() {
   const UserCtx = useContext(UserContext);
   const [password, setPassword] = useState('');
 
-  const handleSubmit = () => {
-    handleLogin(UserCtx.userEmail, password, UserCtx)
-      .then(() => {
-        setPassword('');
-        navigation.navigate('FeaturesOverview');
-      })
-      .catch((error) => {
-        Alert(error.message);
-      });
-  }
+  const handleSubmit = async () => {
+    try {
+      await handleLogin(UserCtx.userEmail, password, UserCtx);
+      setPassword('');
+      navigation.navigate('FeaturesOverview');
+    } catch (error) {
+      Alert.alert("Invalid Credentials", "The Email or Password you have entered may be invalid");
+    }
+  };
+  // const handleSubmit = () => {
+  //   handleLogin(UserCtx.userEmail, password, UserCtx)
+  //     .then(() => {
+  //       setPassword('');
+  //       navigation.navigate('FeaturesOverview');
+  //     })
+  //     .catch((error) => {
+  //       Alert(error.message);
+  //     });
+  // }
 
 
   return (
