@@ -169,9 +169,6 @@ export default function App() {
     };
   }, []);
 
-  const randomHour = Math.floor(Math.random() * 13) + 8; // Random hour between 8 and 20
-  const randomMinute = Math.floor(Math.random() * 60); // Random minute between 0 and 59
-
   const quotes = [
     "The only bad workout is the one that didn't happen",
     "The pain you feel today will be the strength you feel tomorrow",
@@ -179,145 +176,39 @@ export default function App() {
     "SECOND PLACE IS THE FIRST LOSER",
     "Strive for progress, not perfection",
     "You don't have to be great to start, but you have to start to be great",
-    "Still tired huh",
     "Everday is not rest day",
-    "Put the burger down",
     "Success is the sum of small efforts repeated day in and day out",
     "The only way to achieve your goals is to start, stay committed, and never give up",
     "Don't wish for a healthy body, work for it",
-    "You can barely do 3 pushups",
-    "Stop scrolling Tiktok",
+    "Stop scrolling on Tiktok",
     "Workout so you can outrun your enemies",
     "I'm Ready, I'm Ready, I'm Ready",
   ];
 
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const fixedHour = 8; 
+  const fixedMinute = 0; 
 
-  const fixedHour = 1;
-  const fixedMintue = 43;
   const scheduleDailyNotification = async () => {
-    if (!lastSentDate || shouldSendNotification()) {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'My Daily Motivation',
-          body: quote,
-        },
-        trigger: {
-          hour: fixedHour,
-          minute: fixedMintue,
-          repeats: true,
-        },
-      });
-
-      setLastSentDate(new Date().toISOString());
-    }
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'My Daily Motivation',
+        body: quote,
+      },
+      trigger: {
+        hour: fixedHour,
+        minute: fixedMinute,
+        repeats: true,
+      },
+    });
   };
 
-  const shouldSendNotification = () => {
-    if (!lastSentDate) {
-      return true;
-    }
-
-    const lastDate = new Date(lastSentDate);
-    const currentDate = new Date();
-
-    // Check if it's a new day
-    return (
-      currentDate.getFullYear() !== lastDate.getFullYear() ||
-      currentDate.getMonth() !== lastDate.getMonth() ||
-      currentDate.getDate() !== lastDate.getDate()
-    );
-  };
+  // Remove the shouldSendNotification function, as it's no longer needed
 
   useEffect(() => {
     scheduleDailyNotification();
   }, []);
-  // const [lastSentDate, setLastSentDate] = useState(null);
-  // useEffect(() => {
-  //   async function configurePushNotifications() {
-  //     const { status } = await Notifications.getPermissionsAsync();
-  //     let finalStatus = status;
 
-  //     if (finalStatus !== 'granted') {
-  //       const { status } = await Notifications.requestPermissionsAsync();
-  //       finalStatus = status;
-  //     }
-
-  //     if (finalStatus !== 'granted') {
-  //       Alert.alert(
-  //         'Permission required',
-  //         'Push notifications need the appropriate permissions.'
-  //       );
-  //       return;
-  //     }
-
-  //     const pushTokenData = await Notifications.getExpoPushTokenAsync();
-
-  //   }
-
-  //   configurePushNotifications();
-
-  // }, []);
-
-  // useEffect(() => {
-  //   const subscription1 = Notifications.addNotificationReceivedListener(
-  //     (notification) => {
-  //       const userName = notification.request.content.data.userName;
-  //     }
-  //   );
-
-  //   const subscription2 = Notifications.addNotificationResponseReceivedListener(
-  //     (response) => {
-  //       const userName = response.notification.request.content.data.userName;
-  //     }
-  //   );
-
-  //   return () => {
-  //     subscription1.remove();
-  //     subscription2.remove();
-  //   };
-  // }, []);
-
-
-  // //Generates ONCE A DAY (not broken, just change the time lol)
-  // const randomHour = Math.floor(Math.random() * 13) + 8; // Random hour between 8 and 20
-  // const randomMinute = Math.floor(Math.random() * 60); // Random minute between 0 and 59
-
-  // const quotes = [
-  //   "The only bad workout is the one that didn't happen",
-  //   "The pain you feel today will be the strength you feel tomorrow",
-  //   "RISE AND GRIND \u{1F1FA}\u{1F1F8} \u{1F985}",
-  //   "SECOND PLACE IS THE FIRST LOSER",
-  //   "Strive for progress, not perfection",
-  //   "You don't have to be great to start, but you have to start to be great",
-  //   "Still tired huh",
-  //   "Everday is not rest day",
-  //   "Put the burger down",
-  //   "Success is the sum of small efforts repeated day in and day out",
-  //   "The only way to achieve your goals is to start, stay committed, and never give up",
-  //   "Don't wish for a healthy body, work for it",
-  //   "You can barely do 3 pushups",
-  //   "Stop scrolling Tiktok",
-  //   "Workout so you can outrun your enemies",
-  //   "I'm Ready, I'm Ready, I'm Ready",
-  // ]
-  // const quote = quotes[Math.floor(Math.random() * 15)];
-
-  // const scheduleDailyNotification = async () => {
-  //   await Notifications.scheduleNotificationAsync({
-  //     content: {
-  //       title: 'My Daily Motivation',
-  //       body: quote,
-  //     },
-  //     trigger: {
-  //       hour: randomHour,
-  //       minute: randomMinute,
-  //       repeats: true,
-  //     },
-  //   })
-  // }
-
-  // scheduleDailyNotification();
 
   return (
     <UserContextProvider>

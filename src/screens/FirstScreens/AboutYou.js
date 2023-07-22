@@ -9,9 +9,10 @@ import {
   Keyboard,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { AboutYouFinishHandler } from "../../data/userServices";
 
@@ -19,23 +20,63 @@ function AboutYou() {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
 
-  const amountIsValid = (!isNaN(UserCtx.age) && UserCtx.age > 0 && UserCtx.age < 130)
-                    &&  (!isNaN(UserCtx.height) && UserCtx.height > 0 && UserCtx.height < 274.32)
-                    &&  (!isNaN(UserCtx.weight) && UserCtx.weight > 0 && UserCtx.weight < 1000);
-  
-const formIsInvalid = !amountIsValid && Sub;
-const [Sub, setSub] = useState(false);
+  const [tempAge, setTempAge] = useState(0);
+  const [tempHeight, setTempHeight] = useState(0);
+  const [tempWeight, setTempWeight] = useState(0);
+  const [Sub, setSub] = useState(false);
 
-  const handleFinishButtonPress = async () => { 
+  const ageIsValid = !isNaN(tempAge) && tempAge > 0 && tempAge < 130;
+  const weightIsValid = !isNaN(tempWeight) && tempWeight > 0 && tempWeight < 1000;
+  const heightIsValid = !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
+  const formIsInvalid = !ageIsValid || !heightIsValid || !weightIsValid;
+
+  const handleFinishButtonPress = async () => {
+    console.log(ageIsValid);
+    console.log(weightIsValid);
+    console.log(heightIsValid);
+    console.log(formIsInvalid);
     setSub(true);
+    if (formIsInvalid) {
+      Alert.alert("Input invalid", "Please check your input values");
+      return;
+    }
+
     try {
-      await AboutYouFinishHandler(UserCtx);
-      navigation.navigate("FeaturesOverview");
+      const age = parseInt(tempAge);
+      const height = parseFloat(tempHeight);
+      const weight = parseFloat(tempWeight);
+
+      UserCtx.setAge(age);
+      UserCtx.setHeight(height);
+      UserCtx.setWeight(weight);
+
+      console.log(UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel);
     } catch (error) {
-      
+      console.log(UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel);
       console.error("Error finishing AboutYou:", error);
     }
   };
+
+  // useEffect(() => {
+  //   if (Sub && UserCtx.age && UserCtx.height && UserCtx.weight && UserCtx.gender && UserCtx.goal && UserCtx.activityLevel) {
+  //     AboutYouFinishHandler(UserCtx)
+  //       .then(() => navigation.navigate("FeaturesOverview"))
+  //       .catch((error) => console.error("Error finishing AboutYou:", error));
+  //   }
+  // }, [Sub, UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel]);
+
+  useEffect(() => {
+    if (Sub && UserCtx.age && UserCtx.height && UserCtx.weight && UserCtx.gender && UserCtx.goal && UserCtx.activityLevel) {
+      AboutYouFinishHandler(UserCtx)
+        .then(() => navigation.navigate("FeaturesOverview"))
+        .catch((error) => console.error("Error finishing AboutYou:", error));
+    }
+
+    // Reset Sub state to false when a valid input is detected or the input is cleared
+    if (Sub && (!isNaN(tempAge) || !isNaN(tempHeight) || !isNaN(tempWeight))) {
+      setSub(false);
+    }
+  }, [Sub, UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel, tempAge, tempHeight, tempWeight]);
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -79,27 +120,27 @@ const [Sub, setSub] = useState(false);
             <Text style={styles.questions}>What is your age?</Text>
           </View>
           <TextInput
-            style={[styles.input, Sub && !UserCtx.age && styles.invalidInput]}
-            onChangeText={(text) => UserCtx.setAge(text)}
+            style={[styles.input, Sub && !UserCtx.age && styles.invalidInput, Sub && !ageIsValid && styles.invalidInput]}
+            onChangeText={(text) => setTempAge(text)}
             keyboardType="numeric"
           />
           <View>
             <Text style={styles.questions}>What is your height(cm)?</Text>
           </View>
           <TextInput
-            style={[styles.input, Sub && !UserCtx.height && styles.invalidInput]}
-            onChangeText={(text) => UserCtx.setHeight(text)}
+            style={[styles.input, Sub && !UserCtx.height && styles.invalidInput,  Sub && !heightIsValid && styles.invalidInput]}
+            onChangeText={(text) => setTempHeight(text)}
             keyboardType="numeric"
           />
           <View>
             <Text style={styles.questions}>What is your weight(lb)?</Text>
           </View>
           <TextInput
-            style={[styles.input, Sub && !UserCtx.weight && styles.invalidInput]}
-            onChangeText={(text) => UserCtx.setWeight(text)}
+            style={[styles.input, Sub && !UserCtx.weight && styles.invalidInput, Sub && !weightIsValid && styles.invalidInput]}
+            onChangeText={(text) => setTempWeight(text)}
             keyboardType="numeric"
           />
-          {formIsInvalid && (
+          {Sub && formIsInvalid && (
             <Text style={styles.errorText}>
               Invalid input values - please check your entered data!
             </Text>

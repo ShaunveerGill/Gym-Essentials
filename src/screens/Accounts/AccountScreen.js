@@ -25,13 +25,10 @@ const AccountScreen = () => {
   const UserCtx = useContext(UserContext);
   const RecordsCtx = useContext(RecordsContext);
   const WorkoutsCtx = useContext(WorkoutsContext);
-  // const { clearRecords, records } = useContext(RecordsContext);
-  // const { clearWorkouts, workouts} = useContext(WorkoutsContext);
 
   const submithandler = () => {
     handleLogout()
       .then(() => {
-        resetUserContext(UserCtx);
         RecordsCtx.clearRecords(); 
         WorkoutsCtx.clearWorkouts();
         UserCtx.clearUserContext();
