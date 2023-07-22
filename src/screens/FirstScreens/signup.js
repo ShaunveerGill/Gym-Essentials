@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
@@ -25,17 +25,16 @@ function SignUp() {
 
   const formIsInvalid = !ValidPassword;
   
-  const handleSubmit = () => {
-    const email = UserCtx.userEmail
-    handleSignUp(email, Cpassword)
-      .then(() => {
-        setPassword('');
-        navigation.navigate('AboutYou');
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  }
+  const handleSubmit = async () => {
+    try {
+      const email = UserCtx.userEmail;
+      await handleSignUp(email, Cpassword);
+      setPassword('');
+      navigation.navigate('AboutYou');
+    } catch (error) {
+      Alert.alert("Signup Error", "Please verify the information you've entered.");
+    }
+  };
 
   
 
