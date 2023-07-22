@@ -10,8 +10,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { WorkoutsContext } from "../../context/WorkoutsContext";
 import { auth } from "../../../firebase";
-import { confirmExerciseHandler} from "../../data/userServices";
-
+import { confirmExerciseHandler } from "../../data/userServices";
+import { useExerciseInputs } from "../../controller/UserController";
 
 function EditExercise({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -19,11 +19,11 @@ function EditExercise({ route }) {
   const [error, setError] = useState(false);
   const { currentEditId } = route.params;
   const navigation = useNavigation();
-  const BACKEND_URL = "https://gym-essentials-default-rtdb.firebaseio.com";
   const user = auth.currentUser;
-
   const editedExerciseId = route.params?.exerciseId;
   const isEditing = !!editedExerciseId;
+
+  
   const selectedExercise = workoutsCtx.workouts.reduce((selected, workout) => {
     const exercise = workout.exercises.find((ex) => ex.id === editedExerciseId);
     if (exercise) {
@@ -32,45 +32,22 @@ function EditExercise({ route }) {
     return selected;
   }, null);
 
-  const [inputs, setInputs] = useState({
-    exerciseName: {
-      value: selectedExercise ? selectedExercise.exerciseName : "",
-      isValid: true,
-    },
-    sets: {
-      value: selectedExercise ? selectedExercise.sets : "",
-      isValid: true,
-    },
-    reps: {
-      value: selectedExercise ? selectedExercise.reps : "",
-      isValid: true,
-    },
-  });
-
-  function inputChangedHandler(inputIdentifier, enteredValue) {
-    setInputs((curInputs) => {
-      return {
-        ...curInputs,
-        [inputIdentifier]: { value: enteredValue, isValid: true },
-      };
-    });
-  }
+  const {inputs, setExerciseInputs , inputChangedHandler} = useExerciseInputs(selectedExercise);
 
   
   async function submitHandler() {
     const exerciseData = {
-      exerciseName: inputs.exerciseName.value,
+      exerciseName: inputs.exerciseName.value, 
       sets: inputs.sets.value,
       reps: inputs.reps.value,
     };
   
-    console.log(exerciseData);
     const exerciseNameIsValid = exerciseData.exerciseName.trim().length > 0;
     const setsIsValid = exerciseData.sets.trim().length > 0;
     const repsIsValid = exerciseData.reps.trim().length > 0;
   
     if (!exerciseNameIsValid || !setsIsValid || !repsIsValid) {
-      setInputs((curInputs) => {
+      setExerciseInputs((curInputs) => {
         return {
           exerciseName: {
             value: curInputs.exerciseName.value,
@@ -82,7 +59,7 @@ function EditExercise({ route }) {
       });
       return;
     }
-  
+    
     setIsSubmitting(true);
   
     try {
@@ -512,14 +489,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     marginTop: 30,
-    shadowColor: "#000", // Shadow color
+    shadowColor: "#000", 
     shadowOffset: {
-      width: 2, // These are the shadow offsets for X and Y axis
-      height: 5, // Ideally keep Y Offset a positive number for a drop down shadow
+      width: 2, 
+      height: 5, 
     },
-    shadowOpacity: 0.45, // Shadow opacity
-    shadowRadius: 3.84, // Shadow blurring effect
-    elevation: 5, // This adds a drop shadow to the item and a shadow to the border
+    shadowOpacity: 0.45,
+    shadowRadius: 3.84, 
+    elevation: 5, 
   },
   buttonText1: {
     color: "white",

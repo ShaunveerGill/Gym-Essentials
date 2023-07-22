@@ -18,6 +18,8 @@ import { auth } from "../../../firebase";
 import TimerModal from "../Workouts/TimerModal";
 import { Alert } from "react-native";
 import { confirmHandler, confirmDeleteExercise, confirmDelete } from "../../data/userServices";
+import * as TimerController from "../../controller/TimerController";
+import { inputChangedHandler } from "../../controller/UserController";
 
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -29,40 +31,13 @@ function ManageWorkout({ route }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
 
+  const { resetTimer, closeModal, toggleCheckbox } = TimerController;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [timerReset, setTimerReset] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
 
-  const resetTimer = () => {
-    setModalVisible(true);
-    setTimerReset(true);
-  };
-
-
   const [exerciseModalVisible, setExerciseModalVisible] = useState({});
-
-  const openModal = (exerciseId) => {
-    setExerciseModalVisible((prevState) => ({
-      ...prevState,
-      [exerciseId]: true,
-    }));
-  };
-
-  const closeModal = (exerciseId) => {
-    setExerciseModalVisible((prevState) => ({
-      ...prevState,
-      [exerciseId]: false,
-    }));
-  };
-
-  const toggleCheckbox = (exerciseId) => {
-    setCheckboxChecked((prevState) => !prevState);
-    if (!checkboxChecked) {
-      openModal(exerciseId);
-    } else {
-      closeModal(exerciseId);
-    }
-  };
 
   const selectedWorkout = workoutsCtx.workouts.find(
     (workout) => workout.id === editedWorkoutId
@@ -142,19 +117,6 @@ function ManageWorkout({ route }) {
   }
   
 
-  function cancelHandler() {
-    navigation.navigate("Workouts");
-  }
-
-  function inputChangedHandler(inputIdentifier, enteredValue) {
-    setInputs((curInputs) => {
-      return {
-        ...curInputs,
-        [inputIdentifier]: { value: enteredValue, isValid: true },
-      };
-    });
-  }
-
   function submitHandler() {
     const workoutData = {
       workoutName: inputs.workoutName.value,
@@ -183,10 +145,6 @@ function ManageWorkout({ route }) {
       isEditing,
     );
     navigation.navigate("Workouts");
-  }
-
-  function addHandler() {
-    navigation.navigate("EditExercise", { currentEditId: editedWorkoutId });
   }
 
   const formIsInvalid = !inputs.workoutName.isValid;
@@ -250,7 +208,7 @@ function ManageWorkout({ route }) {
 
         <View style={styles.inputContainer}>
           <TouchableOpacity
-            onPress={() => toggleCheckbox(item.id)}
+            onPress={() => toggleCheckbox(item.id, setCheckboxChecked, checkboxChecked, setExerciseModalVisible)}
             style={styles.c}
           >
             {checkboxChecked ? (
@@ -269,9 +227,9 @@ function ManageWorkout({ route }) {
           </TouchableOpacity>
           <TimerModal
             isVisible={exerciseModalVisible[item.id]}
-            onClose={() => closeModal(item.id)}
+            onClose={() => closeModal(item.id, setExerciseModalVisible)}
             duration={60}
-            onReset={resetTimer}
+            onReset={() => resetTimer(setModalVisible, setTimerReset)}
           />
         </View>
 
@@ -326,7 +284,7 @@ function ManageWorkout({ route }) {
               </Text>
             )}
 
-            <TouchableOpacity style={styles.button1} onPress={addHandler}>
+            <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate("EditExercise", { currentEditId: editedWorkoutId })}>
               <Text style={styles.buttonText1}>Add Exercise</Text>
             </TouchableOpacity>
           </View>
@@ -346,7 +304,9 @@ function ManageWorkout({ route }) {
                     styles.input,
                     !inputs.workoutName.isValid && styles.invalidInput,
                   ]}
-                  onChangeText={inputChangedHandler.bind(this, "workoutName")}
+                  onChangeText={(enteredValue) =>
+                    inputChangedHandler("workoutName", enteredValue, setInputs)
+                  }
                   value={inputs.workoutName.value}
                 />
               </View>
@@ -362,7 +322,7 @@ function ManageWorkout({ route }) {
                   <Text style={styles.buttonText}>Add</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={cancelHandler}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Workouts")}>
                   <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
               </View>

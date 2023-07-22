@@ -31,7 +31,7 @@ function WelcomeScreen() {
 
             const timer = setTimeout(() => {
                 navigation.navigate('Login');
-            }, 3000);  // navigate after 7 seconds (3 seconds for background to fade in + 3 seconds for logo and text)
+            }, 3000);  
 
             return () => clearTimeout(timer);
         }

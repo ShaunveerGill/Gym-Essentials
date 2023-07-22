@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { RecordsContext } from '../../context/RecordsContext';
 import { auth } from "../../../firebase";
-import { deleteRecordsHandler, confirmRecordsHandler } from '../../data/userServices';
+import { deleteRecordsHandler,confirmRecordsHandler } from '../../data/userServices';
+import { ChangedHandler } from '../../controller/UserController';
 
 function ManageRecord({ route }) {
   const recordsCtx = useContext(RecordsContext);
@@ -50,14 +51,14 @@ function ManageRecord({ route }) {
     navigation.navigate('PersonalRecords');
   }
 
-  function inputChangedHandler(inputIdentifier, enteredValue) {
-    setInputs((curInputs) => {
-      return {
-        ...curInputs,
-        [inputIdentifier]: { value: enteredValue, isValid: true },
-      };
-    });
-  }
+  // function inputChangedHandler(inputIdentifier, enteredValue) {
+  //   setInputs((curInputs) => {
+  //     return {
+  //       ...curInputs,
+  //       [inputIdentifier]: { value: enteredValue, isValid: true },
+  //     };
+  //   });
+  // }
 
   async function submitHandler() {
     const recordData = {
@@ -131,7 +132,10 @@ function ManageRecord({ route }) {
             <TextInput 
               style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
               placeholder="Exercise"
-              onChangeText={inputChangedHandler.bind(this, 'exercise')}
+              onChangeText={(enteredValue) =>
+                ChangedHandler('exercise', enteredValue, setInputs)
+              }
+
               value={inputs.exercise.value}
             />
           </View>
@@ -142,7 +146,10 @@ function ManageRecord({ route }) {
             <TextInput 
               style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
               placeholder="Record"
-              onChangeText={inputChangedHandler.bind(this, 'record')}
+              // onChangeText={inputChangedHandler.bind(this, 'record')}
+              onChangeText={(enteredValue) =>
+                ChangedHandler("record", enteredValue, setInputs)
+              }
               value={inputs.record.value}
             />
           </View>
@@ -154,7 +161,9 @@ function ManageRecord({ route }) {
               style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
               placeholder="YYYY-MM-DD"
               maxLength={10}
-              onChangeText={inputChangedHandler.bind(this, 'date')}
+              onChangeText={(enteredValue) =>
+                ChangedHandler("date", enteredValue, setInputs)
+              }
               value={inputs.date.value}
             />
           </View>
@@ -191,7 +200,10 @@ function ManageRecord({ route }) {
             <TextInput 
               style={[styles.input, !inputs.exercise.isValid && styles.invalidInput]}
               placeholder="Exercise"
-              onChangeText={inputChangedHandler.bind(this, 'exercise')}
+              // onChangeText={inputChangedHandler.bind(this, 'exercise')}
+              onChangeText={(enteredValue) =>
+                ChangedHandler("exercise", enteredValue, setInputs)
+              }
               value={inputs.exercise.value}
             />
           </View>
@@ -202,7 +214,10 @@ function ManageRecord({ route }) {
             <TextInput 
               style={[styles.input, !inputs.record.isValid && styles.invalidInput]}
               placeholder="Record"
-              onChangeText={inputChangedHandler.bind(this, 'record')}
+              // onChangeText={inputChangedHandler.bind(this, 'record')}
+              onChangeText={(enteredValue) =>
+                ChangedHandler("record", enteredValue, setInputs)
+              }
               value={inputs.record.value}
             />
           </View>
@@ -214,7 +229,9 @@ function ManageRecord({ route }) {
               style={[styles.input, !inputs.date.isValid && styles.invalidInput]}
               placeholder="YYYY-MM-DD"
               maxLength={10}
-              onChangeText={inputChangedHandler.bind(this, 'date')}
+              onChangeText={(enteredValue) =>
+                ChangedHandler("date", enteredValue, setInputs)
+              }
               value={inputs.date.value}
             />
           </View>
@@ -248,10 +265,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20, // Add horizontal padding for space on the sides
+    paddingHorizontal: 20, 
   },
   text: {
-    marginLeft: 40, // Adjust the left margin as per your preference
+    marginLeft: 40, 
   },
   inputContainer: {
     alignItems: 'center',
@@ -266,7 +283,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   buttonContainer: {
-    alignItems: 'center', // Align buttons in the center horizontally
+    alignItems: 'center', 
   },
   button: {
     backgroundColor: 'black',
@@ -276,7 +293,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '30%',
-    marginBottom: 10, // Add bottom margin for spacing between buttons
+    marginBottom: 10, 
   },
   buttonText : {
     color: 'white',

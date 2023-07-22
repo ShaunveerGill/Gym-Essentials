@@ -21,7 +21,6 @@ function HeightEdit() {
   !isNaN(tempHeight) && tempHeight > 0 && tempHeight < 274.32;
 
   const saveAndNavigate = () => {
-    // handleHeight();
     if (tempHeight) {
       UserCtx.setHeight(tempHeight);
     }

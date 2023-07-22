@@ -32,17 +32,6 @@ export const handleSignUp = async (userEmail, Cpassword) => {
     throw error;
   }
 };
-// export const handleSignUp = (userEmail, Cpassword) => {
-//   return new Promise((resolve, reject) => {
-//     auth
-//       .createUserWithEmailAndPassword(userEmail, Cpassword)
-//       .then(userCredentials => {
-//         const user = userCredentials.user;
-//         resolve(user); 
-//       })
-//       .catch(error => reject(error));
-//   });
-// };
 
 export const handleLogin = (userEmail, password, UserCtx) => {
   if (!userEmail) {
