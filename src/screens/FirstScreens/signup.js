@@ -32,7 +32,12 @@ function SignUp() {
       setPassword('');
       navigation.navigate('AboutYou');
     } catch (error) {
-      Alert.alert("Signup Error", "Please verify the information you've entered.");
+      if (error.code === "auth/weak-password") {
+        Alert.alert("Signup Error", "The password must be at least 6 characters");
+      } else {
+        Alert.alert("Signup Error", "Please verify the information you have entered.");
+      }
+  
     }
   };
 

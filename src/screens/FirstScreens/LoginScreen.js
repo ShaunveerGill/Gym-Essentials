@@ -18,20 +18,9 @@ function LoginScreen() {
       setPassword('');
       navigation.navigate('FeaturesOverview');
     } catch (error) {
-      Alert.alert("Invalid Credentials", "The Email or Password you have entered may be invalid");
+      Alert.alert("Invalid Credentials", "The email or password you have entered is invalid");
     }
   };
-  // const handleSubmit = () => {
-  //   handleLogin(UserCtx.userEmail, password, UserCtx)
-  //     .then(() => {
-  //       setPassword('');
-  //       navigation.navigate('FeaturesOverview');
-  //     })
-  //     .catch((error) => {
-  //       Alert(error.message);
-  //     });
-  // }
-
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
