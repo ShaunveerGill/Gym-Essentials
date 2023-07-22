@@ -26,7 +26,7 @@ function AboutYou() {
 const formIsInvalid = !amountIsValid && Sub;
 const [Sub, setSub] = useState(false);
 
-  const handleFinishButtonPress = async () => { // Add the 'async' keyword here
+  const handleFinishButtonPress = async () => { 
     setSub(true);
     try {
       await AboutYouFinishHandler(UserCtx);

@@ -1,15 +1,5 @@
 import { useState } from "react";
 
-export const resetUserContext = (userContext) => {
-    userContext.setUserName('');
-    userContext.setGender('');
-    userContext.setAge('');
-    userContext.setHeight('');
-    userContext.setWeight('');
-    userContext.setGoal('');
-    userContext.setActivityLevel('');
-  };
-
   export function ChangedHandler(inputIdentifier, enteredValue, setInputs) {
     setInputs((curInputs) => {
       return {
@@ -51,13 +41,3 @@ export const resetUserContext = (userContext) => {
     return { inputs, setExerciseInputs, inputChangedHandler };
   };
   
-
-
-  // function inputChangedHandler(inputIdentifier, enteredValue) {
-  //   setInputs((curInputs) => {
-  //     return {
-  //       ...curInputs,
-  //       [inputIdentifier]: { value: enteredValue, isValid: true },
-  //     };
-  //   });
-  // }

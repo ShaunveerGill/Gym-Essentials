@@ -169,7 +169,7 @@ function WorkoutsContextProvider({ children }) {
     updateWorkout: updateWorkout,
     deleteWorkout: deleteWorkout,
     addExercise: addExercise,
-    clearWorkouts: clearWorkouts, // Include the clearWorkouts function in the context value
+    clearWorkouts: clearWorkouts, 
   };
 
   return (

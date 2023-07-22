@@ -193,6 +193,8 @@ export default function App() {
 
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
+  const fixedHour = 1;
+  const fixedMintue = 43;
   const scheduleDailyNotification = async () => {
     if (!lastSentDate || shouldSendNotification()) {
       await Notifications.scheduleNotificationAsync({
@@ -201,20 +203,18 @@ export default function App() {
           body: quote,
         },
         trigger: {
-          hour: randomHour,
-          minute: randomMinute,
+          hour: fixedHour,
+          minute: fixedMintue,
           repeats: true,
         },
       });
 
-      // Save the current date as the last sent date
       setLastSentDate(new Date().toISOString());
     }
   };
 
   const shouldSendNotification = () => {
     if (!lastSentDate) {
-      // If lastSentDate is null, it means the notification has never been sent before, so we should send it.
       return true;
     }
 

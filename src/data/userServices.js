@@ -356,51 +356,51 @@ export async function confirmRecordsHandler(
   }
 }
 
-export function AboutYouFinishHandler(UserCtx) {
-  return new Promise((resolve, reject) => {
-    const user = auth.currentUser;
-    const verification = true;
+export async function AboutYouFinishHandler(UserCtx) {
+  const user = auth.currentUser;
 
-    if (
-      UserCtx.gender &&
-      UserCtx.userName &&
-      UserCtx.age &&
-      UserCtx.height &&
-      UserCtx.weight &&
-      UserCtx.goal &&
-      UserCtx.activityLevel
-    ) {
-      if (user) {
-        const userData = {
-          email: UserCtx.userEmail,
-          name: UserCtx.userName,
-          gender: UserCtx.gender,
-          age: UserCtx.age,
-          height: UserCtx.height,
-          weight: UserCtx.weight,
-          goal: UserCtx.goal,
-          activityLevel: UserCtx.activityLevel,
-        };
+  if (
+    UserCtx.gender &&
+    UserCtx.userName &&
+    UserCtx.age &&
+    UserCtx.height &&
+    UserCtx.weight &&
+    UserCtx.goal &&
+    UserCtx.activityLevel
+  ) {
+    if (user) {
+      const userData = {
+        email: UserCtx.userEmail,
+        name: UserCtx.userName,
+        gender: UserCtx.gender,
+        age: UserCtx.age,
+        height: UserCtx.height,
+        weight: UserCtx.weight,
+        goal: UserCtx.goal,
+        activityLevel: UserCtx.activityLevel,
+      };
 
+      try {
         const db = getDatabase();
         const userRef = ref(db, "users/" + user.uid);
 
-        set(userRef, userData)
-          .then(() => {
-            resolve(); 
-          })
-          .catch((error) => {
-            console.error("Error saving user data: ", error);
-            reject(error); 
-          });
-      } else {
-        console.error("No user is signed in");
-        reject(new Error("No user is signed in")); 
+        await set(userRef, userData);
+        // Resolve when successful
+        return;
+      } catch (error) {
+        console.error("Error saving user data: ", error);
+        // Reject with the error
+        throw error;
       }
     } else {
-      reject(new Error("Incomplete user data")); 
+      console.error("No user is signed in");
+      // Reject with a new error
+      throw new Error("No user is signed in");
     }
-  });
+  } else {
+    // Reject with a new error
+    throw new Error("Incomplete user data");
+  }
 }
 
 export async function fetchRecords(UserUid) {

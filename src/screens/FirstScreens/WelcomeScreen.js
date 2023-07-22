@@ -41,7 +41,7 @@ function WelcomeScreen() {
         <Animated.View style={{...styles.background, opacity: fadeAnimBackground}}>
             <ImageBackground
                 style={StyleSheet.absoluteFill}
-                source={require("../../assets/logo.png")}
+                source={require("../../assets/background.jpeg")}
                 onLoad={() => setImageLoaded(true)}
             >
                 <Animated.View style={{...styles.content, opacity: fadeAnimLogo}}>

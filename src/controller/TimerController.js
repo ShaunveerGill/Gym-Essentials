@@ -1,5 +1,3 @@
-import TimerModal from "../screens/Workouts/TimerModal";
-
 export const resetTimer = (setModalVisible, setTimerReset) => {
   setModalVisible(true);
   setTimerReset(true);
