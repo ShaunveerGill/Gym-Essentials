@@ -1,5 +1,5 @@
 # Gym-Essentials
-An app that has all the necessary resources that would makes going to the gym an easy experience. No need to open other apps or websites.
+An app that has all the necessary resources that would make going to the gym an easy experience. No need to open other apps or websites.
 
 ## Features
 * Personal Records Tracker
@@ -32,7 +32,7 @@ An app that has all the necessary resources that would makes going to the gym an
     
 ### Start here if you have done eveything before this and you're currently on the App's directory 
 5. Start the Server by running the following command:
-        * npx expo start
+    * npx expo start
 
 6. Press the 'i' key on your keyboard to open the IOS Simulator and start the app
     * Must have installed XCode before doing this
