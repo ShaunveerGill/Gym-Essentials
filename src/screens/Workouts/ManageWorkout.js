@@ -19,7 +19,7 @@ import TimerModal from "../Workouts/TimerModal";
 import { Alert } from "react-native";
 import { confirmHandler, confirmDeleteExercise, confirmDelete } from "../../data/userServices";
 import * as TimerController from "../../controller/TimerController";
-import { inputChangedHandler } from "../../controller/UserController";
+import { ChangedHandler } from "../../controller/UserController";
 
 function ManageWorkout({ route }) {
   const workoutsCtx = useContext(WorkoutsContext);
@@ -305,7 +305,7 @@ function ManageWorkout({ route }) {
                     !inputs.workoutName.isValid && styles.invalidInput,
                   ]}
                   onChangeText={(enteredValue) =>
-                    inputChangedHandler("workoutName", enteredValue, setInputs)
+                    ChangedHandler("workoutName", enteredValue, setInputs)
                   }
                   value={inputs.workoutName.value}
                 />

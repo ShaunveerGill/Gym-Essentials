@@ -19,15 +19,22 @@ function AboutYou() {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
 
+  const amountIsValid = (!isNaN(UserCtx.age) && UserCtx.age > 0 && UserCtx.age < 130)
+                    &&  (!isNaN(UserCtx.height) && UserCtx.height > 0 && UserCtx.height < 274.32)
+                    &&  (!isNaN(UserCtx.weight) && UserCtx.weight > 0 && UserCtx.weight < 1000);
+  
+const formIsInvalid = !amountIsValid && Sub;
+const [Sub, setSub] = useState(false);
 
-  const formIsInvalid = (!UserCtx.weight || !UserCtx.height || !UserCtx.age) && Sub;
-  const [Sub, setSub] = useState(false);
-
-  const handleFinishButtonPress = () => {
+  const handleFinishButtonPress = async () => { // Add the 'async' keyword here
     setSub(true);
-    AboutYouFinishHandler(UserCtx).then(() => {
+    try {
+      await AboutYouFinishHandler(UserCtx);
       navigation.navigate("FeaturesOverview");
-    });
+    } catch (error) {
+      
+      console.error("Error finishing AboutYou:", error);
+    }
   };
 
   return (

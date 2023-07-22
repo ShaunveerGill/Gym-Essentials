@@ -14,6 +14,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { handleLogout } from "../../data/userServices";
 import { resetUserContext } from "../../controller/UserController";
+import { RecordsContext } from '../../context/RecordsContext';
+import { WorkoutsContext } from "../../context/WorkoutsContext";
 
 
 const AccountStack = createNativeStackNavigator();
@@ -21,11 +23,21 @@ const AccountStack = createNativeStackNavigator();
 const AccountScreen = () => {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
+  const RecordsCtx = useContext(RecordsContext);
+  const WorkoutsCtx = useContext(WorkoutsContext);
+  // const { clearRecords, records } = useContext(RecordsContext);
+  // const { clearWorkouts, workouts} = useContext(WorkoutsContext);
 
   const submithandler = () => {
     handleLogout()
       .then(() => {
         resetUserContext(UserCtx);
+        RecordsCtx.clearRecords(); 
+        WorkoutsCtx.clearWorkouts();
+        UserCtx.clearUserContext();
+        console.log("sdf");
+        console.log(RecordsCtx.records);
+        console.log(WorkoutsCtx.workouts);
         navigation.navigate("Login");
       })
       .catch((error) => {
