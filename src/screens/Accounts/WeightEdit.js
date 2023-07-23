@@ -16,7 +16,7 @@ import { updateData } from "../../data/userServices";
 function WeightEdit() {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
-  const [tempWeight, setTempWeight] = useState(UserCtx.weight);
+  const [tempWeight, setTempWeight] = useState(UserCtx.weight || '');
   const amountIsValid =
     !isNaN(tempWeight) && tempWeight > 0 && tempWeight < 1000;
 

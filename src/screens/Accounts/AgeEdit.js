@@ -17,7 +17,8 @@ function AgeEdit() {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
 
-  const [tempAge, setTempAge] = useState(UserCtx.age);
+  // const [tempAge, setTempAge] = useState(UserCtx.age);
+  const [tempAge, setTempAge] = useState(UserCtx.age || '');
 
   const amountIsValid = !isNaN(tempAge) && tempAge > 0 && tempAge < 130;
 

@@ -20,9 +20,10 @@ function AboutYou() {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
 
-  const [tempAge, setTempAge] = useState(0);
-  const [tempHeight, setTempHeight] = useState(0);
-  const [tempWeight, setTempWeight] = useState(0);
+  const [tempAge, setTempAge] = useState('');
+  const [tempHeight, setTempHeight] = useState('');
+  const [tempWeight, setTempWeight] = useState('');
+  
   const [Sub, setSub] = useState(false);
 
   const ageIsValid = !isNaN(tempAge) && tempAge > 0 && tempAge < 130;
@@ -50,20 +51,10 @@ function AboutYou() {
       UserCtx.setHeight(height);
       UserCtx.setWeight(weight);
 
-      console.log(UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel);
     } catch (error) {
-      console.log(UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel);
       console.error("Error finishing AboutYou:", error);
     }
   };
-
-  // useEffect(() => {
-  //   if (Sub && UserCtx.age && UserCtx.height && UserCtx.weight && UserCtx.gender && UserCtx.goal && UserCtx.activityLevel) {
-  //     AboutYouFinishHandler(UserCtx)
-  //       .then(() => navigation.navigate("FeaturesOverview"))
-  //       .catch((error) => console.error("Error finishing AboutYou:", error));
-  //   }
-  // }, [Sub, UserCtx.age, UserCtx.height, UserCtx.weight, UserCtx.gender, UserCtx.goal, UserCtx.activityLevel]);
 
   useEffect(() => {
     if (Sub && UserCtx.age && UserCtx.height && UserCtx.weight && UserCtx.gender && UserCtx.goal && UserCtx.activityLevel) {
@@ -72,7 +63,6 @@ function AboutYou() {
         .catch((error) => console.error("Error finishing AboutYou:", error));
     }
 
-    // Reset Sub state to false when a valid input is detected or the input is cleared
     if (Sub && (!isNaN(tempAge) || !isNaN(tempHeight) || !isNaN(tempWeight))) {
       setSub(false);
     }
