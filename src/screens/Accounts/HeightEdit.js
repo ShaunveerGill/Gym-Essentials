@@ -51,7 +51,7 @@ function HeightEdit() {
             style={[styles.inputBox, !amountIsValid && styles.invalidInput]}
             onChangeText={setTempHeight}
             keyboardType="numeric"
-            value={tempHeight}
+            value={tempHeight.toString()}
           />
         </View>
 

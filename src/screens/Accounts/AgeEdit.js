@@ -18,7 +18,7 @@ function AgeEdit() {
   const UserCtx = useContext(UserContext);
 
   // const [tempAge, setTempAge] = useState(UserCtx.age);
-  const [tempAge, setTempAge] = useState(UserCtx.age || '');
+  const [tempAge, setTempAge] = useState(UserCtx.age || "");
 
   const amountIsValid = !isNaN(tempAge) && tempAge > 0 && tempAge < 130;
 
@@ -57,7 +57,7 @@ function AgeEdit() {
             style={[styles.inputBox, !amountIsValid && styles.invalidInput]}
             onChangeText={setTempAge}
             keyboardType="numeric"
-            value={tempAge}
+            value={tempAge.toString()}
           />
         </View>
 
@@ -84,7 +84,6 @@ function AgeEdit() {
     </TouchableWithoutFeedback>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

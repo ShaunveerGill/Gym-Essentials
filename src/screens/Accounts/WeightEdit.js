@@ -16,7 +16,7 @@ import { updateData } from "../../data/userServices";
 function WeightEdit() {
   const navigation = useNavigation();
   const UserCtx = useContext(UserContext);
-  const [tempWeight, setTempWeight] = useState(UserCtx.weight || '');
+  const [tempWeight, setTempWeight] = useState(UserCtx.weight || "");
   const amountIsValid =
     !isNaN(tempWeight) && tempWeight > 0 && tempWeight < 1000;
 
@@ -51,7 +51,7 @@ function WeightEdit() {
             style={[styles.inputBox, !amountIsValid && styles.invalidInput]}
             onChangeText={setTempWeight}
             keyboardType="numeric"
-            value={tempWeight}
+            value={tempWeight.toString()}
           />
         </View>
 
